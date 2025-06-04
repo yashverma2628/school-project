@@ -23,7 +23,7 @@
                 <li><a onclick="scrollToSection('home')">Home</a></li>
                 <li><a onclick="scrollToSection('about')">About</a></li>
                 <li><a onclick="redirectToPage('data.html')">Data</a></li>
-                <li><a onclick="openNewsModal()">News</a></li>
+                <li><a onclick="redirectToPage('news.html')">news</a></li>
                <li><a onclick="redirectToPage('gallery.html?category=facilities')">facilities</a></li>
                  <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
                 <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
@@ -396,7 +396,7 @@
                         <li><a onclick="redirectToPage('about.html')">About</a></li>
                         <li><a onclick="redirectToPage('vision-mission.html')">Vision & Mission</a></li>
                         <li><a onclick="redirectToPage('organization.html')">Organization</a></li>
-                        <li><a onclick="openNewsModal()">News</a></li>
+                        <li><a onclick="redirectToPage('news.html')">news</a></li>
                         <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
                         <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
                     </ul>
@@ -427,56 +427,7 @@
         </div>
     </footer>
 
-    <!-- News Modal -->
-<div id="newsModal" class="news-modal">
-    <div class="news-modal-content">
-        <div class="news-modal-header">
-            <h2>Latest School News & Updates</h2>
-            <button class="close-news-modal" onclick="closeNewsModal()">&times;</button>
-        </div>
-        <div class="news-modal-body">
-            <div class="current-news-item news-item-urgent">
-                <div class="news-item-title">Winter Break Extended</div>
-                <div class="news-item-date">June 3, 2025</div>
-                <div class="news-item-content">
-                    Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025. All students and parents are requested to take note of this change.
-                </div>
-            </div>
-            
-            <div class="current-news-item">
-                <div class="news-item-title">Annual Sports Day 2025</div>
-                <div class="news-item-date">June 1, 2025</div>
-                <div class="news-item-content">
-                    Our Annual Sports Day will be held on June 20, 2025. Registration forms are available at the school office. Parents are cordially invited to attend and cheer for their children.
-                </div>
-            </div>
-            
-            <div class="current-news-item">
-                <div class="news-item-title">New Science Laboratory Inauguration</div>
-                <div class="news-item-date">May 28, 2025</div>
-                <div class="news-item-content">
-                    We are excited to announce the inauguration of our new state-of-the-art science laboratory. The facility will be open for students from Class 8 onwards starting next week.
-                </div>
-            </div>
-            
-            <div class="current-news-item">
-                <div class="news-item-title">Parent-Teacher Meeting</div>
-                <div class="news-item-date">May 25, 2025</div>
-                <div class="news-item-content">
-                    The next Parent-Teacher meeting is scheduled for June 10, 2025, from 10:00 AM to 2:00 PM. Please collect your appointment cards from the front office.
-                </div>
-            </div>
-            
-            <div class="current-news-item">
-                <div class="news-item-title">Art Competition Results</div>
-                <div class="news-item-date">May 22, 2025</div>
-                <div class="news-item-content">
-                    Congratulations to all participants in our inter-house art competition! Results have been posted on the school notice board. Prize distribution ceremony will be held on June 8, 2025.
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    
 
     <script>
         // Make sure DOM is fully loaded before executing scripts
@@ -635,181 +586,7 @@
             slideshowContainer.addEventListener('mouseleave', () => {
                 slideInterval = setInterval(nextSlide, 10000);
             });
-        }
-// News Modal Functions - Android Compatible Version
-function openNewsModal() {
-    const modal = document.getElementById('newsModal');
-    if (modal) {
-        // Prevent any existing event bubbling
-        event?.preventDefault();
-        event?.stopPropagation();
-        
-        modal.style.display = 'block';
-        modal.style.visibility = 'visible';
-        modal.style.opacity = '1';
-        
-        // Better body scroll prevention for Android
-        const scrollY = window.scrollY;
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${scrollY}px`;
-        document.body.style.left = '0';
-        document.body.style.right = '0';
-        document.body.style.overflow = 'hidden';
-        document.body.style.webkitOverflowScrolling = 'touch';
-        
-        // Store scroll position
-        modal.setAttribute('data-scroll-y', scrollY);
-        
-        // Add classes for styling
-        document.documentElement.classList.add('modal-open');
-        document.body.classList.add('modal-open');
-        
-        // Focus management
-        modal.setAttribute('aria-hidden', 'false');
-        modal.setAttribute('tabindex', '-1');
-        
-        // Small delay for Android rendering
-        setTimeout(() => {
-            modal.focus();
-        }, 50);
-        
-        console.log('News modal opened');
-    }
-}
-
-function closeNewsModal() {
-    const modal = document.getElementById('newsModal');
-    if (modal) {
-        // Prevent event bubbling
-        event?.preventDefault();
-        event?.stopPropagation();
-        
-        modal.style.display = 'none';
-        modal.style.visibility = 'hidden';
-        modal.style.opacity = '0';
-        
-        // Restore scroll position
-        const scrollY = modal.getAttribute('data-scroll-y') || '0';
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.left = '';
-        document.body.style.right = '';
-        document.body.style.overflow = '';
-        document.body.style.webkitOverflowScrolling = '';
-        
-        // Restore scroll position
-        window.scrollTo(0, parseInt(scrollY));
-        
-        // Remove classes
-        document.documentElement.classList.remove('modal-open');
-        document.body.classList.remove('modal-open');
-        
-        // Accessibility
-        modal.setAttribute('aria-hidden', 'true');
-        modal.removeAttribute('tabindex');
-        modal.removeAttribute('data-scroll-y');
-        
-        console.log('News modal closed');
-    }
-}
-
-// Improved event handling for Android
-function handleModalEvents(event) {
-    const modal = document.getElementById('newsModal');
-    if (!modal || modal.style.display !== 'block') return;
-    
-    const modalContent = modal.querySelector('.news-modal-content');
-    const closeButton = modal.querySelector('.close-news-modal');
-    
-    // Handle different event types
-    if (event.type === 'click' || event.type === 'touchend') {
-        // Check if click/touch is on close button
-        if (closeButton && (event.target === closeButton || closeButton.contains(event.target))) {
-            event.preventDefault();
-            event.stopPropagation();
-            closeNewsModal();
-            return;
-        }
-        
-        // Check if click/touch is outside modal content
-        if (modalContent && !modalContent.contains(event.target)) {
-            event.preventDefault();
-            event.stopPropagation();
-            closeNewsModal();
-            return;
-        }
-    }
-    
-    // Handle escape key
-    if (event.type === 'keydown' && (event.key === 'Escape' || event.keyCode === 27)) {
-        event.preventDefault();
-        closeNewsModal();
-    }
-}
-
-// Touch event handling specifically for Android
-let touchStartY = 0;
-let touchStartX = 0;
-
-function handleTouchStart(event) {
-    const modal = document.getElementById('newsModal');
-    if (modal && modal.style.display === 'block') {
-        if (event.touches && event.touches.length > 0) {
-            touchStartY = event.touches[0].clientY;
-            touchStartX = event.touches[0].clientX;
-        }
-    }
-}
-
-function handleTouchEnd(event) {
-    const modal = document.getElementById('newsModal');
-    if (!modal || modal.style.display !== 'block') return;
-    
-    if (event.changedTouches && event.changedTouches.length > 0) {
-        const touchEndY = event.changedTouches[0].clientY;
-        const touchEndX = event.changedTouches[0].clientX;
-        
-        const deltaY = Math.abs(touchEndY - touchStartY);
-        const deltaX = Math.abs(touchEndX - touchStartX);
-        
-        // If it's a tap (small movement), treat as click
-        if (deltaY < 10 && deltaX < 10) {
-            handleModalEvents(event);
-        }
-    }
-}
-
-// Initialize all modal events
-function initializeModalEvents() {
-    // Remove existing listeners
-    document.removeEventListener('click', handleModalEvents, true);
-    document.removeEventListener('keydown', handleModalEvents, true);
-    document.removeEventListener('touchstart', handleTouchStart, { passive: false });
-    document.removeEventListener('touchend', handleTouchEnd, { passive: false });
-    
-    // Add new listeners
-    document.addEventListener('click', handleModalEvents, true);
-    document.addEventListener('keydown', handleModalEvents, true);
-    document.addEventListener('touchstart', handleTouchStart, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd, { passive: false });
-    
-    console.log('Modal events initialized');
-}
-
-// Enhanced DOM ready detection
-function initializeWhenReady() {
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeModalEvents);
-    } else {
-        initializeModalEvents();
-    }
-    
-    // Fallback initialization
-    setTimeout(initializeModalEvents, 100);
-}
-
-// Initialize immediately
-initializeWhenReady();
+        } 
     </script>
 </body>
 </html>
