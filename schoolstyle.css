@@ -30,13 +30,17 @@
 
         .logo {
             display: flex;
-            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
             align-items: center;
             gap: 10px;
             font-weight: bold;
             color: #2c5aa0;
             font-size: medium;
+             font-family: "Pacifico", cursive;
+             font-weight: 400;
+             font-style: normal;
         }
+
+        
 
         /* REPLACE WITH SCHOOL LOGO IMAGE */
         .logo img {
@@ -713,3 +717,163 @@
         .clickable:hover {
             opacity: 0.8;
         }
+
+       
+
+        /* News Popup Modal */
+.news-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.news-modal-content {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.news-modal-header {
+    background: linear-gradient(135deg, #2c5aa0, #1e3a5f);
+    color: white;
+    padding: 20px 30px;
+    border-radius: 15px 15px 0 0;
+    position: relative;
+}
+
+.news-modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.close-news-modal {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close-news-modal:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.news-modal-body {
+    padding: 30px;
+}
+
+.current-news-item {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-left: 4px solid #2c5aa0;
+    transition: transform 0.2s ease;
+}
+
+.current-news-item:hover {
+    transform: translateX(5px);
+}
+
+.news-item-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c5aa0;
+    margin-bottom: 8px;
+}
+
+.news-item-date {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.news-item-content {
+    color: #333;
+    line-height: 1.6;
+}
+
+.news-item-urgent {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+}
+
+.news-item-urgent .news-item-title {
+    color: #856404;
+}
+
+.news-item-urgent .news-item-title::before {
+    content: "🔔 ";
+    margin-right: 5px;
+}
+
+
+/* styling of social media logos*/
+ 
+
+.footer-section ul li a i {
+    margin-right: 8px;
+    font-size: 16px;
+    color: #4267B2; /* You can change colors for each platform */
+}
+
+.footer-section ul li a:hover i {
+    color: #365899;
+    transform: scale(1.1);
+    transition: all 0.3s ease;
+}
+
+/* Specific colors for each platform */
+.fa-facebook-f {
+    color: #4267B2;
+}
+
+.fa-instagram {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.fa-youtube {
+    color: #FF0000;
+}
