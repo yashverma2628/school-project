@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Shishu Vidya Peeth Eng. Med. Hr. Sec School</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="schoolstyle.css">
+    <style>
+        /* Contact Page Specific Styles */
+        .contact-hero {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%);
+            color: white;
+            padding: 6rem 0 4rem;
+            text-align: center;
+        }
+
+        .contact-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .contact-hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-content {
+            padding: 4rem 0;
+            background: #f8f9fa;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .contact-info {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .contact-info h2 {
+            color: #2c5aa0;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            background: #2c5aa0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .info-details h3 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .info-details p {
+            margin: 0;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .contact-form {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .contact-form h2 {
+            color: #2c5aa0;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2c5aa0;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 90, 160, 0.3);
+        }
+
+        .map-section {
+            background: white;
+            padding: 4rem 0;
+        }
+
+        .map-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .map-container h2 {
+            text-align: center;
+            color: #2c5aa0;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .map-frame {
+            width: 100%;
+            height: 400px;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .quick-contact {
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e3d72 100%);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .quick-contact h2 {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .quick-contact p {
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-link {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            transition: background 0.3s ease;
+        }
+
+        .quick-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 0 1rem;
+            }
+
+            .contact-hero h1 {
+                font-size: 2rem;
+            }
+
+            .contact-hero p {
+                font-size: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .info-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .info-icon {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Success Message Styles */
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">
+                <img src="https://github.com/yashverma2628/school-project/blob/main/Picsart_25-06-04_10-53-12-323.png?raw=true" alt="School Logo">
+                <span>Shishu Vidya Pith</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a onclick="redirectToPage('index.html')">Home</a></li>
+                <li><a onclick="redirectToPage('about.html')">About</a></li>
+                <li><a onclick="redirectToPage('data.html')">Data</a></li>
+                <li><a onclick="redirectToPage('news.html')">News</a></li>
+                <li><a onclick="redirectToPage('gallery.html?category=facilities')">Facilities</a></li>
+                <li><a onclick="redirectToPage('gallery.html')">Gallery</a></li>
+                <li><a href="#" class="active">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="contact-hero">
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p>We're here to help and answer any questions you might have. We look forward to hearing from you!</p>
+        </div>
+    </section>
+
+    <!-- Contact Content -->
+    <section class="contact-content">
+        <div class="contact-grid">
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h2>Get in Touch</h2>
+                
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div class="info-details">
+                        <h3>School Address</h3>
+                        <p>Shishu Vidya Pith Eng. Med. Hr. Sec School<br>
+                        G.C.F Estate , Jabalpur<br>
+                         Madhya Pradesh, India</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">📞</div>
+                    <div class="info-details">
+                        <h3>Phone Numbers</h3>
+                        <p>Main Office: +91 761 234 5678<br>
+                        Principal's Office: +91 761 234 5679<br>
+                        Admissions: +91 761 234 5680</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">✉️</div>
+                    <div class="info-details">
+                        <h3>Email Addresses</h3>
+                        <p>General: shishuvidyapith712267@gmail.com<br>
+                        Principal: principal@shishuvidyapith.edu.in<br>
+                        Admissions: admissions@shishuvidyapith.edu.in</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">🕒</div>
+                    <div class="info-details">
+                        <h3>Office Hours</h3>
+                        <p>Monday - Friday: 8:00 AM - 4:00 PM<br>
+                        Saturday: 8:00 AM - 12:00 PM<br>
+                        Sunday: Closed</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">👥</div>
+                    <div class="info-details">
+                        <h3>Connect With Us</h3>
+                        <p>Follow us on social media for updates and news<br>
+                        Facebook | Instagram | YouTube</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <h2>Send us a Message</h2>
+                
+                <div class="success-message" id="successMessage">
+                    Thank you for your message! We'll get back to you soon.
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    Please fill in all required fields correctly.
+                </div>
+
+                <form id="contactForm" onsubmit="handleFormSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name *</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name *</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject *</label>
+                        <select id="subject" name="subject" required>
+                            <option value="">Select a subject</option>
+                            <option value="admission">Admission Inquiry</option>
+                            <option value="academic">Academic Information</option>
+                            <option value="facilities">Facilities & Infrastructure</option>
+                            <option value="extracurricular">Extracurricular Activities</option>
+                            <option value="complaint">Complaint/Suggestion</option>
+                            <option value="parent-meeting">Parent-Teacher Meeting</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentClass">Student's Class (if applicable)</label>
+                        <select id="studentClass" name="studentClass">
+                            <option value="">Not Applicable</option>
+                            <option value="nursery">Nursery</option>
+                            <option value="lkg">LKG</option>
+                            <option value="ukg">UKG</option>
+                            <option value="1">Class 1</option>
+                            <option value="2">Class 2</option>
+                            <option value="3">Class 3</option>
+                            <option value="4">Class 4</option>
+                            <option value="5">Class 5</option>
+                            <option value="6">Class 6</option>
+                            <option value="7">Class 7</option>
+                            <option value="8">Class 8</option>
+                            <option value="9">Class 9</option>
+                            <option value="10">Class 10</option>
+                            <option value="11">Class 11</option>
+                            <option value="12">Class 12</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" placeholder="Please describe your inquiry or message in detail..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="map-section">
+        <div class="map-container">
+            <h2>Find Us</h2>
+            <iframe 
+                class="map-frame"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3667.4951!2d79.967405!3d23.1809225!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3981af7ccad90197%3A0x5dfcc8c96d55ad07!2sShishu%20vidyapeeth%20bangali%20kanya%20high%20school!5e0!3m2!1sen!2sin!4v1234567890"
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </section>
+
+    <!-- Quick Contact -->
+    <section class="quick-contact">
+        <div class="container">
+            <h2>Quick Actions</h2>
+            <p>Need immediate assistance? Use these quick links</p>
+            <div class="quick-links">
+                <a href="tel:+917612345678" class="quick-link">📞 Call Now</a>
+                <a href="mailto:info@shishuvidyapeeth.edu.in" class="quick-link">✉️ Email Us</a>
+                <a onclick="redirectToPage('admissions.html')" class="quick-link">📝 Admission Form</a>
+                <a onclick="redirectToPage('index.html')" class="quick-link">🏠 Back to Home</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>School</h3>
+                    <ul>
+                        <li><a onclick="redirectToPage('about.html')">About</a></li>
+                        <li><a onclick="redirectToPage('vision-mission.html')">Vision & Mission</a></li>
+                        <li><a onclick="redirectToPage('organization.html')">Organization</a></li>
+                        <li><a onclick="redirectToPage('news.html')">News</a></li>
+                        <li><a onclick="redirectToPage('gallery.html')">Gallery</a></li>
+                        <li><a href="#" class="active">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>General Information</h3>
+                    <ul>
+                        <li><a onclick="redirectToPage('curriculum.html')">Curriculum</a></li>
+                        <li><a onclick="redirectToPage('extracurricular.html')">Extracurricular</a></li>
+                        <li><a onclick="redirectToPage('ppdb.html')">Shishu Vidya Pith</a></li>
+                        <li><a onclick="redirectToPage('ppdb-guidelines.html')">Guidelines</a></li>
+                        <li><a onclick="redirectToPage('location.html')">Location</a></li>
+                        <li><a href="#" class="active">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Social Media</h3>
+                    <ul>
+                        <li><a onclick="openSocialMedia('facebook')">Facebook</a></li>
+                        <li><a onclick="openSocialMedia('instagram')">Instagram</a></li>
+                        <li><a onclick="openSocialMedia('youtube')">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Shishu Vidya Pith. All rights reserved. Hosting by Yash Verma</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form submission handler
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('contactForm');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Hide previous messages
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+            
+            // Get form data
+            const formData = new FormData(form);
+            const firstName = formData.get('firstName');
+            const lastName = formData.get('lastName');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            // Basic validation
+            if (!firstName || !lastName || !email || !subject || !message) {
+                errorMessage.style.display = 'block';
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                errorMessage.textContent = 'Please enter a valid email address.';
+                errorMessage.style.display = 'block';
+                errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            
+            // Simulate form submission (replace with actual submission logic)
+            setTimeout(() => {
+                successMessage.style.display = 'block';
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                form.reset();
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 5000);
+            }, 1000);
+        }
+        
+        // Function to redirect to different pages
+        function redirectToPage(pageName) {
+            console.log('Redirecting to:', pageName);
+            try {
+                window.location.href = pageName;
+            } catch (error) {
+                console.error('Error redirecting to page:', error);
+                window.location.assign(pageName);
+            }
+        }
+        
+        // Function to open social media links
+        function openSocialMedia(platform) {
+            const urls = {
+                'facebook': 'https://facebook.com/shishuvidyapeeth',
+                'instagram': 'https://instagram.com/shishuvidyapeeth',
+                'youtube': 'https://youtube.com/shishuvidyapeeth'
+            };
+            window.open(urls[platform], '_blank');
+        }
+        
+        // Add smooth animations on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const animateElements = document.querySelectorAll('.info-item, .contact-form');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animateElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+        
+        // Auto-resize textarea
+        document.getElementById('message').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+    </script>
+</body>
+</html>
