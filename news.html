@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News & Updates - Shishu Vidya Pith Eng. Med. Hr. Sec School</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="schoolstyle.css">
+    <style>
+        /* News Page Specific Styles */
+        .news-page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 0 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="rgba(255,255,255,0.1)"><polygon points="0,100 1000,0 1000,100"/></svg>');
+            background-size: cover;
+            background-position: bottom;
+        }
+
+        .news-page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .news-page-header p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 0;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .breadcrumb a:hover {
+            opacity: 1;
+        }
+
+        .breadcrumb span {
+            margin: 0 5px;
+            opacity: 0.6;
+        }
+
+        .news-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .news-filters {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            color: #495057;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .news-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .news-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .news-item.urgent {
+            border-left: 5px solid #dc3545;
+        }
+
+        .news-item.urgent::before {
+            content: 'URGENT';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #dc3545;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+
+        .news-item-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+        }
+
+        .news-item-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .news-item-date i {
+            font-size: 0.8rem;
+        }
+
+        .news-item-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .news-item-category {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .news-item-content {
+            padding: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .news-item-content p {
+            margin-bottom: 1rem;
+        }
+
+        .news-item-footer {
+            padding: 1rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .news-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .news-tag {
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .read-more-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .read-more-btn:hover {
+            background: #5a6fd8;
+            transform: scale(1.05);
+        }
+
+        .news-pagination {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .pagination-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            color: #495057;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .pagination-btn:hover,
+        .pagination-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .back-to-home {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-home:hover {
+            background: #5a6fd8;
+            transform: scale(1.1);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .news-page-header h1 {
+                font-size: 2rem;
+            }
+
+            .news-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .news-filters {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-btn {
+                width: 100%;
+                max-width: 200px;
+                text-align: center;
+            }
+
+            .news-item-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .back-to-home {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .news-item {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .news-item:nth-child(1) { animation-delay: 0.1s; }
+        .news-item:nth-child(2) { animation-delay: 0.2s; }
+        .news-item:nth-child(3) { animation-delay: 0.3s; }
+        .news-item:nth-child(4) { animation-delay: 0.4s; }
+        .news-item:nth-child(5) { animation-delay: 0.5s; }
+        .news-item:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">
+                <img src="https://github.com/yashverma2628/school-project/blob/main/Picsart_25-06-04_10-53-12-323.png?raw=true" alt="School Logo">
+                <span>Shishu Vidya Pith</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="data.html">Data</a></li>
+                <li><a href="news.html" class="active">News</a></li>
+                <li><a href="gallery.html?category=facilities">Facilities</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <section class="news-page-header">
+        <div class="container">
+            <h1><i class="fas fa-newspaper"></i> Latest News & Updates</h1>
+            <p>Stay informed with the latest happenings and announcements from our school</p>
+            <div class="breadcrumb">
+                <a href="index.html">Home</a>
+                <span>/</span>
+                <span>News & Updates</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Content -->
+    <main class="news-container">
+        <!-- News Filters -->
+        <div class="news-filters">
+            <button class="filter-btn active" data-filter="all">All News</button>
+            <button class="filter-btn" data-filter="urgent">Urgent</button>
+            <button class="filter-btn" data-filter="academic">Academic</button>
+            <button class="filter-btn" data-filter="events">Events</button>
+            <button class="filter-btn" data-filter="announcements">Announcements</button>
+        </div>
+
+        <!-- News Grid -->
+        <div class="news-grid">
+            <!-- Urgent News Item -->
+            <article class="news-item urgent" data-category="urgent">
+                <div class="news-item-header">
+                    <div class="news-item-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        June 3, 2025
+                    </div>
+                    <h2 class="news-item-title">Winter Break Extended</h2>
+                    <span class="news-item-category">Urgent Notice</span>
+                </div>
+                <div class="news-item-content">
+                    <p>Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025.</p>
+                    <p>All students and parents are requested to take note of this change. The school administration apologizes for any inconvenience caused and appreciates your understanding.</p>
+                </div>
+                <div class="news-item-footer">
+                    <div class="news-tags">
+                        <span class="news-tag">Important</span>
+                        <span class="news-tag">Schedule</span>
+                    </div>
+                    <button class="read-more-btn">Read More</button>
+                </div>
+            </article>
+
+            <!-- Sports Day News -->
+            <article class="news-item" data-category="events">
+                <div class="news-item-header">
+                    <div class="news-item-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        June 1, 2025
+                    </div>
+                    <h2 class="news-item-title">Annual Sports Day 2025</h2>
+                    <span class="news-item-category">School Event</span>
+                </div>
+                <div class="news-item-content">
+                    <p>Our Annual Sports Day will be held on June 20, 2025, at the school grounds. This year's theme is "Unity in Diversity" celebrating our multicultural student body.</p>
+                    <p>Registration forms are available at the school office. Parents are cordially invited to attend and cheer for their children. Various competitions and cultural programs are planned.</p>
+                </div>
+                <div class="news-item-footer">
+                    <div class="news-tags">
+                        <span class="news-tag">Sports</span>
+                        <span class="news-tag">Event</span>
+                        <span class="news-tag">Competition</span>
+                    </div>
+                    <button class="read-more-btn">Read More</button>
+                </div>
+            </article>
+
+            <!-- Science Lab News -->
+            <article class="news-item" data-category="academic">
+                <div class="news-item-header">
+                    <div class="news-item-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        May 28, 2025
+                    </div>
+                    <h2 class="news-item-title">New Science Laboratory Inauguration</h2>
+                    <span class="news-item-category">Academic</span>
+                </div>
+                <div class="news-item-content">
+                    <p>We are excited to announce the inauguration of our new state-of-the-art science laboratory equipped with modern instruments and safety equipment.</p>
+                    <p>The facility will be open for students from Class 8 onwards starting next week. Special orientation sessions will be conducted for students and teachers.</p>
+                </div>
+                <div class="news-item-footer">
+                    <div class="news-tags">
+                        <span class="news-tag">Science</span>
+                        <span class="news-tag">Laboratory</span>
+                        <span class="news-tag">Facility</span>
+                    </div>
+                    <button class="read-more-btn">Read More</button>
+                </div>
+            </article>
+
+            <!-- Parent Meeting News -->
+            <article class="news-item" data-category="announcements">
+                <div class="news-item-header">
+                    <div class="news-item-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        May 25, 2025
+                    </div>
+                    <h2 class="news-item-title">Parent-Teacher Meeting</h2>
+                    <span class="news-item-category">Announcement</span>
+                </div>
+                <div class="news-item-content">
+                    <p>The next Parent-Teacher meeting is scheduled for June 10, 2025, from 10:00 AM to 2:00 PM in the school auditorium.</p>
+                    <p>Please collect your appointment cards from the front office. Individual consultations with subject teachers can be arranged. Refreshments will be provided.</p>
+                </div>
+                <div class="news-item-footer">
+                    <div class="news-tags">
+                        <span class="news-tag">Meeting</span>
+                        <span class="news-tag">Parents</span>
+                    </div>
+                    <button class="read-more-btn">Read More</button>
+                </div>
+            </article>
+
+            <!-- Art Competition Results -->
+            <article class="news-item" data-category="events">
+                <div class="news-item-header">
+                    <div class="news-item-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        May 22, 2025
+                    </div>
+                    <h2 class="news-item-title">Art Competition Results</h2>
+                    <span class="news-item-category">Competition Results</span>
+                </div>
+                <div class="news-item-content">
+                    <p>Congratulations to all participants in our inter-house art competition! The level of creativity and artistic skill displayed by our students was truly remarkable.</p>
+                    <p>Results have been posted on the school notice board. Prize distribution ceremony will be held on June 8, 2025, at 11:00 AM in the school assembly hall.</p>
+                </div>
+                <div class="news-item-footer">
+                    <div class="news-tags">
+                        <span class="news-tag">Art</span>
+                        <span class="news-tag">Competition</span>
+                        <span class="news-tag">Results</span>
+                    </div>
+                    <button class="read-more-btn">Read More</button>
+                </div>
+            </article>
+
+            <!-- Academic Excellence News -->
+            <article class="news-item" data-category="academic">
+                <div class="news-item-header">
+                    <div class="news-item-date">
+                        <i class="fas fa-calendar-alt"></i>
+                        May 20, 2025
+                    </div>
+                    <h2 class="news-item-title">Outstanding Academic Results 2024</h2>
+                    <span class="news-item-category">Academic Achievement</span>
+                </div>
+                <div class="news-item-content">
+                    <p>We are proud to announce that our students have achieved exceptional results in the 2024 board examinations with an overall pass percentage of 98.5%.</p>
+                    <p>Special congratulations to our top performers who scored above 90%. Their dedication and hard work, along with the support of our excellent faculty, have made this possible.</p>
+                </div>
+                <div class="news-item-footer">
+                    <div class="news-tags">
+                        <span class="news-tag">Academic</span>
+                        <span class="news-tag">Results</span>
+                        <span class="news-tag">Excellence</span>
+                    </div>
+                    <button class="read-more-btn">Read More</button>
+                </div>
+            </article>
+        </div>
+
+        <!-- Pagination -->
+        <div class="news-pagination">
+            <button class="pagination-btn" disabled>Previous</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">Next</button>
+        </div>
+    </main>
+
+    <!-- Back to Home Button -->
+    <button class="back-to-home" onclick="window.location.href='index.html'" title="Back to Home">
+        <i class="fas fa-home"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer id="contact" class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>School</h3>
+                    <ul>
+                        <li><a href="about.html">About</a></li>
+                        <li><a href="vision-mission.html">Vision & Mission</a></li>
+                        <li><a href="organization.html">Organization</a></li>
+                        <li><a href="news.html">News</a></li>
+                        <li><a href="gallery.html">Gallery</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>General Information</h3>
+                    <ul>
+                        <li><a href="curriculum.html">Curriculum</a></li>
+                        <li><a href="extracurricular.html">Extracurricular</a></li>
+                        <li><a href="ppdb.html">Shishu Vidya Pith</a></li>
+                        <li><a href="ppdb-guidelines.html">Guidelines</a></li>
+                        <li><a href="location.html">Location</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Social Media</h3>
+                    <ul>
+                        <li><a href="#"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+                        <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                        <li><a href="#"><i class="fab fa-youtube"></i> YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Shishu Vidya Pith. All rights reserved. Hosting by Yash Verma</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // News filtering functionality
+        function initializeNewsFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const newsItems = document.querySelectorAll('.news-item');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active filter button
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    // Filter news items
+                    const filter = btn.getAttribute('data-filter');
+                    
+                    newsItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                            item.style.display = 'block';
+                            item.style.animation = 'fadeInUp 0.6s ease forwards';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+
+        // Read more functionality
+        function initializeReadMore() {
+            const readMoreBtns = document.querySelectorAll('.read-more-btn');
+            
+            readMoreBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    // You can expand this to show full article or redirect to individual news page
+                    alert('Full article functionality can be implemented here');
+                });
+            });
+        }
+
+        // Pagination functionality
+        function initializePagination() {
+            const paginationBtns = document.querySelectorAll('.pagination-btn');
+            
+            paginationBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (!btn.disabled && !btn.classList.contains('active')) {
+                        // Remove active class from all buttons
+                        paginationBtns.forEach(b => b.classList.remove('active'));
+                        
+                        // Add active class to clicked button (only if it's a number)
+                        if (!isNaN(btn.textContent)) {
+                            btn.classList.add('active');
+                        }
+                        
+                        // Scroll to top of news
+                        document.querySelector('.news-container').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Smooth scrolling for navigation
+        function initializeSmoothScroll() {
+            const navLinks = document.querySelectorAll('a[href^="#"]');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Initialize all functionality when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNewsFilters();
+            initializeReadMore();
+            initializePagination();
+            initializeSmoothScroll();
+            
+            // Add fade-in animation to news items
+            const newsItems = document.querySelectorAll('.news-item');
+            newsItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+
+        // Back to top functionality
+        window.addEventListener('scroll', function() {
+            const backToHomeBtn = document.querySelector('.back-to-home');
+            if (window.pageYOffset > 300) {
+                backToHomeBtn.style.opacity = '1';
+            } else {
+                backToHomeBtn.style.opacity = '0.7';
+            }
+        });
+    </script>
+</body>
+</html>
