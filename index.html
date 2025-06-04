@@ -636,158 +636,180 @@
                 slideInterval = setInterval(nextSlide, 10000);
             });
         }
-// News Modal Functions - Cross-platform compatible
+// News Modal Functions - Android Compatible Version
 function openNewsModal() {
     const modal = document.getElementById('newsModal');
     if (modal) {
+        // Prevent any existing event bubbling
+        event?.preventDefault();
+        event?.stopPropagation();
+        
         modal.style.display = 'block';
-        // Use classList for better compatibility
+        modal.style.visibility = 'visible';
+        modal.style.opacity = '1';
+        
+        // Better body scroll prevention for Android
+        const scrollY = window.scrollY;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.overflow = 'hidden';
+        document.body.style.webkitOverflowScrolling = 'touch';
+        
+        // Store scroll position
+        modal.setAttribute('data-scroll-y', scrollY);
+        
+        // Add classes for styling
         document.documentElement.classList.add('modal-open');
         document.body.classList.add('modal-open');
         
-        // Prevent background scrolling with multiple approaches
-        document.body.style.overflow = 'hidden';
-        document.body.style.position = 'fixed';
-        document.body.style.width = '100%';
-        
-        // Add focus trap for accessibility
+        // Focus management
         modal.setAttribute('aria-hidden', 'false');
+        modal.setAttribute('tabindex', '-1');
         
-        // Focus on modal for keyboard navigation
-        modal.focus();
+        // Small delay for Android rendering
+        setTimeout(() => {
+            modal.focus();
+        }, 50);
+        
+        console.log('News modal opened');
     }
 }
 
 function closeNewsModal() {
     const modal = document.getElementById('newsModal');
     if (modal) {
-        modal.style.display = 'none';
+        // Prevent event bubbling
+        event?.preventDefault();
+        event?.stopPropagation();
         
-        // Remove classes and restore scrolling
+        modal.style.display = 'none';
+        modal.style.visibility = 'hidden';
+        modal.style.opacity = '0';
+        
+        // Restore scroll position
+        const scrollY = modal.getAttribute('data-scroll-y') || '0';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.overflow = '';
+        document.body.style.webkitOverflowScrolling = '';
+        
+        // Restore scroll position
+        window.scrollTo(0, parseInt(scrollY));
+        
+        // Remove classes
         document.documentElement.classList.remove('modal-open');
         document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.width = '';
         
-        // Update accessibility
+        // Accessibility
         modal.setAttribute('aria-hidden', 'true');
+        modal.removeAttribute('tabindex');
+        modal.removeAttribute('data-scroll-y');
+        
+        console.log('News modal closed');
     }
 }
 
-// Enhanced click outside detection for mobile compatibility
-function handleModalClick(event) {
+// Improved event handling for Android
+function handleModalEvents(event) {
     const modal = document.getElementById('newsModal');
-    const modalContent = modal ? modal.querySelector('.modal-content, .modal-body, [class*="content"]') : null;
+    if (!modal || modal.style.display !== 'block') return;
     
-    if (modal && modal.style.display === 'block') {
-        // Check if click is outside modal content
-        if (modalContent && !modalContent.contains(event.target)) {
-            closeNewsModal();
-        } else if (!modalContent && event.target === modal) {
-            // Fallback if no modal content found
-            closeNewsModal();
-        }
-    }
-}
-
-// Enhanced keyboard handling
-function handleKeyDown(event) {
-    const modal = document.getElementById('newsModal');
-    if (modal && modal.style.display === 'block') {
-        if (event.key === 'Escape' || event.keyCode === 27) {
+    const modalContent = modal.querySelector('.news-modal-content');
+    const closeButton = modal.querySelector('.close-news-modal');
+    
+    // Handle different event types
+    if (event.type === 'click' || event.type === 'touchend') {
+        // Check if click/touch is on close button
+        if (closeButton && (event.target === closeButton || closeButton.contains(event.target))) {
             event.preventDefault();
+            event.stopPropagation();
             closeNewsModal();
+            return;
         }
+        
+        // Check if click/touch is outside modal content
+        if (modalContent && !modalContent.contains(event.target)) {
+            event.preventDefault();
+            event.stopPropagation();
+            closeNewsModal();
+            return;
+        }
+    }
+    
+    // Handle escape key
+    if (event.type === 'keydown' && (event.key === 'Escape' || event.keyCode === 27)) {
+        event.preventDefault();
+        closeNewsModal();
     }
 }
 
-// Touch event handling for mobile devices
+// Touch event handling specifically for Android
+let touchStartY = 0;
+let touchStartX = 0;
+
 function handleTouchStart(event) {
     const modal = document.getElementById('newsModal');
     if (modal && modal.style.display === 'block') {
-        const modalContent = modal.querySelector('.modal-content, .modal-body, [class*="content"]');
-        if (modalContent && !modalContent.contains(event.target)) {
-            // Store touch start position
-            modal.touchStartY = event.touches[0].clientY;
+        if (event.touches && event.touches.length > 0) {
+            touchStartY = event.touches[0].clientY;
+            touchStartX = event.touches[0].clientX;
         }
     }
 }
 
 function handleTouchEnd(event) {
     const modal = document.getElementById('newsModal');
-    if (modal && modal.style.display === 'block' && modal.touchStartY !== undefined) {
-        const modalContent = modal.querySelector('.modal-content, .modal-body, [class*="content"]');
-        if (modalContent && !modalContent.contains(event.target)) {
-            // Check if it's a tap (not a scroll)
-            const touchEndY = event.changedTouches[0].clientY;
-            const touchDiff = Math.abs(touchEndY - modal.touchStartY);
-            
-            if (touchDiff < 10) { // Threshold for tap vs scroll
-                closeNewsModal();
-            }
-        }
-        delete modal.touchStartY;
-    }
-}
-
-// Initialize event listeners when DOM is ready
-function initializeModalEvents() {
-    // Remove any existing listeners to prevent duplicates
-    document.removeEventListener('click', handleModalClick);
-    document.removeEventListener('keydown', handleKeyDown);
-    document.removeEventListener('touchstart', handleTouchStart);
-    document.removeEventListener('touchend', handleTouchEnd);
+    if (!modal || modal.style.display !== 'block') return;
     
-    // Add event listeners
-    document.addEventListener('click', handleModalClick, true);
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchend', handleTouchEnd, { passive: true });
-}
-
-// Initialize when DOM is loaded
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeModalEvents);
-} else {
-    initializeModalEvents();
-}
-
-// Fallback initialization for dynamic content
-setTimeout(initializeModalEvents, 100);
-
-// Optional: Add CSS for better mobile support
-function addModalCSS() {
-    if (!document.getElementById('modal-styles')) {
-        const style = document.createElement('style');
-        style.id = 'modal-styles';
-        style.textContent = `
-            .modal-open {
-                overflow: hidden !important;
-                position: fixed !important;
-                width: 100% !important;
-            }
-            
-            #newsModal {
-                touch-action: none;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            @media (max-width: 768px) {
-                #newsModal .modal-content {
-                    margin: 10px;
-                    max-height: calc(100vh - 20px);
-                    overflow-y: auto;
-                }
-            }
-        `;
-        document.head.appendChild(style);
+    if (event.changedTouches && event.changedTouches.length > 0) {
+        const touchEndY = event.changedTouches[0].clientY;
+        const touchEndX = event.changedTouches[0].clientX;
+        
+        const deltaY = Math.abs(touchEndY - touchStartY);
+        const deltaX = Math.abs(touchEndX - touchStartX);
+        
+        // If it's a tap (small movement), treat as click
+        if (deltaY < 10 && deltaX < 10) {
+            handleModalEvents(event);
+        }
     }
 }
 
-// Apply CSS when script loads
-addModalCSS();
-        
+// Initialize all modal events
+function initializeModalEvents() {
+    // Remove existing listeners
+    document.removeEventListener('click', handleModalEvents, true);
+    document.removeEventListener('keydown', handleModalEvents, true);
+    document.removeEventListener('touchstart', handleTouchStart, { passive: false });
+    document.removeEventListener('touchend', handleTouchEnd, { passive: false });
+    
+    // Add new listeners
+    document.addEventListener('click', handleModalEvents, true);
+    document.addEventListener('keydown', handleModalEvents, true);
+    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+    
+    console.log('Modal events initialized');
+}
+
+// Enhanced DOM ready detection
+function initializeWhenReady() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeModalEvents);
+    } else {
+        initializeModalEvents();
+    }
+    
+    // Fallback initialization
+    setTimeout(initializeModalEvents, 100);
+}
+
+// Initialize immediately
+initializeWhenReady();
     </script>
 </body>
 </html>
