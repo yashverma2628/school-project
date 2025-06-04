@@ -636,13 +636,25 @@
                 slideInterval = setInterval(nextSlide, 10000);
             });
         }
-
-        // News Modal Functions
+// News Modal Functions - Cross-platform compatible
 function openNewsModal() {
     const modal = document.getElementById('newsModal');
     if (modal) {
         modal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        // Use classList for better compatibility
+        document.documentElement.classList.add('modal-open');
+        document.body.classList.add('modal-open');
+        
+        // Prevent background scrolling with multiple approaches
+        document.body.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100%';
+        
+        // Add focus trap for accessibility
+        modal.setAttribute('aria-hidden', 'false');
+        
+        // Focus on modal for keyboard navigation
+        modal.focus();
     }
 }
 
@@ -650,26 +662,131 @@ function closeNewsModal() {
     const modal = document.getElementById('newsModal');
     if (modal) {
         modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Restore scrolling
+        
+        // Remove classes and restore scrolling
+        document.documentElement.classList.remove('modal-open');
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        
+        // Update accessibility
+        modal.setAttribute('aria-hidden', 'true');
     }
 }
 
-// Close modal when clicking outside of it
-window.onclick = function(event) {
+// Enhanced click outside detection for mobile compatibility
+function handleModalClick(event) {
     const modal = document.getElementById('newsModal');
-    if (event.target === modal) {
-        closeNewsModal();
+    const modalContent = modal ? modal.querySelector('.modal-content, .modal-body, [class*="content"]') : null;
+    
+    if (modal && modal.style.display === 'block') {
+        // Check if click is outside modal content
+        if (modalContent && !modalContent.contains(event.target)) {
+            closeNewsModal();
+        } else if (!modalContent && event.target === modal) {
+            // Fallback if no modal content found
+            closeNewsModal();
+        }
     }
 }
 
-// Close modal with Escape key
-document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-        closeNewsModal();
+// Enhanced keyboard handling
+function handleKeyDown(event) {
+    const modal = document.getElementById('newsModal');
+    if (modal && modal.style.display === 'block') {
+        if (event.key === 'Escape' || event.keyCode === 27) {
+            event.preventDefault();
+            closeNewsModal();
+        }
     }
-});
+}
 
+// Touch event handling for mobile devices
+function handleTouchStart(event) {
+    const modal = document.getElementById('newsModal');
+    if (modal && modal.style.display === 'block') {
+        const modalContent = modal.querySelector('.modal-content, .modal-body, [class*="content"]');
+        if (modalContent && !modalContent.contains(event.target)) {
+            // Store touch start position
+            modal.touchStartY = event.touches[0].clientY;
+        }
+    }
+}
 
+function handleTouchEnd(event) {
+    const modal = document.getElementById('newsModal');
+    if (modal && modal.style.display === 'block' && modal.touchStartY !== undefined) {
+        const modalContent = modal.querySelector('.modal-content, .modal-body, [class*="content"]');
+        if (modalContent && !modalContent.contains(event.target)) {
+            // Check if it's a tap (not a scroll)
+            const touchEndY = event.changedTouches[0].clientY;
+            const touchDiff = Math.abs(touchEndY - modal.touchStartY);
+            
+            if (touchDiff < 10) { // Threshold for tap vs scroll
+                closeNewsModal();
+            }
+        }
+        delete modal.touchStartY;
+    }
+}
+
+// Initialize event listeners when DOM is ready
+function initializeModalEvents() {
+    // Remove any existing listeners to prevent duplicates
+    document.removeEventListener('click', handleModalClick);
+    document.removeEventListener('keydown', handleKeyDown);
+    document.removeEventListener('touchstart', handleTouchStart);
+    document.removeEventListener('touchend', handleTouchEnd);
+    
+    // Add event listeners
+    document.addEventListener('click', handleModalClick, true);
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+}
+
+// Initialize when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeModalEvents);
+} else {
+    initializeModalEvents();
+}
+
+// Fallback initialization for dynamic content
+setTimeout(initializeModalEvents, 100);
+
+// Optional: Add CSS for better mobile support
+function addModalCSS() {
+    if (!document.getElementById('modal-styles')) {
+        const style = document.createElement('style');
+        style.id = 'modal-styles';
+        style.textContent = `
+            .modal-open {
+                overflow: hidden !important;
+                position: fixed !important;
+                width: 100% !important;
+            }
+            
+            #newsModal {
+                touch-action: none;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            @media (max-width: 768px) {
+                #newsModal .modal-content {
+                    margin: 10px;
+                    max-height: calc(100vh - 20px);
+                    overflow-y: auto;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Apply CSS when script loads
+addModalCSS();
         
     </script>
 </body>
