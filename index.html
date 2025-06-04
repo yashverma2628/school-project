@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shishu Vidya Peeth Eng. Med. Hr. Sec School</title>
+    <title>Shishu Vidya Pith Eng. Med. Hr. Sec School</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link rel="stylesheet" href="schoolstyle.css">   
 </head>
 <body>
@@ -12,16 +16,16 @@
         <nav class="nav container">
             <div class="logo">
                 <!-- REPLACE src WITH YOUR SCHOOL LOGO IMAGE URL -->
-                <img src="https://github.com/yashverma2628/school-project/blob/main/school%20logo.png?raw=true" alt="School Logo">
-                <span>S V P</span>
+                <img src="https://github.com/yashverma2628/school-project/blob/main/Picsart_25-06-04_10-53-12-323.png?raw=true" alt="School Logo">
+                <span>Shishu Vidya Pith</span>
             </div>
             <ul class="nav-menu">
                 <li><a onclick="scrollToSection('home')">Home</a></li>
                 <li><a onclick="scrollToSection('about')">About</a></li>
                 <li><a onclick="redirectToPage('data.html')">Data</a></li>
-                <li><a onclick="redirectToPage('news.html')">News</a></li>
-                <li><a onclick="redirectToPage('facilities.html')">Facilities</a></li>
-                <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
+                <li><a onclick="openNewsModal()">News</a></li>
+               <li><a onclick="redirectToPage('gallery.html?category=facilities')">facilities</a></li>
+                 <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
                 <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
             </ul>
         </nav>
@@ -30,7 +34,7 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1>Shishu Vidya Peeth Eng. Med. Hr. Sec School</h1>
+            <h1>Shishu Vidya Pith Eng. Med. Hr. Sec School</h1>
             <p>Building character, nurturing excellence, creating future leaders</p>
             <a onclick="scrollToSection('about')" class="btn">Learn More</a>
         </div>
@@ -59,13 +63,13 @@
                 <h2>Our Excellence</h2>
             </div>
             <div class="features-grid">
-                <a href="school-profile.html" class="feature-card fade-in">
+                <a href="principal.html" class="feature-card fade-in">
                     <!-- REPLACE src WITH SCHOOL BUILDING IMAGE URL -->
                     <img src="https://github.com/yashverma2628/school-project/blob/main/school%20emoji.png?raw=true" alt="School Profile" class="feature-icon">
                     <h3>School Profile</h3>
                     <p>Complete information about our school's vision, mission, and educational programs designed for student success.</p>
                 </a>
-                <a href="facilities.html" class="feature-card fade-in">
+                <a href="gallery.html?category=facilities" class="feature-card fade-in">
                     <!-- REPLACE src WITH FACILITIES IMAGE URL -->
                     <img src="https://github.com/yashverma2628/school-project/blob/main/school%20facilities.png?raw=true" alt="Facilities" class="feature-icon">
                     <h3>Facilities</h3>
@@ -392,7 +396,7 @@
                         <li><a onclick="redirectToPage('about.html')">About</a></li>
                         <li><a onclick="redirectToPage('vision-mission.html')">Vision & Mission</a></li>
                         <li><a onclick="redirectToPage('organization.html')">Organization</a></li>
-                        <li><a onclick="redirectToPage('news.html')">News</a></li>
+                        <li><a onclick="openNewsModal()">News</a></li>
                         <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
                         <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
                     </ul>
@@ -402,26 +406,77 @@
                     <ul>
                         <li><a onclick="redirectToPage('curriculum.html')">Curriculum</a></li>
                         <li><a onclick="redirectToPage('extracurricular.html')">Extracurricular</a></li>
-                        <li><a onclick="redirectToPage('ppdb.html')">shishu Vidya peeth</a></li>
+                        <li><a onclick="redirectToPage('ppdb.html')">shishu Vidya pith</a></li>
                         <li><a onclick="redirectToPage('ppdb-guidelines.html')">Guidelines</a></li>
                         <li><a onclick="redirectToPage('location.html')">Location</a></li>
                         <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
+              <div class="footer-section">
                     <h3>Social Media</h3>
-                    <ul>
-                        <li><a onclick="openSocialMedia('facebook')">Facebook</a></li>
-                        <li><a onclick="openSocialMedia('instagram')">Instagram</a></li>
-                        <li><a onclick="openSocialMedia('youtube')">YouTube</a></li>
-                    </ul>
-                </div>
+                     <ul>
+                     <li><a onclick="openSocialMedia('facebook')"><i class="fab fa-facebook-f"></i> Facebook</a></li>
+                     <li><a onclick="openSocialMedia('instagram')"><i class="fab fa-instagram"></i> Instagram</a></li>
+                      <li><a onclick="openSocialMedia('youtube')"><i class="fab fa-youtube"></i> YouTube</a></li>
+                       </ul>
+             </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 shishu vidya peeth. All rights reserved. Hosting by Yash Verma</p>
+                <p>&copy; 2025 shishu vidya pith. All rights reserved. Hosting by Yash Verma</p>
             </div>
         </div>
     </footer>
+
+    <!-- News Modal -->
+<div id="newsModal" class="news-modal">
+    <div class="news-modal-content">
+        <div class="news-modal-header">
+            <h2>Latest School News & Updates</h2>
+            <button class="close-news-modal" onclick="closeNewsModal()">&times;</button>
+        </div>
+        <div class="news-modal-body">
+            <div class="current-news-item news-item-urgent">
+                <div class="news-item-title">Winter Break Extended</div>
+                <div class="news-item-date">June 3, 2025</div>
+                <div class="news-item-content">
+                    Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025. All students and parents are requested to take note of this change.
+                </div>
+            </div>
+            
+            <div class="current-news-item">
+                <div class="news-item-title">Annual Sports Day 2025</div>
+                <div class="news-item-date">June 1, 2025</div>
+                <div class="news-item-content">
+                    Our Annual Sports Day will be held on June 20, 2025. Registration forms are available at the school office. Parents are cordially invited to attend and cheer for their children.
+                </div>
+            </div>
+            
+            <div class="current-news-item">
+                <div class="news-item-title">New Science Laboratory Inauguration</div>
+                <div class="news-item-date">May 28, 2025</div>
+                <div class="news-item-content">
+                    We are excited to announce the inauguration of our new state-of-the-art science laboratory. The facility will be open for students from Class 8 onwards starting next week.
+                </div>
+            </div>
+            
+            <div class="current-news-item">
+                <div class="news-item-title">Parent-Teacher Meeting</div>
+                <div class="news-item-date">May 25, 2025</div>
+                <div class="news-item-content">
+                    The next Parent-Teacher meeting is scheduled for June 10, 2025, from 10:00 AM to 2:00 PM. Please collect your appointment cards from the front office.
+                </div>
+            </div>
+            
+            <div class="current-news-item">
+                <div class="news-item-title">Art Competition Results</div>
+                <div class="news-item-date">May 22, 2025</div>
+                <div class="news-item-content">
+                    Congratulations to all participants in our inter-house art competition! Results have been posted on the school notice board. Prize distribution ceremony will be held on June 8, 2025.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script>
         // Make sure DOM is fully loaded before executing scripts
@@ -581,6 +636,41 @@
                 slideInterval = setInterval(nextSlide, 10000);
             });
         }
+
+        // News Modal Functions
+function openNewsModal() {
+    const modal = document.getElementById('newsModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    }
+}
+
+function closeNewsModal() {
+    const modal = document.getElementById('newsModal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    }
+}
+
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('newsModal');
+    if (event.target === modal) {
+        closeNewsModal();
+    }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeNewsModal();
+    }
+});
+
+
+        
     </script>
 </body>
 </html>
