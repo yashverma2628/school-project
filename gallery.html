@@ -349,6 +349,8 @@
                 <button class="category-btn" onclick="filterGallery('sports')">Sports</button>
                 <button class="category-btn" onclick="filterGallery('activities')">Activities</button>
                 <button class="category-btn" onclick="filterGallery('facilities')">Facilities</button>
+          
+           
             </div>
 
             <!-- Gallery Grid -->
@@ -392,9 +394,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Classrooms Category -->
-                <div class="gallery-item" data-category="classrooms">
+                   <div class="gallery-item" data-category="events">
                     <div class="gallery-card">
                         <img src="https://github.com/yashverma2628/school-project/blob/main/20240320_130638.jpg?raw=true" alt="Modern Classroom" class="gallery-image">
                         <div class="gallery-overlay">
@@ -406,7 +406,8 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- Classrooms Category -->
+               
                 <div class="gallery-item" data-category="classrooms">
                     <div class="gallery-card">
                         <img src="https://github.com/yashverma2628/school-project/blob/main/class%20room.png?raw=true" alt="Learning Environment" class="gallery-image">
@@ -487,8 +488,8 @@
                     </div>
                 </div>
 
-                <!-- Facilities Category -->
-                <div class="gallery-item" data-category="facilities">
+               
+                <div class="gallery-item" data-category="activities">
                     <div class="gallery-card">
                         <img src="https://github.com/yashverma2628/school-project/blob/main/20240119_160254.jpg?raw=true" alt="school picnic" class="gallery-image">
                         <div class="gallery-overlay">
@@ -500,7 +501,7 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- Facilities Category -->
                 <div class="gallery-item" data-category="facilities">
                     <div class="gallery-card">
                         <img src="https://github.com/yashverma2628/school-project/blob/main/science%20lab.png?raw=true" alt="Science Lab" class="gallery-image">
@@ -684,6 +685,28 @@
                 this.src = 'https://via.placeholder.com/400x300/667eea/white?text=Image+Not+Found';
             });
         });
+
+
+// Check URL parameters and auto-filter on page load
+document.addEventListener('DOMContentLoaded', function() {
+    visibleItems = Array.from(document.querySelectorAll('.gallery-item'));
+    
+    // Check for category parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category');
+    
+    if (category) {
+        // Find and click the corresponding category button
+        const buttons = document.querySelectorAll('.category-btn');
+        buttons.forEach(btn => {
+            if (btn.textContent.toLowerCase() === category.toLowerCase()) {
+                btn.click();
+            }
+        });
+    }
+});
+
+
     </script>
 </body>
 </html>
