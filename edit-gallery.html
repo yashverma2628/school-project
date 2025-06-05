@@ -748,7 +748,7 @@
         // GITHUB AUTHENTICATION
         // ============================================================================
 
-        function authenticateGitHub() {
+       async function authenticateGitHub() {
             const token = document.getElementById('githubToken').value.trim();
             
             if (!token) {
@@ -766,14 +766,14 @@
                     'Accept': 'application/vnd.github.v3+json'
                 }
             })
-            .then(response => {
+            .then( async response => {
                 if (response.ok) {
                     // Store token locally for convenience (not secure for production)
                     localStorage.setItem('githubToken', token);
                     
                     showStatus('✅ Successfully connected to GitHub repository!', 'success');
                     document.getElementById('mainContent').style.display = 'block';
-                    loadGalleryData();
+                   await loadGalleryData();
                 } else {
                     throw new Error('Invalid token or repository access denied. Check your token permissions.');
                 }
@@ -791,22 +791,84 @@
         // GITHUB DATA MANAGEMENT
         // ============================================================================
 
-        function loadGalleryData() {
-            // Load gallery data from localStorage (GitHub metadata)
-            const savedData = localStorage.getItem('galleryData');
-            if (savedData) {
-                galleryData = JSON.parse(savedData);
-                renderGalleryItems();
-            } else {
-                // Initialize with sample data
-                initializeExistingGalleryData();
+      async function loadGalleryData() {
+    try {
+        // Load gallery data from GitHub JSON file
+        const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/gallery-data.json`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
             }
+        });
+
+        if (response.ok) {
+            const fileData = await response.json();
+            const decodedContent = atob(fileData.content);
+            galleryData = JSON.parse(decodedContent);
+            renderGalleryItems();
+        } else {
+            // Initialize with sample data if file doesn't exist
+            initializeExistingGalleryData();
+        }
+    } catch (error) {
+        console.error('Error loading gallery data:', error);
+        initializeExistingGalleryData();
+    }
+}
+
+async function saveGalleryData() {
+    try {
+        // Get current file SHA if exists
+        let sha = null;
+        try {
+            const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/gallery-data.json`, {
+                headers: {
+                    'Authorization': `token ${githubToken}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (getResponse.ok) {
+                const fileData = await getResponse.json();
+                sha = fileData.sha;
+            }
+        } catch (error) {
+            console.log('gallery-data.json not found, will create new file');
         }
 
-        function saveGalleryData() {
-            // Save gallery metadata locally (image URLs are on GitHub)
-            localStorage.setItem('galleryData', JSON.stringify(galleryData));
+        // Prepare the update data
+        const updateData = {
+            message: 'Update gallery metadata',
+            content: btoa(JSON.stringify(galleryData, null, 2)),
+            branch: githubConfig.branch
+        };
+
+        // Include SHA if file exists
+        if (sha) {
+            updateData.sha = sha;
         }
+
+        // Save to GitHub
+        const updateResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/gallery-data.json`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+        });
+
+        if (!updateResponse.ok) {
+            throw new Error('Failed to save gallery data to GitHub');
+        }
+        
+        console.log('Gallery data saved to GitHub successfully');
+    } catch (error) {
+        console.error('Error saving gallery data:', error);
+        throw error;
+    }
+}
 
         function initializeExistingGalleryData() {
             // Initialize with existing GitHub-hosted images
@@ -1160,7 +1222,7 @@ function generateGalleryHTMLContent() {
                 };
 
                 galleryData.unshift(newItem); // Add to beginning
-                saveGalleryData();
+                await saveGalleryData();
                 renderGalleryItems();
 
                 // Reset form
@@ -1205,7 +1267,7 @@ try {
             galleryData[currentEditIndex].category = category;
             galleryData[currentEditIndex].lastModified = new Date().toISOString();
 
-            saveGalleryData();
+           await saveGalleryData();
             renderGalleryItems();
             closeEditModal();
 
