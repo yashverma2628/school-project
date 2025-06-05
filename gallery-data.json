@@ -1,11 +1,22 @@
 [
   {
+    "id": 1749150123733,
+    "title": "School Picnic 2024",
+    "description": "a joyful day of fun and togetherness as our school organized a memorable picnic for all",
+    "category": "activities",
+    "imageUrl": "https://github.com/yashverma2628/school-project/blob/main/gallery_1749150123733.jpg?raw=true",
+    "githubPath": "gallery_1749150123733.jpg",
+    "githubSha": "2b8a897246448b93818e5ec098333fc2f37a5e7d",
+    "uploadDate": "2025-06-05T19:02:49.044Z"
+  },
+  {
     "id": 1749150038725,
     "title": "Annual Function 2024",
     "description": "Our grand annual celebration with cultural performances",
     "category": "events",
     "imageUrl": "https://github.com/yashverma2628/school-project/blob/main/Snapchat-1439079314.jpg?raw=true",
-    "githubPath": "Snapchat-1439079314.jpg"
+    "githubPath": "Snapchat-1439079314.jpg",
+    "isNew": false
   },
   {
     "id": 1749150038727,
@@ -13,6 +24,7 @@
     "description": "Athletic competitions and team spirit showcase",
     "category": "events",
     "imageUrl": "https://github.com/yashverma2628/school-project/blob/main/IMG-20240314-WA0072.jpg?raw=true",
-    "githubPath": "IMG-20240314-WA0072.jpg"
+    "githubPath": "IMG-20240314-WA0072.jpg",
+    "isNew": false
   }
 ]
