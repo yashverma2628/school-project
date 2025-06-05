@@ -927,6 +927,184 @@
             }
         }
 
+
+        // ============================================================================
+// GITHUB GALLERY.HTML UPDATE
+// ============================================================================
+
+async function updateGalleryHTMLInGitHub() {
+    try {
+        // Generate the updated gallery HTML content
+        const galleryHTML = generateGalleryHTMLContent();
+        
+        // Get current gallery.html file to get its SHA
+        let sha = null;
+        try {
+            const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/gallery.html`, {
+                headers: {
+                    'Authorization': `token ${githubToken}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (getResponse.ok) {
+                const fileData = await getResponse.json();
+                sha = fileData.sha;
+            }
+        } catch (error) {
+            console.log('gallery.html not found, will create new file');
+        }
+
+        // Prepare the update data
+        const updateData = {
+            message: 'Update gallery.html with new images',
+            content: btoa(unescape(encodeURIComponent(galleryHTML))), // Convert to base64
+            branch: githubConfig.branch
+        };
+
+        // Include SHA if file exists (for update)
+        if (sha) {
+            updateData.sha = sha;
+        }
+
+        // Update the gallery.html file in GitHub
+        const updateResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/gallery.html`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+        });
+
+        if (!updateResponse.ok) {
+            const error = await updateResponse.json();
+            throw new Error(error.message || 'Failed to update gallery.html');
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error updating gallery.html in GitHub:', error);
+        throw error;
+    }
+}
+
+function generateGalleryHTMLContent() {
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Gallery</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .gallery-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+        }
+        .gallery-header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+        }
+        .gallery-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .gallery-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+        }
+        .gallery-item { 
+            background: white; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2); 
+            transition: all 0.3s ease; 
+        }
+        .gallery-item:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        .gallery-image { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+        }
+        .gallery-content { 
+            padding: 20px; 
+        }
+        .gallery-title { 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+            color: #333;
+        }
+        .gallery-description { 
+            color: #666; 
+            margin-bottom: 15px; 
+            line-height: 1.4;
+        }
+        .gallery-category { 
+            display: inline-block; 
+            padding: 5px 15px; 
+            background: #667eea; 
+            color: white; 
+            border-radius: 20px; 
+            font-size: 0.9rem; 
+        }
+        .gallery-meta {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 10px;
+        }
+        @media (max-width: 768px) {
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <h1>🎓 School Gallery</h1>
+            <p>Capturing memories and moments - Last updated: ${new Date().toLocaleDateString()}</p>
+        </div>
+        <div class="gallery-grid">
+            ${galleryData.map(item => `
+                <div class="gallery-item">
+                    <img src="${item.imageUrl}" alt="${item.title}" class="gallery-image" 
+                         onerror="this.style.display='none'">
+                    <div class="gallery-content">
+                        <h3 class="gallery-title">${item.title}</h3>
+                        <p class="gallery-description">${item.description}</p>
+                        <span class="gallery-category">${item.category}</span>
+                        <div class="gallery-meta">
+                            ${item.uploadDate ? new Date(item.uploadDate).toLocaleDateString() : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        ${galleryData.length === 0 ? '<div style="text-align: center; color: white; padding: 40px;"><h2>No images in gallery yet</h2></div>' : ''}
+    </div>
+</body>
+</html>`;
+}
+
         // ============================================================================
         // UI EVENT HANDLERS
         // ============================================================================
@@ -989,7 +1167,14 @@
                 document.getElementById('uploadForm').reset();
                 document.getElementById('filePreview').innerHTML = '';
 
-                showStatus('✅ Image uploaded successfully to GitHub!', 'success');
+                // Update gallery.html file in GitHub
+try {
+    await updateGalleryHTMLInGitHub();
+    showStatus('✅ Image uploaded and gallery.html updated successfully!', 'success');
+} catch (updateError) {
+    showStatus('✅ Image uploaded, but failed to update gallery.html: ' + updateError.message, 'error');
+    console.error('Gallery HTML update error:', updateError);
+}
 
             } catch (error) {
                 showStatus('❌ Upload failed: ' + error.message, 'error');
@@ -1024,7 +1209,14 @@
             renderGalleryItems();
             closeEditModal();
 
-            showStatus('✅ Gallery item updated successfully!', 'success');
+            // Update gallery.html file in GitHub
+try {
+    await updateGalleryHTMLInGitHub();
+    showStatus('✅ Gallery item and gallery.html updated successfully!', 'success');
+} catch (updateError) {
+    showStatus('✅ Gallery item updated, but failed to update gallery.html: ' + updateError.message, 'error');
+    console.error('Gallery HTML update error:', updateError);
+}
         });
 
         // ============================================================================
@@ -1135,7 +1327,14 @@
                 saveGalleryData();
                 renderGalleryItems();
 
-                showStatus('✅ Image deleted successfully!', 'success');
+                // Update gallery.html file in GitHub
+try {
+    await updateGalleryHTMLInGitHub();
+    showStatus('✅ Image deleted and gallery.html updated successfully!', 'success');
+} catch (updateError) {
+    showStatus('✅ Image deleted, but failed to update gallery.html: ' + updateError.message, 'error');
+    console.error('Gallery HTML update error:', updateError);
+}
 
             } catch (error) {
                 showStatus('❌ Delete failed: ' + error.message, 'error');
