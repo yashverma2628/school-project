@@ -5,708 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Gallery</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Arial', sans-serif; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: #333;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        .gallery-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
         }
-
-        /* Gallery Header Styles */
-        .gallery-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .gallery-header { 
+            text-align: center; 
+            margin-bottom: 40px; 
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .back-btn {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
             color: white;
-            cursor: pointer;
-            font-size: 16px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
         }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateX(-5px);
-        }
-
-        .gallery-title h1 {
-            color: white;
-            font-size: 3rem;
+        .gallery-header h1 {
+            font-size: 2.5rem;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
-
-        .gallery-title p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.2rem;
+        .gallery-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
         }
-
-        /* Category Buttons */
-        .gallery-categories {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 40px;
+        .gallery-item { 
+            background: white; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2); 
+            transition: all 0.3s ease; 
         }
-
-        .category-btn {
-            padding: 12px 24px;
-            border: none;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 2px solid transparent;
+        .gallery-item:hover { 
+            transform: translateY(-5px); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
-
-        .category-btn:hover,
-        .category-btn.active {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .gallery-image { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
         }
-
-        /* Gallery Grid */
-        .gallery-main-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            padding: 20px 0;
+        .gallery-content { 
+            padding: 20px; 
         }
-
-        .gallery-item {
-            opacity: 1;
-            transform: scale(1);
-            transition: all 0.5s ease;
-        }
-
-        .gallery-item.hidden {
-            opacity: 0;
-            transform: scale(0.8);
-            pointer-events: none;
-            position: absolute;
-            visibility: hidden;
-        }
-
-        .gallery-card {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            height: 300px;
-        }
-
-        .gallery-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .gallery-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-card:hover .gallery-image {
-            transform: scale(1.1);
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
-            color: white;
-            padding: 30px 20px 20px;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
-
-        .gallery-card:hover .gallery-overlay {
-            transform: translateY(0);
-        }
-
-        .gallery-info h3 {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-        }
-
-        .gallery-info p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 15px;
-        }
-
-        .view-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .view-btn:hover {
-            background: #5a6fd8;
-            transform: scale(1.05);
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(5px);
-        }
-
-        .modal-content {
-            position: relative;
-            margin: 5% auto;
-            width: 90%;
-            max-width: 800px;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            color: white;
-            font-size: 35px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 1001;
-            background: rgba(0, 0, 0, 0.5);
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .close-modal:hover {
-            background: rgba(0, 0, 0, 0.7);
-            transform: scale(1.1);
-        }
-
-        #modalImage {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-        }
-
-        .modal-info {
-            padding: 20px;
-            text-align: center;
-        }
-
-        .modal-info h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+        .gallery-title { 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
             color: #333;
         }
-
-        .modal-info p {
-            color: #666;
-            font-size: 1rem;
+        .gallery-description { 
+            color: #666; 
+            margin-bottom: 15px; 
+            line-height: 1.4;
         }
-
-        .modal-nav {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 20px 20px;
+        .gallery-category { 
+            display: inline-block; 
+            padding: 5px 15px; 
+            background: #667eea; 
+            color: white; 
+            border-radius: 20px; 
+            font-size: 0.9rem; 
         }
-
-        .modal-nav-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-            transition: all 0.3s ease;
+        .gallery-meta {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 10px;
         }
-
-        .modal-nav-btn:hover {
-            background: #5a6fd8;
-            transform: scale(1.1);
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .gallery-title h1 {
-                font-size: 2rem;
-            }
-
-            .gallery-main-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .back-btn {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 20px;
-            }
-
-            .category-btn {
-                padding: 10px 16px;
-                font-size: 14px;
-            }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-header h1 { font-size: 2rem; }
         }
-
-        /* Loading Animation */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .gallery-item {
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .gallery-item:nth-child(2) { animation-delay: 0.1s; }
-        .gallery-item:nth-child(3) { animation-delay: 0.2s; }
-        .gallery-item:nth-child(4) { animation-delay: 0.3s; }
-        .gallery-item:nth-child(5) { animation-delay: 0.4s; }
-        .gallery-item:nth-child(6) { animation-delay: 0.5s; }
     </style>
 </head>
 <body>
-    <section id="gallery-page" class="gallery-page">
-        <div class="container">
-            <!-- Gallery Header -->
-            <div class="gallery-header">
-                <button class="back-btn" onclick="goBack()">
-                    <span>&#8249;</span> Back to Home
-                </button>
-                <div class="gallery-title">
-                    <h1>School Gallery</h1>
-                    <p>Capturing moments, preserving memories of our educational journey</p>
-                </div>
-            </div>
-
-            <!-- Gallery Categories -->
-            <div class="gallery-categories">
-                <button class="category-btn active" onclick="filterGallery('all')">All</button>
-                <button class="category-btn" onclick="filterGallery('events')">Events</button>
-                <button class="category-btn" onclick="filterGallery('classrooms')">Classrooms</button>
-                <button class="category-btn" onclick="filterGallery('sports')">Sports</button>
-                <button class="category-btn" onclick="filterGallery('activities')">Activities</button>
-                <button class="category-btn" onclick="filterGallery('facilities')">Facilities</button>
-          
-           
-            </div>
-             <!-- GALLERY-ITEMS-START -->
-            <!-- Gallery Grid -->
-            <div class="gallery-main-grid">
-                <!-- Events Category -->
-                <div class="gallery-item" data-category="events">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/Snapchat-1439079314.jpg?raw=true" alt="Annual Function" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Annual Function 2024</h3>
-                                <p>Our grand annual celebration with cultural performances</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-                  <!-- your gallery items here -->
-                <div class="gallery-item" data-category="events">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/IMG-20240314-WA0072.jpg?raw=true" alt="Sports Day" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3> Oath Taking Ceremony 2023</h3>
-                                <p>Athletic competitions and team spirit showcase</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="gallery-item" data-category="events">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/20241008_222019.jpg?raw=true" alt="Cultural Event" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Durga Puja 2024</h3>
-                                <p>Traditional and modern cultural celebrations</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-                   <div class="gallery-item" data-category="events">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/20240320_130638.jpg?raw=true" alt="Modern Classroom" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Farewell Party 2024</h3>
-                                <p>A heartfelt farewell to our beloved 12th graders, celebrating memories, achievements,and new biginnings</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Classrooms Category -->
-               
-                <div class="gallery-item" data-category="classrooms">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/class%20room.png?raw=true" alt="Learning Environment" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Interactive Learning</h3>
-                                <p>Modern teaching methods and technology integration</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sports Category -->
-                <div class="gallery-item" data-category="sports">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/20240106_101445.jpg?raw=true" alt="Sports Activities" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Sports Day</h3>
-                                <p>Physical education and sports development programs</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="gallery-item" data-category="sports">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/20240107_174445.jpg?raw=true" alt="Team Sports" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Posh mela fest</h3>
-                                <p>Posh Mela is an annual fest held in the school premises</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Activities Category -->
-                <div class="gallery-item" data-category="activities">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/IMG-20231020-WA0011.jpg?raw=true" alt="Art Activities" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Art & Creativity</h3>
-                                <p>Fostering creativity through various art forms</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="gallery-item" data-category="activities">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/IMG-20230807-WA0058.jpg?raw=true" alt="Extracurricular" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Science Exhicition </h3>
-                                <p>Explore the wonders of innovation and discovery</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="gallery-item" data-category="activities">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/20230824_123605.jpg?raw=true" alt="Student Activities" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Student Engagement Activity</h3>
-                                <p>Active participation in school programs</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-               
-                <div class="gallery-item" data-category="activities">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/20240119_160254.jpg?raw=true" alt="school picnic" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>School Picnic 2024</h3>
-                                <p>a joyful day of fun and togetherness as our school organized a memorable picnic for all </p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Facilities Category -->
-                <div class="gallery-item" data-category="facilities">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/science%20lab.png?raw=true" alt="Science Lab" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Science Laboratory</h3>
-                                <p>Well-equipped science labs for practical learning</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="gallery-item" data-category="facilities">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/school%20gallery.png?raw=true" alt="Library" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>School Library</h3>
-                                <p>Rich collection of books and digital resources</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="gallery-item" data-category="facilities">
-                    <div class="gallery-card">
-                        <img src="https://github.com/yashverma2628/school-project/blob/main/WhatsApp%20Image%202023-09-04%20at%2000.37.52.jpg?raw=true" alt="Teaching Staff" class="gallery-image">
-                        <div class="gallery-overlay">
-                            <div class="gallery-info">
-                                <h3>Dedicated Faculty</h3>
-                                <p>Experienced and qualified teaching staff</p>
-                            </div>
-                            <button class="view-btn" onclick="openImageModal(this)">View</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="gallery-container">
+        <div class="gallery-header">
+            <h1>🎓 School Gallery</h1>
+            <p>Capturing memories and moments - Last updated: 6/5/2025</p>
         </div>
-    </section>               <!-- GALLERY-ITEMS-END -->
-
-    <!-- Image Modal -->
-    <div id="imageModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeImageModal()">&times;</span>
-            <img id="modalImage" src="" alt="">
-            <div class="modal-info">
-                <h3 id="modalTitle"></h3>
-                <p id="modalDescription"></p>
-            </div>
-            <div class="modal-nav">
-                <button class="modal-nav-btn" onclick="prevModalImage()">&#8249;</button>
-                <button class="modal-nav-btn" onclick="nextModalImage()">&#8250;</button>
-            </div>
+        <div class="gallery-grid">
+            
+                <div class="gallery-item">
+                    <img src="https://github.com/yashverma2628/school-project/blob/main/Snapchat-1439079314.jpg?raw=true" alt="Annual Function 2024" class="gallery-image" 
+                         onerror="this.style.display='none'">
+                    <div class="gallery-content">
+                        <h3 class="gallery-title">Annual Function 2024</h3>
+                        <p class="gallery-description">Our grand annual celebration with cultural performances</p>
+                        <span class="gallery-category">events</span>
+                        <div class="gallery-meta">
+                            
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="gallery-item">
+                    <img src="https://github.com/yashverma2628/school-project/blob/main/IMG-20240314-WA0072.jpg?raw=true" alt="Oath Taking Ceremony 2023" class="gallery-image" 
+                         onerror="this.style.display='none'">
+                    <div class="gallery-content">
+                        <h3 class="gallery-title">Oath Taking Ceremony 2023</h3>
+                        <p class="gallery-description">Athletic competitions and team spirit showcase</p>
+                        <span class="gallery-category">events</span>
+                        <div class="gallery-meta">
+                            
+                        </div>
+                    </div>
+                </div>
+            
         </div>
+        
     </div>
-
-    <script>
-        let currentModalIndex = 0;
-        let visibleItems = [];
-
-        function goBack() {
-            alert('This would navigate back to the main page');
-            // In a real implementation, you would navigate to your main page
-            // window.location.href = 'index.html';
-        }
-
-        function filterGallery(category) {
-            const items = document.querySelectorAll('.gallery-item');
-            const buttons = document.querySelectorAll('.category-btn');
-            
-            // Update active button
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Filter items
-            visibleItems = [];
-            items.forEach((item, index) => {
-                const itemCategory = item.getAttribute('data-category');
-                if (category === 'all' || itemCategory === category) {
-                    item.classList.remove('hidden');
-                    visibleItems.push(item);
-                    // Add staggered animation
-                    setTimeout(() => {
-                        item.style.animation = 'fadeInUp 0.6s ease forwards';
-                    }, index * 100);
-                } else {
-                    item.classList.add('hidden');
-                }
-            });
-        }
-
-        function openImageModal(button) {
-            const card = button.closest('.gallery-card');
-            const img = card.querySelector('.gallery-image');
-            const title = card.querySelector('.gallery-info h3').textContent;
-            const description = card.querySelector('.gallery-info p').textContent;
-            
-            // Find current index in visible items
-            const galleryItem = card.closest('.gallery-item');
-            currentModalIndex = visibleItems.indexOf(galleryItem);
-            
-            // If item not in visible items, use all items
-            if (currentModalIndex === -1) {
-                visibleItems = Array.from(document.querySelectorAll('.gallery-item:not(.hidden)'));
-                currentModalIndex = visibleItems.indexOf(galleryItem);
-            }
-            
-            document.getElementById('modalImage').src = img.src;
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalDescription').textContent = description;
-            document.getElementById('imageModal').style.display = 'block';
-            
-            // Prevent body scroll
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeImageModal() {
-            document.getElementById('imageModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        function nextModalImage() {
-            if (currentModalIndex < visibleItems.length - 1) {
-                currentModalIndex++;
-                updateModalContent();
-            }
-        }
-
-        function prevModalImage() {
-            if (currentModalIndex > 0) {
-                currentModalIndex--;
-                updateModalContent();
-            }
-        }
-
-        function updateModalContent() {
-            const currentItem = visibleItems[currentModalIndex];
-            const img = currentItem.querySelector('.gallery-image');
-            const title = currentItem.querySelector('.gallery-info h3').textContent;
-            const description = currentItem.querySelector('.gallery-info p').textContent;
-            
-            document.getElementById('modalImage').src = img.src;
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalDescription').textContent = description;
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('imageModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeImageModal();
-            }
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (document.getElementById('imageModal').style.display === 'block') {
-                if (e.key === 'Escape') {
-                    closeImageModal();
-                } else if (e.key === 'ArrowRight') {
-                    nextModalImage();
-                } else if (e.key === 'ArrowLeft') {
-                    prevModalImage();
-                }
-            }
-        });
-
-        // Initialize visible items
-        document.addEventListener('DOMContentLoaded', function() {
-            visibleItems = Array.from(document.querySelectorAll('.gallery-item'));
-        });
-
-        // Add loading effect for images
-        document.querySelectorAll('.gallery-image').forEach(img => {
-            img.addEventListener('load', function() {
-                this.style.opacity = '1';
-            });
-            
-            img.addEventListener('error', function() {
-                this.src = 'https://via.placeholder.com/400x300/667eea/white?text=Image+Not+Found';
-            });
-        });
-
-
-// Check URL parameters and auto-filter on page load
-document.addEventListener('DOMContentLoaded', function() {
-    visibleItems = Array.from(document.querySelectorAll('.gallery-item'));
-    
-    // Check for category parameter in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get('category');
-    
-    if (category) {
-        // Find and click the corresponding category button
-        const buttons = document.querySelectorAll('.category-btn');
-        buttons.forEach(btn => {
-            if (btn.textContent.toLowerCase() === category.toLowerCase()) {
-                btn.click();
-            }
-        });
-    }
-});
-
-
-    </script>
 </body>
 </html>
