@@ -1,18 +1,5 @@
 [
   {
-    "id": 1749194542511,
-    "title": "hello",
-    "content": "this is a news",
-    "category": "academic",
-    "tags": [
-      "imp"
-    ],
-    "date": "2025-06-06",
-    "isUrgent": true,
-    "createdAt": "2025-06-06T07:22:22.511Z",
-    "lastModified": "2025-06-06T07:22:22.511Z"
-  },
-  {
     "id": 1749194239371,
     "title": "Winter Break Extended",
     "content": "Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025.\n\nAll students and parents are requested to take note of this change. The school administration apologizes for any inconvenience caused and appreciates your understanding.",
