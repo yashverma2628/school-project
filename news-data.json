@@ -1,6 +1,6 @@
 [
   {
-    "id": 1749194238105,
+    "id": 1749194239371,
     "title": "Winter Break Extended",
     "content": "Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025.\n\nAll students and parents are requested to take note of this change. The school administration apologizes for any inconvenience caused and appreciates your understanding.",
     "category": "urgent",
@@ -10,10 +10,10 @@
     ],
     "date": "2025-06-03",
     "isUrgent": true,
-    "createdAt": "2025-06-06T07:17:18.104Z"
+    "createdAt": "2025-06-06T07:17:19.370Z"
   },
   {
-    "id": 1749194238106,
+    "id": 1749194239372,
     "title": "Annual Sports Day 2025",
     "content": "Our Annual Sports Day will be held on June 20, 2025, at the school grounds. This year's theme is \"Unity in Diversity\" celebrating our multicultural student body.\n\nRegistration forms are available at the school office. Parents are cordially invited to attend and cheer for their children. Various competitions and cultural programs are planned.",
     "category": "events",
@@ -24,10 +24,10 @@
     ],
     "date": "2025-06-01",
     "isUrgent": false,
-    "createdAt": "2025-06-06T07:17:18.104Z"
+    "createdAt": "2025-06-06T07:17:19.370Z"
   },
   {
-    "id": 1749194238107,
+    "id": 1749194239373,
     "title": "New Science Laboratory Inauguration",
     "content": "We are excited to announce the inauguration of our new state-of-the-art science laboratory equipped with modern instruments and safety equipment.\n\nThe facility will be open for students from Class 8 onwards starting next week. Special orientation sessions will be conducted for students and teachers.",
     "category": "academic",
@@ -38,6 +38,6 @@
     ],
     "date": "2025-05-28",
     "isUrgent": false,
-    "createdAt": "2025-06-06T07:17:18.104Z"
+    "createdAt": "2025-06-06T07:17:19.370Z"
   }
 ]
