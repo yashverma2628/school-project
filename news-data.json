@@ -1,18 +1,5 @@
 [
   {
-    "id": 1749199089987,
-    "title": "hello",
-    "content": "news 3",
-    "category": "academic",
-    "tags": [
-      "imp"
-    ],
-    "date": "2025-06-06",
-    "isUrgent": true,
-    "createdAt": "2025-06-06T08:38:09.987Z",
-    "lastModified": "2025-06-06T08:38:09.987Z"
-  },
-  {
     "id": 1749195935419,
     "title": "hello",
     "content": "hello",
