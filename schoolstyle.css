@@ -73,7 +73,7 @@
             height: 100vh;
             /* REPLACE WITH LARGE SCHOOL BUILDING IMAGE */
             background: linear-gradient(rgba(44, 90, 160, 0.7), rgba(183, 212, 255, 0.7)),
-                        url('https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrunTX3RgToWd_GExwuQtcXMk85dpnUFhDTmu5CkplIOdlsnEDdXRq1KwMKtFtLTyJAThGJGDnU19EFsNArJ9jrMs7JdNjaX7MwLpOW7kn9dXymkQfTyeY4U9YX8-NpwkjbK1q5Iw=s1360-w1360-h1020-rw') center/cover;
+                        url('https://lh3.googleusercontent.com/gps-cs-s/AC9h4noBwJMjJrL5PcuCpuurf90Wqt1E_vclEUpBB4sfTOC0kHNsQBrQH5UV6zHO5nM65RER5F_ul6H_fPk7hIE0ydaJTxLB8bcIYdDOQq3ZnVEEqa-Ctk9Ujs8Ggzlx61ggDqKwfZN94SYw1NnD=s680-w680-h510-rw') center/cover;
             display: flex;
             align-items: center;
             justify-content: center;
