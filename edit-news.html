@@ -441,6 +441,81 @@
             font-weight: bold;
             margin-left: 10px;
         }
+
+
+
+
+        .news-item-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.btn-edit {
+    background: #17a2b8;
+    color: white;
+    font-size: 0.85rem;
+}
+
+.btn-edit:hover {
+    background: #138496;
+    transform: translateY(-1px);
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    font-size: 0.85rem;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+    transform: translateY(-1px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    margin-bottom: 10px;
+    color: #999;
+}
+
+.news-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.news-item-tags {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.news-tag {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    border: 1px solid #dee2e6;
+}
     </style>
 </head>
 <body>
@@ -542,46 +617,79 @@
                 </div>
             </div>
 
-            <!-- Manage News Tab -->
-            <div class="tab-content" id="manageTab" style="display: none;">
-                <div class="tab-pane">
-                    <h2><i class="fas fa-cog"></i> Manage News Articles</h2>
-                    
-                    <!-- Controls -->
-                    <div class="controls">
-                        <div class="filter-controls">
-                            <select id="categoryFilter" class="form-control" onchange="filterNews()" style="width: auto;">
-                                <option value="">All Categories</option>
-                                <option value="urgent">Urgent</option>
-                                <option value="academic">Academic</option>
-                                <option value="events">Events</option>
-                                <option value="announcements">Announcements</option>
-                            </select>
-                            
-                            <div class="search-box">
-                                <input type="text" id="searchBox" placeholder="Search news..." 
-                                       oninput="searchNews()">
-                                <i class="fas fa-search"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="action-controls">
-                            <button onclick="refreshNews()" class="btn btn-secondary">
-                                <i class="fas fa-sync"></i> Refresh
-                            </button>
-                            <button onclick="generateNewsHTML()" class="btn btn-success">
-                                <i class="fas fa-download"></i> Export HTML
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- News List -->
-                    <div id="newsList" class="news-list">
-                        <!-- News items will be rendered here -->
-                    </div>
+          <!-- Manage News Tab -->
+<div class="tab-content" id="manageTab" style="display: none;">
+    <div class="tab-pane">
+        <h2><i class="fas fa-cog"></i> Manage News Articles</h2>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <div class="filter-controls">
+                <select id="categoryFilter" class="form-control" onchange="filterNews()" style="width: auto;">
+                    <option value="">All Categories</option>
+                    <option value="urgent">Urgent</option>
+                    <option value="academic">Academic</option>
+                    <option value="events">Events</option>
+                    <option value="announcements">Announcements</option>
+                </select>
+                
+                <div class="search-box">
+                    <input type="text" id="searchBox" placeholder="Search news..." 
+                           oninput="searchNews()">
+                    <i class="fas fa-search"></i>
                 </div>
             </div>
-
+            
+            <div class="action-controls">
+                <button onclick="refreshNews()" class="btn btn-secondary">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+                <button onclick="generateNewsHTML()" class="btn btn-success">
+                    <i class="fas fa-download"></i> Export HTML
+                </button>
+            </div>
+        </div>
+        
+        <!-- News List -->
+        <div id="newsList" class="news-list">
+            <!-- Sample news items for demonstration - these will be replaced by JavaScript -->
+            <div class="news-item-card">
+                <div class="news-item-header">
+                    <div class="news-item-title">Sample News Article</div>
+                    <div class="news-item-date">
+                        <i class="fas fa-calendar"></i> 2025-06-06
+                    </div>
+                </div>
+                <div class="news-item-meta">
+                    <span class="news-item-category">academic</span>
+                    <span class="urgent-indicator" style="display: none;">URGENT</span>
+                </div>
+                <div class="news-item-content">
+                    This is a sample news article content. In the next chat, we'll make this dynamic with real data from your GitHub repository.
+                </div>
+                <div class="news-item-tags">
+                    <span class="news-tag">Sample</span>
+                    <span class="news-tag">Demo</span>
+                </div>
+                <div class="news-item-actions">
+                    <button class="btn btn-edit btn-small" onclick="editNews('sample-id')">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-delete btn-small" onclick="deleteNews('sample-id')">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Empty state (will be shown when no news exists) -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-newspaper"></i>
+                <h3>No News Articles Found</h3>
+                <p>Start by adding your first news article in the "Add News" tab.</p>
+            </div>
+        </div>
+    </div>
+</div>
             <!-- Statistics Tab -->
             <div class="tab-content" id="statsTab" style="display: none;">
                 <div class="tab-pane">
@@ -595,52 +703,88 @@
         </div>
 
         <!-- Edit Modal -->
-        <div id="editModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">Edit News Article</h3>
-                    <span class="close" onclick="closeEditModal()">&times;</span>
-                </div>
-                <form id="editForm">
-                    <div class="form-group">
-                        <label for="editTitle">Title *</label>
-                        <input type="text" id="editTitle" class="form-control" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editCategory">Category *</label>
-                        <select id="editCategory" class="form-control" required>
-                            <option value="urgent">Urgent</option>
-                            <option value="academic">Academic</option>
-                            <option value="events">Events</option>
-                            <option value="announcements">Announcements</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editContent">Content *</label>
-                        <textarea id="editContent" class="form-control" required rows="6"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editTags">Tags (comma-separated)</label>
-                        <input type="text" id="editTags" class="form-control">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="editIsUrgent"> Mark as Urgent
-                        </label>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
-                        <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Article</button>
-                    </div>
-                </form>
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit News Article</h3>
+            <span class="close" onclick="closeEditModal()">&times;</span>
+        </div>
+        <form id="editForm">
+            <input type="hidden" id="editNewsId">
+            
+            <div class="form-group">
+                <label for="editTitle">Title *</label>
+                <input type="text" id="editTitle" class="form-control" required>
             </div>
+            
+            <div class="form-group">
+                <label for="editCategory">Category *</label>
+                <select id="editCategory" class="form-control" required>
+                    <option value="urgent">Urgent</option>
+                    <option value="academic">Academic</option>
+                    <option value="events">Events</option>
+                    <option value="announcements">Announcements</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="editContent">Content *</label>
+                <textarea id="editContent" class="form-control" required rows="6"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="editTags">Tags (comma-separated)</label>
+                <input type="text" id="editTags" class="form-control" 
+                       placeholder="e.g., Important, Schedule, Competition">
+            </div>
+            
+            <div class="form-group">
+                <label for="editDate">Publication Date</label>
+                <input type="date" id="editDate" class="form-control">
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="editIsUrgent"> Mark as Urgent
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button type="button" onclick="closeEditModal()" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Update Article
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+        <!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm Delete</h3>
+            <span class="close" onclick="closeDeleteModal()">&times;</span>
+        </div>
+        <div style="padding: 20px 0;">
+            <p><i class="fas fa-exclamation-triangle" style="color: #dc3545; margin-right: 10px;"></i>
+               Are you sure you want to delete this news article?</p>
+            <p style="font-weight: bold; margin-top: 15px;" id="deleteNewsTitle"></p>
+            <p style="color: #666; font-size: 0.9rem;">This action cannot be undone.</p>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button type="button" onclick="closeDeleteModal()" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button type="button" onclick="confirmDelete()" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Delete
+            </button>
         </div>
     </div>
+</div>
 
     <script>
         // ============================================================================
@@ -763,8 +907,12 @@ async function loadNewsData() {
             await initializeNewsData();
         }
         
-        renderNews();
-        renderStats();
+       // Instead of just: renderNews();
+// Use this:
+setTimeout(() => {
+    renderNews();
+    renderStats();
+}, 100);
         
     } catch (error) {
         console.error('Error loading news data:', error);
@@ -1296,89 +1444,130 @@ function generateNewsHTMLContent() {
 
         // Complete the switchTab function and add all remaining functionality
         
-        function switchTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
-            document.getElementById(tab + 'Tab').style.display = 'block';
-            
-            // Load specific tab data
-            if (tab === 'manage') {
-                renderNews();
-            } else if (tab === 'stats') {
-                renderStats();
-            }
-        }
+       function switchTab(tab) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // Find the clicked button - need to handle this differently since event might not be available
+    const clickedBtn = document.querySelector(`[onclick="switchTab('${tab}')"]`);
+    if (clickedBtn) {
+        clickedBtn.classList.add('active');
+    }
+    
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+    const targetTab = document.getElementById(tab + 'Tab');
+    if (targetTab) {
+        targetTab.style.display = 'block';
+    }
+    
+    // Load specific tab data
+    if (tab === 'manage') {
+        console.log('Switching to manage tab, rendering news...');
+        setTimeout(() => renderNews(), 100); // Small delay to ensure DOM is ready
+    } else if (tab === 'stats') {
+        renderStats();
+    }
+}
 
         function renderNews() {
-            const container = document.getElementById('newsList');
-            const categoryFilter = document.getElementById('categoryFilter').value;
-            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+    const container = document.getElementById('newsList');
+    
+    // Check if container exists
+    if (!container) {
+        console.error('News list container not found!');
+        return;
+    }
 
-            let filteredNews = newsData;
-            
-            // Apply category filter
-            if (categoryFilter) {
-                filteredNews = filteredNews.filter(news => news.category === categoryFilter);
-            }
-            
-            // Apply search filter
-            if (searchTerm) {
-                filteredNews = filteredNews.filter(news => 
-                    news.title.toLowerCase().includes(searchTerm) ||
-                    news.content.toLowerCase().includes(searchTerm) ||
-                    (news.tags && news.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
-                );
-            }
+    // Get filter values safely
+    const categoryFilterElement = document.getElementById('categoryFilter');
+    const searchBoxElement = document.getElementById('searchBox');
+    
+    const categoryFilter = categoryFilterElement ? categoryFilterElement.value : '';
+    const searchTerm = searchBoxElement ? searchBoxElement.value.toLowerCase() : '';
 
-            if (filteredNews.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #666;">
-                        <h3>No news articles found</h3>
-                        <p>Try adjusting your filters or add some news articles!</p>
-                    </div>
-                `;
-                return;
-            }
+    let filteredNews = [...newsData]; // Create a copy
+    
+    // Apply category filter
+    if (categoryFilter && categoryFilter !== '') {
+        filteredNews = filteredNews.filter(news => news.category === categoryFilter);
+    }
+    
+    // Apply search filter
+    if (searchTerm && searchTerm !== '') {
+        filteredNews = filteredNews.filter(news => 
+            news.title.toLowerCase().includes(searchTerm) ||
+            news.content.toLowerCase().includes(searchTerm) ||
+            (news.tags && news.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+        );
+    }
 
-            container.innerHTML = filteredNews.map((news, index) => `
-                <div class="news-item-card ${news.isUrgent ? 'urgent' : ''}">
-                    <div class="news-item-header">
-                        <div class="news-item-title">
-                            ${news.title}
-                            ${news.isUrgent ? '<span class="urgent-indicator">URGENT</span>' : ''}
-                        </div>
-                        <div class="news-item-date">
-                            <i class="fas fa-calendar"></i>
-                            ${new Date(news.date).toLocaleDateString()}
-                        </div>
+    // Debug logging
+    console.log('Total news:', newsData.length);
+    console.log('Filtered news:', filteredNews.length);
+    console.log('Category filter:', categoryFilter);
+    console.log('Search term:', searchTerm);
+
+    if (filteredNews.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666; background: white; border-radius: 10px; margin: 20px 0;">
+                <i class="fas fa-newspaper" style="font-size: 3rem; color: #ddd; margin-bottom: 20px;"></i>
+                <h3>No news articles found</h3>
+                <p>Try adjusting your filters or add some news articles!</p>
+                <button onclick="switchTab('add')" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Add News</button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filteredNews.map((news, filteredIndex) => {
+        // Find the original index in newsData array
+        const originalIndex = newsData.findIndex(item => item.id === news.id);
+        
+        return `
+            <div class="news-item-card ${news.isUrgent ? 'urgent' : ''}" style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-left: 4px solid ${news.isUrgent ? '#dc3545' : '#667eea'};">
+                <div class="news-item-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                    <div class="news-item-title" style="font-size: 1.3rem; font-weight: bold; color: #333; flex: 1;">
+                        ${news.title}
+                        ${news.isUrgent ? '<span class="urgent-indicator" style="background: #dc3545; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: 10px;">URGENT</span>' : ''}
                     </div>
-                    <div class="news-item-category">${news.category}</div>
-                    <div class="news-item-content">
-                        ${news.content.split('\n').map(paragraph => `<p>${paragraph}</p>`).join('')}
-                    </div>
-                    ${news.tags && news.tags.length > 0 ? `
-                        <div style="margin-bottom: 15px;">
-                            <strong>Tags:</strong> ${news.tags.map(tag => `<span style="background: #e9ecef; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; margin-right: 5px;">${tag}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                    <div class="news-item-actions">
-                        <button onclick="editNews(${newsData.indexOf(news)})" class="btn btn-secondary btn-small">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button onclick="deleteNews(${newsData.indexOf(news)})" class="btn btn-danger btn-small">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                        <button onclick="viewFullNews(${newsData.indexOf(news)})" class="btn btn-success btn-small">
-                            <i class="fas fa-eye"></i> View Full
-                        </button>
+                    <div class="news-item-date" style="color: #666; font-size: 0.9rem; white-space: nowrap;">
+                        <i class="fas fa-calendar"></i>
+                        ${new Date(news.date).toLocaleDateString()}
                     </div>
                 </div>
-            `).join('');
-        }
+                
+                <div class="news-item-category" style="background: #667eea; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.8rem; display: inline-block; margin-bottom: 10px; text-transform: uppercase;">
+                    ${news.category}
+                </div>
+                
+                <div class="news-item-content" style="color: #555; line-height: 1.6; margin-bottom: 15px;">
+                    ${news.content.split('\n').slice(0, 3).map(paragraph => `<p style="margin-bottom: 10px;">${paragraph.length > 150 ? paragraph.substring(0, 150) + '...' : paragraph}</p>`).join('')}
+                    ${news.content.split('\n').length > 3 ? '<p style="color: #999; font-style: italic;">...</p>' : ''}
+                </div>
+                
+                ${news.tags && news.tags.length > 0 ? `
+                    <div style="margin-bottom: 15px;">
+                        <strong style="color: #667eea;">Tags:</strong> 
+                        ${news.tags.map(tag => `<span style="background: #e9ecef; color: #495057; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; margin-right: 8px; margin-left: 5px; display: inline-block;">${tag}</span>`).join('')}
+                    </div>
+                ` : ''}
+                
+                <div class="news-item-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="editNews(${originalIndex})" class="btn btn-secondary btn-small" style="background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem;">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button onclick="deleteNews(${originalIndex})" class="btn btn-danger btn-small" style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem;">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                    <button onclick="viewFullNews(${originalIndex})" class="btn btn-success btn-small" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem;">
+                        <i class="fas fa-eye"></i> View Full
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
 
         function renderStats() {
             const container = document.getElementById('statsGrid');
@@ -1591,6 +1780,16 @@ function generateNewsHTMLContent() {
 
         // Auto-load token if previously saved
         window.addEventListener('load', function() {
+
+
+
+            // Add event listeners for filters
+document.getElementById('categoryFilter').addEventListener('change', filterNews);
+document.getElementById('searchBox').addEventListener('input', searchNews);
+
+
+
+            
             const savedToken = localStorage.getItem('githubToken');
             if (savedToken) {
                 document.getElementById('githubToken').value = savedToken;
@@ -1631,6 +1830,16 @@ function generateNewsHTMLContent() {
         console.log('   - Update githubConfig object with your repository details');
         console.log('   - Get GitHub Personal Access Token with Contents & Metadata permissions');
         console.log('   - Repository should be public or token should have appropriate access');
+   
+    
+    // Add this at the end of the script
+setTimeout(() => {
+    if (newsData.length > 0) {
+        renderNews();
+    }
+}, 1000);
+    
+    
     </script>
 </body>
 </html>
