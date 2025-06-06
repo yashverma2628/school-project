@@ -725,8 +725,10 @@ async function loadNewsData() {
             const data = await response.json();
             const content = atob(data.content);
             newsData = JSON.parse(content);
+            console.log('Loaded from JSON:', newsData.length, 'articles');
         } else {
             // JSON file doesn't exist, try to parse existing HTML file
+            console.log('JSON file not found, trying to parse HTML...');
             try {
                 const htmlResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.htmlFile}`, {
                     headers: {
@@ -739,14 +741,26 @@ async function loadNewsData() {
                     const htmlData = await htmlResponse.json();
                     const htmlContent = atob(htmlData.content);
                     newsData = parseNewsFromHTML(htmlContent);
+                    console.log('Parsed from HTML:', newsData.length, 'articles');
+                    
+                    // Save the parsed data as JSON for future use
+                    if (newsData.length > 0) {
+                        await saveNewsData();
+                    }
                 } else {
-                    // Neither file exists, initialize with sample data
+                    console.log('HTML file not found, initializing with sample data');
                     await initializeNewsData();
                 }
             } catch (htmlError) {
-                console.log('HTML file not found, initializing with sample data');
+                console.log('Error parsing HTML, initializing with sample data:', htmlError);
                 await initializeNewsData();
             }
+        }
+        
+        // If no news data found, initialize with sample
+        if (!newsData || newsData.length === 0) {
+            console.log('No news data found, initializing...');
+            await initializeNewsData();
         }
         
         renderNews();
@@ -754,6 +768,7 @@ async function loadNewsData() {
         
     } catch (error) {
         console.error('Error loading news data:', error);
+        showStatus('Error loading news data: ' + error.message, 'error');
         // Initialize with sample data on error
         await initializeNewsData();
     } finally {
@@ -761,50 +776,155 @@ async function loadNewsData() {
     }
 }
 
-function parseNewsFromHTML(htmlContent) {
+
+// Debug function to inspect HTML structure
+async function debugHTMLStructure() {
+    try {
+        const htmlResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.htmlFile}`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (htmlResponse.ok) {
+            const htmlData = await htmlResponse.json();
+            const htmlContent = atob(htmlData.content);
+            console.log('HTML Content Preview:', htmlContent.substring(0, 2000));
+            
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            console.log('Found elements:', {
+                newsItems: doc.querySelectorAll('.news-item').length,
+                articles: doc.querySelectorAll('article').length,
+                h1s: doc.querySelectorAll('h1').length,
+                h2s: doc.querySelectorAll('h2').length,
+                h3s: doc.querySelectorAll('h3').length,
+                allClassElements: doc.querySelectorAll('[class]').length
+            });
+        }
+    } catch (error) {
+        console.error('Debug error:', error);
+    }
+}
+
+        
+        
+        function parseNewsFromHTML(htmlContent) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlContent, 'text/html');
-    const newsItems = doc.querySelectorAll('.news-item');
+    
+    // Try multiple selectors to find news items
+    let newsItems = doc.querySelectorAll('.news-item');
+    if (newsItems.length === 0) {
+        newsItems = doc.querySelectorAll('article');
+    }
+    if (newsItems.length === 0) {
+        newsItems = doc.querySelectorAll('[class*="news"]');
+    }
+    
     const parsedNews = [];
 
     newsItems.forEach((item, index) => {
-        const title = item.querySelector('.news-title')?.textContent?.trim() || 'Untitled';
-        const category = item.querySelector('.news-category')?.textContent?.trim()?.toLowerCase() || 'announcements';
-        const dateText = item.querySelector('.news-date')?.textContent?.replace(/.*(\d{1,2}\/\d{1,2}\/\d{4}).*/, '$1') || new Date().toLocaleDateString();
-        const isUrgent = item.classList.contains('urgent') || item.querySelector('.urgent-badge') !== null;
+        // Try multiple selectors for title
+        let titleElement = item.querySelector('.news-title') || 
+                          item.querySelector('h1') || 
+                          item.querySelector('h2') || 
+                          item.querySelector('h3') ||
+                          item.querySelector('[class*="title"]');
         
-        // Get content paragraphs
-        const contentParagraphs = Array.from(item.querySelectorAll('.news-content p'));
-        const content = contentParagraphs.map(p => p.textContent.trim()).join('\n');
+        const title = titleElement ? titleElement.textContent.trim() : `News Item ${index + 1}`;
+        
+        // Try multiple selectors for category
+        let categoryElement = item.querySelector('.news-category') || 
+                             item.querySelector('[class*="category"]');
+        let category = 'announcements';
+        if (categoryElement) {
+            const categoryText = categoryElement.textContent.trim().toLowerCase();
+            if (['urgent', 'academic', 'events', 'announcements'].includes(categoryText)) {
+                category = categoryText;
+            }
+        }
+        
+        // Try multiple selectors for date
+        let dateElement = item.querySelector('.news-date') || 
+                         item.querySelector('[class*="date"]') ||
+                         item.querySelector('time');
+        
+        let formattedDate = new Date().toISOString().split('T')[0];
+        if (dateElement) {
+            const dateText = dateElement.textContent;
+            const dateMatch = dateText.match(/(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/);
+            if (dateMatch) {
+                try {
+                    const dateObj = new Date(dateMatch[1]);
+                    if (!isNaN(dateObj.getTime())) {
+                        formattedDate = dateObj.toISOString().split('T')[0];
+                    }
+                } catch (e) {
+                    console.log('Date parsing error:', e);
+                }
+            }
+        }
+        
+        // Check for urgent indicators
+        const isUrgent = item.classList.contains('urgent') || 
+                        item.querySelector('.urgent-badge') !== null ||
+                        item.querySelector('[class*="urgent"]') !== null ||
+                        title.toLowerCase().includes('urgent');
+        
+        // Get content - try multiple approaches
+        let content = '';
+        let contentElement = item.querySelector('.news-content');
+        if (contentElement) {
+            const paragraphs = contentElement.querySelectorAll('p');
+            if (paragraphs.length > 0) {
+                content = Array.from(paragraphs).map(p => p.textContent.trim()).join('\n');
+            } else {
+                content = contentElement.textContent.trim();
+            }
+        } else {
+            // Fallback: get all text content excluding title, category, date
+            const clone = item.cloneNode(true);
+            if (titleElement) {
+                const titleClone = clone.querySelector(titleElement.tagName + (titleElement.className ? '.' + titleElement.className.split(' ').join('.') : ''));
+                if (titleClone) titleClone.remove();
+            }
+            if (categoryElement) {
+                const categoryClone = clone.querySelector('[class*="category"]');
+                if (categoryClone) categoryClone.remove();
+            }
+            if (dateElement) {
+                const dateClone = clone.querySelector('[class*="date"], time');
+                if (dateClone) dateClone.remove();
+            }
+            content = clone.textContent.trim().replace(/\s+/g, ' ');
+        }
         
         // Get tags
-        const tagElements = item.querySelectorAll('.news-tag');
-        const tags = Array.from(tagElements).map(tag => tag.textContent.trim());
+        const tagElements = item.querySelectorAll('.news-tag, [class*="tag"]');
+        const tags = Array.from(tagElements).map(tag => tag.textContent.trim()).filter(tag => tag.length > 0);
 
-        // Convert date format
-        let formattedDate;
-        try {
-            const dateObj = new Date(dateText);
-            formattedDate = dateObj.toISOString().split('T')[0];
-        } catch {
-            formattedDate = new Date().toISOString().split('T')[0];
+        if (title && content) {
+            parsedNews.push({
+                id: Date.now() + index,
+                title: title,
+                content: content,
+                category: category,
+                tags: tags,
+                date: formattedDate,
+                isUrgent: isUrgent,
+                createdAt: new Date().toISOString(),
+                lastModified: new Date().toISOString()
+            });
         }
-
-        parsedNews.push({
-            id: Date.now() + index,
-            title: title,
-            content: content,
-            category: category,
-            tags: tags,
-            date: formattedDate,
-            isUrgent: isUrgent,
-            createdAt: new Date().toISOString(),
-            lastModified: new Date().toISOString()
-        });
     });
 
-    return parsedNews.length > 0 ? parsedNews : [];
+    console.log('Parsed news items:', parsedNews.length);
+    return parsedNews;
 }
+        
+        
         
         async function saveNewsData() {
     try {
