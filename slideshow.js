@@ -63,18 +63,27 @@ class StudentSlideshow {
                 throw new Error('Invalid data format - expected array of students');
             }
             
-            // Process and validate the data
+            // Process and validate the data according to your JSON structure
             this.students = this.students.map((student, index) => {
                 if (!student || typeof student !== 'object') {
                     console.warn(`Invalid student data at index ${index}:`, student);
                     return null;
                 }
                 
+                // Handle your specific JSON structure
+                let batchYear = student.batchYear;
+                if (!batchYear && student.gradYear) {
+                    batchYear = `Batch ${student.gradYear}`;
+                }
+                if (!batchYear) {
+                    batchYear = 'Unknown Batch';
+                }
+                
                 return {
-                    name: student.name || student.studentName || `Student ${index + 1}`,
-                    imageUrl: student.imageUrl || student.image || student.photo || 'https://via.placeholder.com/200x200?text=No+Image',
-                    percentage: student.percentage || student.score || student.marks || 'N/A',
-                    batchYear: student.batchYear || student.batch || `Batch ${student.gradYear}` || student.year || 'Unknown Batch'
+                    name: student.name || `Student ${index + 1}`,
+                    imageUrl: student.imageUrl || 'https://via.placeholder.com/200x200?text=No+Image',
+                    percentage: student.percentage || 'N/A',
+                    batchYear: batchYear
                 };
             }).filter(student => student !== null); // Remove invalid entries
             
@@ -88,25 +97,25 @@ class StudentSlideshow {
             console.error('Error loading student data:', error);
             console.warn('Using fallback sample data');
             
-            // Fallback to sample data if JSON file is not found or invalid
+            // Updated fallback data matching your JSON structure
             this.students = [
                 {
-                    name: "Sample Student 1",
-                    imageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
+                    name: "Alice Smith",
+                    imageUrl: "https://github.com/yashverma2628/school-project/blob/main/Snapchat-416427894.jpg?raw=true",
                     percentage: "95.6%",
                     batchYear: "Batch 2026"
                 },
                 {
-                    name: "Sample Student 2",
-                    imageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+                    name: "Bob Johnson", 
+                    imageUrl: "https://via.placeholder.com/200x200?text=Bob+Johnson",
                     percentage: "92.4%",
                     batchYear: "Batch 2025"
                 },
                 {
-                    name: "Sample Student 3",
-                    imageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-                    percentage: "88.9%",
-                    batchYear: "Batch 2024"
+                    name: "yt",
+                    imageUrl: "https://github.com/yashverma2628/school-project/blob/main/images/1749318136457_school%20%20achievements.png?raw=true",
+                    percentage: "69%",
+                    batchYear: "Batch 2026"
                 }
             ];
         }
