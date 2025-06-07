@@ -815,1378 +815,696 @@
         </div>
     </div>
 
-    <script>// ============================================================================
-        // GITHUB STORAGE CONFIGURATION
-        // ============================================================================
-        
-        // Global variables
-        let githubToken = '';
-        let studentsData = [];
-        let currentEditIndex = -1;
-        
-        // GitHub configuration
-        // 🔧 CONFIGURATION: Replace with your GitHub details
-        const githubConfig = {
-            owner: 'yashverma2628',     // ← Replace with your GitHub username
-            repo: 'school-project',     // ← Replace with your repository name
-            branch: 'main'              // ← Replace with your branch name if different
-        };
+    <script>// GitHub Student Editor JavaScript
+// Global variables
+let githubToken = '';
+let githubRepo = 'school-project';
+let githubOwner = 'yashverma2628';
+let studentsData = [];
+let repoFileSha = '';
 
-        // ============================================================================
-        // GITHUB AUTHENTICATION
-        // ============================================================================
+// GitHub API configuration
+const GITHUB_API_BASE = 'https://api.github.com';
+const STUDENTS_FILE_PATH = 'students_data.json';
 
-        async function authenticateGitHub() {
-            const token = document.getElementById('githubToken').value.trim();
-            
-            if (!token) {
-                showStatus('Please enter your GitHub Personal Access Token', 'error');
-                return;
-            }
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    setupEventListeners();
+    loadFromLocalStorage();
+});
 
-            showLoading(true);
-            githubToken = token;
-            
-            // Test the token by accessing the repository
-            fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}`, {
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            })
-            .then(async response => {
-                if (response.ok) {
-                    // Store token locally for convenience (not secure for production)
-                    localStorage.setItem('githubToken', token);
-                    
-                    showStatus('✅ Successfully connected to GitHub repository!', 'success');
-                    document.getElementById('authSection').style.display = 'none';
-                    document.getElementById('mainContent').style.display = 'block';
-                    await loadStudentsData();
-                } else {
-                    throw new Error('Invalid token or repository access denied. Check your token permissions.');
-                }
-            })
-            .catch(error => {
-                showStatus('❌ Authentication failed: ' + error.message, 'error');
-                console.error('GitHub auth error:', error);
-            })
-            .finally(() => {
-                showLoading(false);
-            });
+// Setup all event listeners
+function setupEventListeners() {
+    // Form submissions
+    document.getElementById('addStudentForm').addEventListener('submit', handleAddStudent);
+    document.getElementById('editStudentForm').addEventListener('submit', handleEditStudent);
+    
+    // File input handlers
+    document.getElementById('studentImageFile').addEventListener('change', handleImageUpload);
+    document.getElementById('editStudentImageFile').addEventListener('change', handleEditImageUpload);
+    
+    // Modal close events
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target === modal) {
+            closeEditModal();
         }
+    });
+}
 
-        // ============================================================================
-        // GITHUB DATA MANAGEMENT
-        // ============================================================================
+// GitHub Authentication
+async function authenticateGitHub() {
+    const token = document.getElementById('githubToken').value.trim();
+    
+    if (!token) {
+        showStatus('Please enter a GitHub token', 'error');
+        return;
+    }
+    
+    if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+        showStatus('Invalid token format. Please use a valid GitHub Personal Access Token', 'error');
+        return;
+    }
+    
+    showLoading(true);
+    githubToken = token;
+    
+    try {
+        // Test authentication and get user repos
+        const response = await fetch(`${GITHUB_API_BASE}/user/repos`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Authentication failed: ${response.status}`);
+        }
+        
+        const repos = await response.json();
+        
+        if (repos.length === 0) {
+            showStatus('No repositories found. Please make sure your token has the correct permissions.', 'error');
+            showLoading(false);
+            return;
+        }
+        
+        // Show repository selection
+        await showRepositorySelection(repos);
+        
+    } catch (error) {
+        console.error('GitHub authentication error:', error);
+        showStatus(`Authentication failed: ${error.message}`, 'error');
+        showLoading(false);
+    }
+}
 
-        async function loadStudentsData() {
+// Show repository selection modal
+async function showRepositorySelection(repos) {
+    const repoOptions = repos.map(repo => 
+        `<option value="${repo.full_name}">${repo.name} (${repo.full_name})</option>`
+    ).join('');
+    
+    const selectHTML = `
+        <div style="margin: 20px 0;">
+            <label for="repoSelect"><strong>Select Repository:</strong></label>
+            <select id="repoSelect" style="width: 100%; padding: 10px; margin: 10px 0;">
+                <option value="">Choose a repository...</option>
+                ${repoOptions}
+            </select>
+            <button onclick="connectToRepository()" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-link"></i> Connect to Repository
+            </button>
+        </div>
+    `;
+    
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.innerHTML = selectHTML;
+    statusDiv.className = 'status-message status-info';
+    statusDiv.style.display = 'block';
+    showLoading(false);
+}
+
+// Connect to selected repository
+async function connectToRepository() {
+    const selectedRepo = document.getElementById('repoSelect').value;
+    
+    if (!selectedRepo) {
+        showStatus('Please select a repository', 'error');
+        return;
+    }
+    
+    showLoading(true);
+    [githubOwner, githubRepo] = selectedRepo.split('/');
+    
+    try {
+        // Try to load existing students data
+        await loadStudentsFromGitHub();
+        
+        // Save credentials to localStorage
+        localStorage.setItem('github_token', githubToken);
+        localStorage.setItem('github_repo', githubRepo);
+        localStorage.setItem('github_owner', githubOwner);
+        
+        // Show main interface
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        
+        showStatus(`Successfully connected to ${selectedRepo}`, 'success');
+        renderStudents();
+        updateStatistics();
+        
+    } catch (error) {
+        console.error('Repository connection error:', error);
+        showStatus(`Failed to connect to repository: ${error.message}`, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Load credentials from localStorage
+function loadFromLocalStorage() {
+    const token = localStorage.getItem('github_token');
+    const repo = localStorage.getItem('github_repo');
+    const owner = localStorage.getItem('github_owner');
+    
+    if (token && repo && owner) {
+        githubToken = token;
+        githubRepo = repo;
+        githubOwner = owner;
+        
+        // Auto-connect if credentials exist
+        loadStudentsFromGitHub().then(() => {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            renderStudents();
+            updateStatistics();
+        }).catch(() => {
+            // If auto-connect fails, clear stored credentials
+            localStorage.clear();
+        });
+    }
+}
+
+// Load students data from GitHub
+async function loadStudentsFromGitHub() {
+    try {
+        const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${STUDENTS_FILE_PATH}`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+        
+        if (response.status === 404) {
+            // File doesn't exist, create it with empty array
+            studentsData = [];
+            await saveStudentsToGitHub();
+            return;
+        }
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load students data: ${response.status}`);
+        }
+        
+        const fileData = await response.json();
+        repoFileSha = fileData.sha;
+        
+        // Decode base64 content
+        const content = atob(fileData.content);
+        studentsData = JSON.parse(content) || [];
+        
+    } catch (error) {
+        console.error('Error loading students data:', error);
+        if (error.message.includes('404')) {
+            studentsData = [];
+        } else {
+            throw error;
+        }
+    }
+}
+
+// Save students data to GitHub
+async function saveStudentsToGitHub() {
+    try {
+        const content = JSON.stringify(studentsData, null, 2);
+        const encodedContent = btoa(unescape(encodeURIComponent(content)));
+        
+        const payload = {
+            message: `Update students data - ${new Date().toISOString()}`,
+            content: encodedContent,
+            sha: repoFileSha
+        };
+        
+        const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${STUDENTS_FILE_PATH}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to save data: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        repoFileSha = result.content.sha;
+        
+        updateStatistics();
+        showStatus('Students data saved to GitHub successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error saving students data:', error);
+        showStatus(`Failed to save data: ${error.message}`, 'error');
+        throw error;
+    }
+}
+
+// Handle adding new student
+async function handleAddStudent(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const imageFile = document.getElementById('studentImageFile').files[0];
+    
+    let imageUrl = formData.get('studentImage');
+    
+    // If file is uploaded, upload to GitHub first
+    if (imageFile) {
+        try {
+            showLoading(true);
+            imageUrl = await uploadImageToGitHub(imageFile);
+        } catch (error) {
+            showStatus(`Failed to upload image: ${error.message}`, 'error');
+            showLoading(false);
+            return;
+        }
+    }
+    
+    const newStudent = {
+        name: formData.get('studentName'),
+        imageUrl: imageUrl || 'https://via.placeholder.com/150',
+        percentage: formData.get('studentPercentage') + '%',
+        batchYear: formData.get('studentBatch')
+    };
+    
+    studentsData.push(newStudent);
+    
+    try {
+        await saveStudentsToGitHub();
+        renderStudents();
+        event.target.reset();
+        document.getElementById('filePreview').innerHTML = '';
+        showStatus('Student added successfully!', 'success');
+    } catch (error) {
+        // Remove the student if save failed
+        studentsData.pop();
+        showStatus(`Failed to add student: ${error.message}`, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Handle editing existing student
+async function handleEditStudent(event) {
+    event.preventDefault();
+    
+    const index = parseInt(document.getElementById('editStudentIndex').value);
+    const imageFile = document.getElementById('editStudentImageFile').files[0];
+    
+    let imageUrl = document.getElementById('editStudentImage').value;
+    
+    // If new file is uploaded, upload to GitHub
+    if (imageFile) {
+        try {
+            showLoading(true);
+            imageUrl = await uploadImageToGitHub(imageFile);
+        } catch (error) {
+            showStatus(`Failed to upload image: ${error.message}`, 'error');
+            showLoading(false);
+            return;
+        }
+    }
+    
+    const updatedStudent = {
+        name: document.getElementById('editStudentName').value,
+        imageUrl: imageUrl || studentsData[index].imageUrl,
+        percentage: document.getElementById('editStudentPercentage').value + '%',
+        batchYear: document.getElementById('editStudentBatch').value
+    };
+    
+    studentsData[index] = updatedStudent;
+    
+    try {
+        await saveStudentsToGitHub();
+        renderStudents();
+        closeEditModal();
+        showStatus('Student updated successfully!', 'success');
+    } catch (error) {
+        showStatus(`Failed to update student: ${error.message}`, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Upload image to GitHub repository
+async function uploadImageToGitHub(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
             try {
-                // Load students data from GitHub JSON file
-                const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/students-data.json`, {
+                const content = e.target.result.split(',')[1]; // Remove data:image/... prefix
+                const fileName = `images/${Date.now()}_${file.name}`;
+                
+                const payload = {
+                    message: `Upload image: ${fileName}`,
+                    content: content
+                };
+                
+                const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${fileName}`, {
+                    method: 'PUT',
                     headers: {
                         'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
                 });
-
-                if (response.ok) {
-                    const fileData = await response.json();
-                    const decodedContent = atob(fileData.content);
-                    studentsData = JSON.parse(decodedContent);
-                    renderStudents();
-                    updateStatistics();
-                } else {
-                    // Initialize with sample data if file doesn't exist
-                    initializeSampleData();
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to upload image: ${response.status}`);
                 }
+                
+                const result = await response.json();
+                const imageUrl = `https://github.com/${githubOwner}/${githubRepo}/blob/main/${fileName}?raw=true`;
+                resolve(imageUrl);
+                
             } catch (error) {
-                console.error('Error loading students data:', error);
-                initializeSampleData();
+                reject(error);
             }
-        }
-
-        async function saveStudentsData() {
-    try {
-        // Get current file SHA if exists
-        let sha = null;
-        try {
-            const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/students-data.json`, {
-                headers: {
-                    'Authorization': `token ${githubToken}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            if (getResponse.ok) {
-                const existingFile = await getResponse.json();
-                sha = existingFile.sha;
-            }
-        } catch (e) {
-            // File doesn't exist, will create new
-        }
-
-        // Prepare commit data
-        const commitData = {
-            message: `Update students data - ${new Date().toISOString()}`,
-            content: btoa(JSON.stringify(studentsData, null, 2)),
-            branch: githubConfig.branch
         };
+        
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.readAsDataURL(file);
+    });
+}
 
-        if (sha) {
-            commitData.sha = sha;
-        }
-
-        // Save to GitHub
-        const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/students-data.json`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(commitData)
-        });
-
-        if (response.ok) {
-            showStatus('✅ Data saved to GitHub successfully!', 'success');
-            updateStatistics();
-            // Also update the main index.html file
-            await updateIndexHTML();
-        } else {
-            throw new Error('Failed to save to GitHub');
-        }
-    } catch (error) {
-        console.error('Error saving to GitHub:', error);
-        showStatus('❌ Failed to save data to GitHub: ' + error.message, 'error');
+// Handle image upload preview
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('filePreview');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.innerHTML = '';
     }
 }
 
+// Handle edit image upload preview
+function handleEditImageUpload(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('editImagePreview');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.innerHTML = '';
+    }
+}
 
+// Render students list
+function renderStudents() {
+    const container = document.getElementById('studentsList');
+    
+    if (studentsData.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: rgba(102, 126, 234, 0.7);">
+                <i class="fas fa-user-graduate" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                <h3>No students added yet</h3>
+                <p>Use the form on the left to add your first student!</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = studentsData.map((student, index) => `
+        <div class="student-card new-item">
+            <img src="${student.imageUrl}" alt="${student.name}" class="student-image" 
+                 onerror="this.src='https://via.placeholder.com/150'">
+            <div class="student-name">${student.name}</div>
+            <div class="student-details">
+                <div class="student-percentage">${student.percentage}</div>
+                <div class="student-batch">${student.batchYear}</div>
+            </div>
+            <div class="student-actions">
+                <button onclick="editStudent(${index})" class="btn btn-warning btn-small">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button onclick="deleteStudent(${index})" class="btn btn-danger btn-small">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    document.getElementById('studentCount').textContent = studentsData.length;
+}
+
+// Edit student
+function editStudent(index) {
+    const student = studentsData[index];
+    
+    document.getElementById('editStudentIndex').value = index;
+    document.getElementById('editStudentName').value = student.name;
+    document.getElementById('editStudentPercentage').value = parseFloat(student.percentage);
+    document.getElementById('editStudentBatch').value = student.batchYear;
+    document.getElementById('editStudentImage').value = student.imageUrl;
+    document.getElementById('editImagePreview').innerHTML = 
+        `<img src="${student.imageUrl}" alt="Current" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
+    
+    document.getElementById('editModal').style.display = 'block';
+}
+
+// Delete student
+async function deleteStudent(index) {
+    if (confirm(`Are you sure you want to delete ${studentsData[index].name}?`)) {
+        const deletedStudent = studentsData.splice(index, 1)[0];
+        
+        try {
+            await saveStudentsToGitHub();
+            renderStudents();
+            showStatus('Student deleted successfully!', 'success');
+        } catch (error) {
+            // Restore the student if save failed
+            studentsData.splice(index, 0, deletedStudent);
+            showStatus(`Failed to delete student: ${error.message}`, 'error');
+        }
+    }
+}
+
+// Close edit modal
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+    document.getElementById('editStudentForm').reset();
+    document.getElementById('editImagePreview').innerHTML = '';
+}
+
+// Refresh students data
+async function refreshStudents() {
+    showLoading(true);
+    try {
+        await loadStudentsFromGitHub();
+        renderStudents();
+        updateStatistics();
+        showStatus('Students data refreshed!', 'success');
+    } catch (error) {
+        showStatus(`Failed to refresh data: ${error.message}`, 'error');
+    }
+    showLoading(false);
+}
+
+// Sort students
+async function sortStudents(by) {
+    if (by === 'percentage') {
+        studentsData.sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage));
+    } else if (by === 'name') {
+        studentsData.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    
+    try {
+        await saveStudentsToGitHub();
+        renderStudents();
+        showStatus(`Students sorted by ${by}!`, 'success');
+    } catch (error) {
+        showStatus(`Failed to save sorted list: ${error.message}`, 'error');
+    }
+}
+
+// Clear all students
+async function clearAllStudents() {
+    if (confirm('Are you sure you want to delete ALL students? This action cannot be undone!')) {
+        const backup = [...studentsData];
+        studentsData = [];
+        
+        try {
+            await saveStudentsToGitHub();
+            renderStudents();
+            showStatus('All students cleared!', 'success');
+        } catch (error) {
+            // Restore backup if save failed
+            studentsData = backup;
+            showStatus(`Failed to clear students: ${error.message}`, 'error');
+        }
+    }
+}
+
+// Update statistics
+function updateStatistics() {
+    const total = studentsData.length;
+    document.getElementById('totalStudents').textContent = total;
+    
+    if (total > 0) {
+        const percentages = studentsData.map(s => parseFloat(s.percentage));
+        const highest = Math.max(...percentages);
+        const average = percentages.reduce((a, b) => a + b, 0) / total;
+        
+        document.getElementById('highestScore').textContent = highest.toFixed(1) + '%';
+        document.getElementById('averageScore').textContent = average.toFixed(1) + '%';
+    } else {
+        document.getElementById('highestScore').textContent = '0%';
+        document.getElementById('averageScore').textContent = '0%';
+    }
+    
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+}
+
+// Show/hide preview
+function showPreview() {
+    const previewSection = document.getElementById('previewSection');
+    const previewContent = document.getElementById('previewContent');
+    
+    if (studentsData.length === 0) {
+        showStatus('No students to preview!', 'error');
+        return;
+    }
+    
+    // Generate preview HTML
+    const previewHTML = generateStudentHTML();
+    previewContent.innerHTML = `<pre><code>${escapeHtml(previewHTML)}</code></pre>`;
+    previewSection.style.display = 'block';
+    previewSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function hidePreview() {
+    document.getElementById('previewSection').style.display = 'none';
+}
+
+// Generate HTML for students
+function generateStudentHTML() {
+    return `<!-- Auto-generated student slideshow -->
+<div class="student-slideshow">
+${studentsData.map(student => `
+    <div class="student-slide">
+        <img src="${student.imageUrl}" alt="${student.name}" class="student-image">
+        <div class="student-info">
+            <h3>${student.name}</h3>
+            <div class="student-percentage">${student.percentage}</div>
+            <div class="student-batch">${student.batchYear}</div>
+        </div>
+    </div>`).join('')}
+</div>`;
+}
+
+// Update index.html (if needed)
 async function updateIndexHTML() {
     try {
-        // First, get the current index.html file
-        let sha = null;
-        try {
-            const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/index.html`, {
-                headers: {
-                    'Authorization': `token ${githubToken}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            if (getResponse.ok) {
-                const existingFile = await getResponse.json();
-                sha = existingFile.sha;
-            }
-        } catch (e) {
-            console.log('index.html not found, will create new');
-        }
-
-        // Generate the updated HTML content
-        const updatedHTML = generateCompleteIndexHTML();
+        showLoading(true);
         
-        // Prepare commit data
-        const commitData = {
-            message: `Update index.html with latest students - ${new Date().toISOString()}`,
-            content: btoa(updatedHTML),
-            branch: githubConfig.branch
-        };
-
-        if (sha) {
-            commitData.sha = sha;
-        }
-
-        // Update index.html on GitHub
-        const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/index.html`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${githubToken}`,
-                'Accept': 'application/vnd.github.v3+json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(commitData)
-        });
-
-        if (response.ok) {
-            showStatus('✅ Website updated successfully!', 'success');
-        } else {
-            throw new Error('Failed to update index.html');
-        }
+        // This is a placeholder - you would implement the actual logic
+        // to update your main index.html file with the new student data
+        showStatus('This feature updates your main website. Implementation depends on your specific HTML structure.', 'info');
+        
     } catch (error) {
-        console.error('Error updating index.html:', error);
-        showStatus('❌ Failed to update website: ' + error.message, 'error');
+        showStatus(`Failed to update website: ${error.message}`, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Utility functions
+function showStatus(message, type) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.textContent = message;
+    statusDiv.className = `status-message status-${type}`;
+    statusDiv.style.display = 'block';
+    
+    // Auto-hide after 5 seconds for success/info messages
+    if (type === 'success' || type === 'info') {
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 5000);
     }
 }
 
-
-
-function generateCompleteIndexHTML() {
-    // Ensure we have the latest student data
-    const students = studentsData || [];
-    
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shishu Vidya Pith Eng. Med. Hr. Sec School</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="schoolstyle.css">   
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav container">
-            <div class="logo">
-                <img src="https://github.com/yashverma2628/school-project/blob/main/Picsart_25-06-04_10-53-12-323.png?raw=true" alt="School Logo">
-                <span>Shishu Vidya Pith</span>
-            </div>
-            <ul class="nav-menu">
-                <li><a onclick="scrollToSection('home')">Home</a></li>
-                <li><a onclick="scrollToSection('about')">About</a></li>
-                <li><a onclick="redirectToPage('loginpage.html')">login</a></li>
-                <li><a onclick="redirectToPage('news.html')">news</a></li>
-                <li><a onclick="redirectToPage('gallery.html?category=facilities')">facilities</a></li>
-                <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
-                <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Shishu Vidya Pith Eng. Med. Hr. Sec School</h1>
-            <p>Building character, nurturing excellence, creating future leaders</p>
-            <a onclick="scrollToSection('about')" class="btn">Learn More</a>
-        </div>
-    </section>
-
-    <!-- Principal Section -->
-    <section id="about" class="principal-section">
-        <div class="container">
-            <div class="principal-card fade-in clickable" onclick="redirectToPage('principal.html')">
-                <img src="https://github.com/yashverma2628/school-project/blob/main/Screenshot_20250601_134230_Instagram.jpg?raw=true" alt="Principal Photo" class="principal-image">
-                <div class="principal-content">
-                    <h2>Principal's Welcome</h2>
-                    <h3>Sumana chatterjee maa'am</h3>
-                    <p>Welcome to our school website. We are committed to providing quality education that develops students' potential holistically, creating a generation that is smart, skilled, and of good character.</p>
-                    <a class="btn">Read More</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features -->
-    <section id="facilities" class="features">
-        <div class="container">
-            <div class="section-title">
-                <h2>Our Excellence</h2>
-            </div>
-            <div class="features-grid">
-                <a href="principal.html" class="feature-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/school%20emoji.png?raw=true" alt="School Profile" class="feature-icon">
-                    <h3>School Profile</h3>
-                    <p>Complete information about our school's vision, mission, and educational programs designed for student success.</p>
-                </a>
-                <a href="gallery.html?category=facilities" class="feature-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/school%20facilities.png?raw=true" alt="Facilities" class="feature-icon">
-                    <h3>Facilities</h3>
-                    <p>Modern and complete facilities supporting effective and comfortable learning activities.</p>
-                </a>
-                <a href="https://www.google.com/maps/place/Shishu+vidyapeeth+bangali+kanya+high+school/@23.1809225,79.967405,17z/data=!3m1!4b1!4m6!3m5!1s0x3981af7ccad90197:0x5dfcc8c96d55ad07!8m2!3d23.1809225!4d79.967405!16s%2Fg%2F11lh514kkm?entry=ttu&g_ep=EgoyMDI1MDUyOC4wIKXMDSoASAFQAw%3D%3D" class="feature-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/school%20location.png?raw=true" alt="Location" class="feature-icon">
-                    <h3>Location</h3>
-                    <p>Strategically located with easy access and a conducive learning environment.</p>
-                </a>
-                <a href="history.html" class="feature-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/school%20history.png?raw=true" alt="History" class="feature-icon">
-                    <h3>History</h3>
-                    <p>Rich history and educational traditions that have shaped many successful generations.</p>
-                </a>
-                <a href="achievements.html" class="feature-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/school%20%20achievements.png?raw=true" alt="Achievements" class="feature-icon">
-                    <h3>Achievements</h3>
-                    <p>Outstanding achievements in academics, sports, and arts at various competition levels.</p>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Results Section -->
-    <section id="results" class="results-section">
-        <div class="container">
-            <div class="section-title">
-                <h2>OUR SCHOOL RESULTS</h2>
-                <p class="results-description">
-                    We are immensely proud of our brilliant students who have achieved exceptional results through their dedication, 
-                    hard work, and the unwavering support of our faculty. Their outstanding performance reflects the quality of 
-                    education and values we instill at our institution.
-                </p>
-            </div>
-
-            <!-- Statistics Cards -->
-            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px;">
-                <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; text-align: center;">
-                    <div style="font-size: 2rem; font-weight: bold; margin-bottom: 10px;">${students.length}</div>
-                    <div>Total Students</div>
-                </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 15px; text-align: center;">
-                    <div style="font-size: 2rem; font-weight: bold; margin-bottom: 10px;">${students.length > 0 ? Math.max(...students.map(s => s.percentage)) : 0}%</div>
-                    <div>Highest Score</div>
-                </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 15px; text-align: center;">
-                    <div style="font-size: 2rem; font-weight: bold; margin-bottom: 10px;">${students.length > 0 ? (students.reduce((sum, s) => sum + s.percentage, 0) / students.length).toFixed(1) : 0}%</div>
-                    <div>Average Score</div>
-                </div>
-                <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 20px; border-radius: 15px; text-align: center;">
-                    <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">${new Date().toLocaleDateString()}</div>
-                    <div>Last Updated</div>
-                </div>
-            </div>
-
-            <!-- Students Slideshow -->
-            <div class="slideshow-container">
-                <div class="slides-wrapper">
-                    ${students.length > 0 ? students.map((student, index) => {
-                        let imageUrl = student.image || '';
-                        if (!imageUrl || imageUrl.trim() === '') {
-                            imageUrl = 'https://via.placeholder.com/200x200/2c5aa0/ffffff?text=' + encodeURIComponent(student.name.charAt(0));
-                        }
-                        
-                        return `<div class="student-slide ${index === 0 ? 'active' : ''}">
-                                    <div class="student-card">
-                                        <img src="${imageUrl}" 
-                                             alt="${student.name}" 
-                                             class="student-photo"
-                                             onerror="this.src='https://via.placeholder.com/200x200/2c5aa0/ffffff?text=${encodeURIComponent(student.name.charAt(0))}'">
-                                        <div class="student-info">
-                                            <h3>${student.name}</h3>
-                                            <div class="percentage">${student.percentage}%</div>
-                                            <div class="batch">${student.batch}</div>
-                                        </div>
-                                    </div>
-                                </div>`;
-                    }).join('') : `
-                        <div class="student-slide active">
-                            <div class="student-card">
-                                <div class="student-info" style="text-align: center; padding: 40px;">
-                                    <i class="fas fa-user-graduate" style="font-size: 3rem; color: #2c5aa0; margin-bottom: 20px;"></i>
-                                    <h3>No students added yet</h3>
-                                    <p style="color: #666; margin-top: 10px;">Students will appear here once added through the admin panel.</p>
-                                </div>
-                            </div>
-                        </div>
-                    `}
-                </div>
-                
-                ${students.length > 1 ? `
-                <!-- Navigation Arrows -->
-                <button class="slide-nav prev" onclick="changeSlide(-1)">&#8249;</button>
-                <button class="slide-nav next" onclick="changeSlide(1)">&#8250;</button>
-                
-                <!-- Slide Indicators -->
-                <div class="slide-indicators">
-                    ${students.map((_, index) => `
-                        <span class="indicator ${index === 0 ? 'active' : ''}" onclick="currentSlide(${index + 1})"></span>
-                    `).join('')}
-                </div>
-                ` : ''}
-            </div>
-
-            <!-- Results Summary -->
-            <div class="results-summary">
-                <h3>Academic Excellence Summary</h3>
-                <div class="summary-stats">
-                    <div class="stat-item">
-                        <div class="stat-number">${students.length}</div>
-                        <div class="stat-label">Top Performers</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">${students.length > 0 ? Math.max(...students.map(s => s.percentage)) : 0}%</div>
-                        <div class="stat-label">Highest Score</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">${students.length > 0 ? (students.reduce((sum, s) => sum + s.percentage, 0) / students.length).toFixed(1) : 0}%</div>
-                        <div class="stat-label">Average Score</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-number">2024</div>
-                        <div class="stat-label">Academic Year</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- News and Agenda -->
-    <section id="news" class="news">
-        <div class="container">
-            <div class="section-title">
-                <h2>News and Agenda</h2>
-            </div>
-            <div class="news-grid">
-                <a href="news-learning-at-home.html" class="news-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/class%20room.png?raw=true" alt="Learning at Class" class="news-image">
-                    <div class="news-content">
-                        <h3>Learning at Class</h3>
-                        <p>Guidelines and schedules for effective distance learning activities during the pandemic period.</p>
-                        <div class="news-date">March 15, 2024</div>
-                    </div>
-                </a>
-                <a href="news-home-activities.html" class="news-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/IMG-20230807-WA0058.jpg?raw=true" alt="Extracurricular activities" class="news-image">
-                    <div class="news-content">
-                        <h3> Extracurricular activities</h3>
-                        <p>Implementation of creative and innovative learning methods to maintain education quality.</p>
-                        <div class="news-date">March 10, 2024</div>
-                    </div>
-                </a>
-                <a href="news-online-learning.html" class="news-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/20221221_112010.jpg?raw=true" alt="sports day Activities" class="news-image">
-                    <div class="news-content">
-                        <h3>sports day Activities</h3>
-                        <p>Utilization of technology platforms to support interactive and effective learning processes.</p>
-                        <div class="news-date">March 5, 2024</div>
-                    </div>
-                </a>
-                <a href="news-outstanding-children.html" class="news-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/IMG-20230803-WA0080.jpg?raw=true" alt="school captains and counsil" class="news-image">
-                    <div class="news-content">
-                        <h3>school captains and counsil</h3>
-                        <p>Recognition program for students with outstanding achievements in various fields.</p>
-                        <div class="news-date">February 28, 2024</div>
-                    </div>
-                </a>
-                <a href="news-moral-development.html" class="news-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/WhatsApp%20Image%202023-09-04%20at%2000.37.52.jpg?raw=true" alt="our teaching staff" class="news-image">
-                    <div class="news-content">
-                        <h3>OUR TEACHING STAFF</h3>
-                        <p>Character education programs that emphasize moral values and positive behavior.</p>
-                        <div class="news-date">February 25, 2024</div>
-                    </div>
-                </a>
-                <a href="news-ppdb-2020-2021.html" class="news-card fade-in">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/20230905_093923.jpg?raw=true" alt="EVENTS AND CELEBRATIONS" class="news-image">
-                    <div class="news-content">
-                        <h3>EVENTS AND CELEBRATIONS</h3>
-                        <p>Information and procedures for new student admissions for the 2020/2021 academic year.</p>
-                        <div class="news-date">February 20, 2024</div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery -->
-    <section id="gallery" class="gallery">
-        <div class="container">
-            <div class="section-title">
-                <h2>Gallery</h2>
-            </div>
-            <div class="gallery-grid">
-                <div class="image-containerclassroom">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/Snapchat-1439079314.jpg?raw=true" alt="annual function" class="gallery-item fade-in clickable" onclick="openGalleryModal('library')">
-                    <div class="imageclassroom-text"> ANNUAL FUNCTION</div>
-                </div>
-                
-                <div class="image-containerclassroom">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/Snapchat-1773567434%20(1).jpg?raw=true" alt="Classroom" class="gallery-item fade-in clickable" onclick="openGalleryModal('classroom')">
-                    <div class="imageclassroom-text"> OUR CLASSSROOM</div>
-                </div>
-                
-                <div class="image-containerclassroom">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/20230824_095051.jpg?raw=true" alt="Students Group" class="gallery-item fade-in clickable" onclick="openGalleryModal('students')">
-                    <div class="imageclassroom-text"> OUR STUDENTS</div>
-                </div>
-                
-                <div class="image-containerclassroom">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/computer%20lab.png?raw=true" alt="Computer Lab" class="gallery-item fade-in clickable" onclick="openGalleryModal('lab')">
-                    <div class="imageclassroom-text"> COMPUTER LAB</div>
-                </div>
-                
-                <div class="image-containerclassroom">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/IMG-20231020-WA0011.jpg?raw=true" alt="Arts Activity" class="gallery-item fade-in clickable" onclick="openGalleryModal('arts')">
-                    <div class="imageclassroom-text"> kalakaari</div>
-                </div>
-                
-                <div class="image-containerclassroom">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/science%20lab.png?raw=true" alt="Science Lab" class="gallery-item fade-in clickable" onclick="openGalleryModal('science')">
-                    <div class="imageclassroom-text"> OUR SCIENCE LAB</div>
-                </div>
-            </div>
-
-            <div style="text-align: center; margin-top: 2rem;">
-                <button onclick="navigateToGallery()" class="btn">View More</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="contact" class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>School</h3>
-                    <ul>
-                        <li><a onclick="redirectToPage('about.html')">About</a></li>
-                        <li><a onclick="redirectToPage('vision-mission.html')">Vision & Mission</a></li>
-                        <li><a onclick="redirectToPage('organization.html')">Organization</a></li>
-                        <li><a onclick="redirectToPage('news.html')">news</a></li>
-                        <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
-                        <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>General Information</h3>
-                    <ul>
-                        <li><a onclick="redirectToPage('curriculum.html')">Curriculum</a></li>
-                        <li><a onclick="redirectToPage('extracurricular.html')">Extracurricular</a></li>
-                        <li><a onclick="redirectToPage('ppdb.html')">shishu Vidya pith</a></li>
-                        <li><a onclick="redirectToPage('ppdb-guidelines.html')">Guidelines</a></li>
-                        <li><a onclick="redirectToPage('location.html')">Location</a></li>
-                        <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h3>Social Media</h3>
-                    <ul>
-                        <li><a onclick="openSocialMedia('facebook')"><i class="fab fa-facebook-f"></i> Facebook</a></li>
-                        <li><a onclick="openSocialMedia('instagram')"><i class="fab fa-instagram"></i> Instagram</a></li>
-                        <li><a onclick="openSocialMedia('youtube')"><i class="fab fa-youtube"></i> YouTube</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 shishu vidya pith. All rights reserved. Hosting by Yash Verma</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- News & Events Section -->
-    <section id="news" class="news-section">
-        <div class="container">
-            <div class="section-title">
-                <h2>Latest News & Events</h2>
-            </div>
-            <div class="news-grid">
-                <div class="news-card fade-in">
-                    <div class="news-date">
-                        <span class="day">15</span>
-                        <span class="month">DEC</span>
-                    </div>
-                    <div class="news-content">
-                        <h3>Annual Sports Day 2024</h3>
-                        <p>Join us for our grand annual sports day celebration with various competitions and activities.</p>
-                        <a href="news.html" class="read-more">Read More</a>
-                    </div>
-                </div>
-                <div class="news-card fade-in">
-                    <div class="news-date">
-                        <span class="day">22</span>
-                        <span class="month">NOV</span>
-                    </div>
-                    <div class="news-content">
-                        <h3>Cultural Program</h3>
-                        <p>Students showcase their talents in music, dance, and drama in our monthly cultural program.</p>
-                        <a href="news.html" class="read-more">Read More</a>
-                    </div>
-                </div>
-                <div class="news-card fade-in">
-                    <div class="news-date">
-                        <span class="day">08</span>
-                        <span class="month">NOV</span>
-                    </div>
-                    <div class="news-content">
-                        <h3>Parent-Teacher Meeting</h3>
-                        <p>Important meeting to discuss student progress and academic development strategies.</p>
-                        <a href="news.html" class="read-more">Read More</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section -->
-    <section class="testimonials">
-        <div class="container">
-            <div class="section-title">
-                <h2>What Parents Say</h2>
-            </div>
-            <div class="testimonials-grid">
-                <div class="testimonial-card fade-in">
-                    <div class="stars">★★★★★</div>
-                    <p>"Excellent school with dedicated teachers. My child has shown remarkable improvement in both academics and character development."</p>
-                    <div class="parent-name">- Mrs. Sharma</div>
-                </div>
-                <div class="testimonial-card fade-in">
-                    <div class="stars">★★★★★</div>
-                    <p>"The facilities and teaching quality are outstanding. Very satisfied with the overall educational environment."</p>
-                    <div class="parent-name">- Mr. Kumar</div>
-                </div>
-                <div class="testimonial-card fade-in">
-                    <div class="stars">★★★★★</div>
-                    <p>"Great school with caring staff and excellent academic programs. Highly recommended for quality education."</p>
-                    <div class="parent-name">- Mrs. Gupta</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <style>
-        .slideshow-container {
-            position: relative;
-            max-width: 100%;
-            margin: auto;
-        }
-        
-        .slides-wrapper {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .student-slide {
-            display: none;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        
-        .student-slide.active {
-            display: block;
-        }
-        
-        .student-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin: 20px auto;
-            max-width: 400px;
-        }
-        
-        .student-photo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid #2c5aa0;
-            margin-bottom: 20px;
-        }
-        
-        .student-info h3 {
-            color: #333;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-        
-        .percentage {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #2c5aa0;
-            margin: 15px 0;
-        }
-        
-        .batch {
-            color: #666;
-            font-size: 1.1rem;
-        }
-        
-        .prev, .next {
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            width: auto;
-            margin-top: -22px;
-            padding: 16px;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            background: rgba(44, 90, 160, 0.8);
-            border: none;
-            border-radius: 0 3px 3px 0;
-            user-select: none;
-            transition: 0.3s ease;
-        }
-        
-        .next {
-            right: 0;
-            border-radius: 3px 0 0 3px;
-        }
-        
-        .prev:hover, .next:hover {
-            background: rgba(44, 90, 160, 1);
-        }
-        
-        .slide-nav {
-            cursor: pointer;
-            position: absolute;
-            top: 50%;
-            width: auto;
-            margin-top: -22px;
-            padding: 16px;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            background: rgba(44, 90, 160, 0.8);
-            border: none;
-            border-radius: 0 3px 3px 0;
-            user-select: none;
-            transition: 0.3s ease;
-        }
-        
-        .slide-nav.next {
-            right: 0;
-            border-radius: 3px 0 0 3px;
-        }
-        
-        .slide-nav:hover {
-            background: rgba(44, 90, 160, 1);
-        }
-        
-        .dots-container, .slide-indicators {
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .dot, .indicator {
-            cursor: pointer;
-            height: 15px;
-            width: 15px;
-            margin: 0 5px;
-            background-color: #bbb;
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.3s ease;
-        }
-        
-        .dot.active, .dot:hover, .indicator.active, .indicator:hover {
-            background-color: #2c5aa0;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @media (max-width: 768px) {
-            .student-card {
-                padding: 20px;
-                margin: 10px;
-            }
-            
-            .student-photo {
-                width: 120px;
-                height: 120px;
-            }
-            
-            .percentage {
-                font-size: 2rem;
-            }
-        }
-    </style>
-
-</body>
-</html>`;
+function showLoading(show) {
+    document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
 }
 
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+}
 
-
-        function initializeSampleData() {
-            studentsData = [
-                {
-                    name: "Sample Student 1",
-                    percentage: 95.5,
-                    batch: "Batch 2024",
-                    image: "https://via.placeholder.com/150/667eea/ffffff?text=S1"
-                },
-                {
-                    name: "Sample Student 2", 
-                    percentage: 88.7,
-                    batch: "Batch 2024",
-                    image: "https://via.placeholder.com/150/764ba2/ffffff?text=S2"
-                }
-            ];
-            renderStudents();
-            updateStatistics();
-        }
-
-        // ============================================================================
-        // STUDENT MANAGEMENT FUNCTIONS
-        // ============================================================================
-
-        function addStudent(studentData) {
-            studentsData.push({
-                name: studentData.name,
-                percentage: parseFloat(studentData.percentage),
-                batch: studentData.batch,
-                image: studentData.image || 'https://via.placeholder.com/150/667eea/ffffff?text=' + studentData.name.charAt(0)
-            });
-            
-            renderStudents();
-            saveStudentsData();
-        }
-
-        function editStudent(index, studentData) {
-            if (index >= 0 && index < studentsData.length) {
-                studentsData[index] = {
-                    name: studentData.name,
-                    percentage: parseFloat(studentData.percentage),
-                    batch: studentData.batch,
-                    image: studentData.image || studentsData[index].image
-                };
-                
-                renderStudents();
-                saveStudentsData();
-            }
-        }
-
-        function deleteStudent(index) {
-            if (confirm('Are you sure you want to delete this student?')) {
-                studentsData.splice(index, 1);
-                renderStudents();
-                saveStudentsData();
-            }
-        }
-
-        function sortStudents(criteria) {
-            if (criteria === 'percentage') {
-                studentsData.sort((a, b) => b.percentage - a.percentage);
-            } else if (criteria === 'name') {
-                studentsData.sort((a, b) => a.name.localeCompare(b.name));
-            }
-            
-            renderStudents();
-            saveStudentsData();
-        }
-
-        function clearAllStudents() {
-            if (confirm('Are you sure you want to delete all students? This action cannot be undone.')) {
-                studentsData = [];
-                renderStudents();
-                saveStudentsData();
-            }
-        }
-
-        function refreshStudents() {
-            loadStudentsData();
-        }
-
-        // ============================================================================
-        // UI RENDERING FUNCTIONS
-        // ============================================================================
-
-        function renderStudents() {
-            const container = document.getElementById('studentsList');
-            
-            if (studentsData.length === 0) {
-                container.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: rgba(102, 126, 234, 0.7);">
-                        <i class="fas fa-user-graduate" style="font-size: 3rem; margin-bottom: 20px;"></i>
-                        <h3>No students added yet</h3>
-                        <p>Use the form on the left to add your first student!</p>
-                    </div>
-                `;
-                document.getElementById('studentCount').textContent = '0';
-                return;
-            }
-
-            container.innerHTML = studentsData.map((student, index) => `
-                <div class="student-card new-item" data-index="${index}">
-                    <img src="${student.image}" alt="${student.name}" class="student-image" 
-                         onerror="this.src='https://via.placeholder.com/150/667eea/ffffff?text=${student.name.charAt(0)}'">
-                    <div class="student-name">${student.name}</div>
-                    <div class="student-details">
-                        <div class="student-percentage">${student.percentage}%</div>
-                        <div class="student-batch">${student.batch}</div>
-                    </div>
-                    <div class="student-actions">
-                        <button onclick="openEditModal(${index})" class="btn btn-warning btn-small">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button onclick="deleteStudent(${index})" class="btn btn-danger btn-small">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-
-            document.getElementById('studentCount').textContent = studentsData.length;
-        }
-
-        function updateStatistics() {
-            const total = studentsData.length;
-            const highest = total > 0 ? Math.max(...studentsData.map(s => s.percentage)) : 0;
-            const average = total > 0 ? (studentsData.reduce((sum, s) => sum + s.percentage, 0) / total).toFixed(1) : 0;
-            
-            document.getElementById('totalStudents').textContent = total;
-            document.getElementById('highestScore').textContent = highest + '%';
-            document.getElementById('averageScore').textContent = average + '%';
-            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
-        }
-
-        // ============================================================================
-        // FORM HANDLING
-        // ============================================================================
-
-        document.getElementById('addStudentForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const imageFile = document.getElementById('studentImageFile').files[0];
-            let imageUrl = formData.get('studentImage');
-            
-            // Handle image upload
-            if (imageFile && !imageUrl) {
-                try {
-                    imageUrl = await uploadImageToGitHub(imageFile);
-                } catch (error) {
-                    showStatus('❌ Failed to upload image: ' + error.message, 'error');
-                    return;
-                }
-            }
-            
-            const studentData = {
-                name: formData.get('studentName'),
-                percentage: formData.get('studentPercentage'),
-                batch: formData.get('studentBatch'),
-                image: imageUrl
-            };
-            
-            addStudent(studentData);
-            this.reset();
-            document.getElementById('filePreview').innerHTML = '';
-            showStatus('✅ Student added successfully!', 'success');
-        });
-
-        document.getElementById('editStudentForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const index = parseInt(document.getElementById('editStudentIndex').value);
-            const imageFile = document.getElementById('editStudentImageFile').files[0];
-            let imageUrl = document.getElementById('editStudentImage').value;
-            
-            // Handle image upload
-            if (imageFile) {
-                try {
-                    imageUrl = await uploadImageToGitHub(imageFile);
-                } catch (error) {
-                    showStatus('❌ Failed to upload image: ' + error.message, 'error');
-                    return;
-                }
-            }
-            
-            const studentData = {
-                name: document.getElementById('editStudentName').value,
-                percentage: document.getElementById('editStudentPercentage').value,
-                batch: document.getElementById('editStudentBatch').value,
-                image: imageUrl
-            };
-            
-            editStudent(index, studentData);
-            closeEditModal();
-            showStatus('✅ Student updated successfully!', 'success');
-        });
-
-        // ============================================================================
-        // IMAGE UPLOAD TO GITHUB
-        // ============================================================================
-
-        async function uploadImageToGitHub(file) {
-            if (!file) return null;
-            
-            const fileName = `images/student_${Date.now()}_${file.name}`;
-            const reader = new FileReader();
-            
-            return new Promise((resolve, reject) => {
-                reader.onload = async function(e) {
-                    try {
-                        const base64Content = e.target.result.split(',')[1];
-                        
-                        const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${fileName}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Authorization': `token ${githubToken}`,
-                                'Accept': 'application/vnd.github.v3+json',
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                message: `Upload student image: ${fileName}`,
-                                content: base64Content,
-                                branch: githubConfig.branch
-                            })
-                        });
-                        
-                        if (response.ok) {
-                            const result = await response.json();
-                            resolve(result.content.download_url);
-                        } else {
-                            throw new Error('Failed to upload image to GitHub');
-                        }
-                    } catch (error) {
-                        reject(error);
-                    }
-                };
-                
-                reader.onerror = () => reject(new Error('Failed to read file'));
-                reader.readAsDataURL(file);
-            });
-        }
-
-        // ============================================================================
-        // MODAL FUNCTIONS
-        // ============================================================================
-
-        function openEditModal(index) {
-            const student = studentsData[index];
-            
-            document.getElementById('editStudentIndex').value = index;
-            document.getElementById('editStudentName').value = student.name;
-            document.getElementById('editStudentPercentage').value = student.percentage;
-            document.getElementById('editStudentBatch').value = student.batch;
-            document.getElementById('editStudentImage').value = student.image;
-            
-            document.getElementById('editModal').style.display = 'block';
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-            document.getElementById('editImagePreview').innerHTML = '';
-        }
-
-        // ============================================================================
-        // PREVIEW FUNCTIONS
-        // ============================================================================
-
-        function showPreview() {
-            const previewSection = document.getElementById('previewSection');
-            const previewContent = document.getElementById('previewContent');
-            
-            if (studentsData.length === 0) {
-                showStatus('❌ No students to preview. Add some students first!', 'error');
-                return;
-            }
-            
-            previewContent.innerHTML = generatePreviewHTML();
-            previewSection.style.display = 'block';
-            previewSection.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function hidePreview() {
-            document.getElementById('previewSection').style.display = 'none';
-        }
-
-        function generatePreviewHTML() {
-            return `
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
-                    <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">
-                        <i class="fas fa-graduation-cap"></i> Student Achievement Showcase
-                    </h2>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                        ${studentsData.map(student => `
-                            <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                                <img src="${student.image}" alt="${student.name}" 
-                                     style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea; margin-bottom: 15px;"
-                                     onerror="this.src='https://via.placeholder.com/150/667eea/ffffff?text=${student.name.charAt(0)}'">
-                                <h3 style="color: #333; margin-bottom: 10px;">${student.name}</h3>
-                                <div style="font-size: 1.5rem; font-weight: bold; color: #667eea; margin-bottom: 5px;">${student.percentage}%</div>
-                                <div style="color: #666; font-size: 0.9rem;">${student.batch}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        // ============================================================================
-        // HTML EXPORT FUNCTION
-        // ============================================================================
-
-        function generateStudentHTML() {
-            if (studentsData.length === 0) {
-                showStatus('❌ No students to export. Add some students first!', 'error');
-                return;
-            }
-            
-            const htmlContent = `<!DOCTYPE html>
+// Export functionality
+function generateStudentHTML() {
+    const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Achievement Showcase - Shishu Vidya Pith</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Student Showcase</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+        .student-slideshow {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
             padding: 20px;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .header h1 {
-            color: #667eea;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        .header p {
-            color: #666;
-            font-size: 1.1rem;
-        }
-        
-        .students-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .student-card {
+        .student-slide {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
+            border-radius: 10px;
+            padding: 20px;
             text-align: center;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            border: 2px solid transparent;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        
-        .student-card:hover {
-            transform: translateY(-5px);
-            border-color: #667eea;
-        }
-        
         .student-image {
             width: 100px;
             height: 100px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #667eea;
-            margin-bottom: 20px;
-        }
-        
-        .student-name {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #333;
             margin-bottom: 15px;
         }
-        
         .student-percentage {
-            font-size: 2rem;
+            font-size: 1.5em;
             font-weight: bold;
             color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .student-batch {
-            color: #666;
-            font-size: 1rem;
-        }
-        
-        .stats {
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-        }
-        
-        .stat-label {
-            font-weight: bold;
-            color: #555;
-            margin-bottom: 5px;
-        }
-        
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                margin: 10px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .students-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-graduation-cap"></i> Student Achievement Showcase</h1>
-            <p>Celebrating Excellence at Shishu Vidya Pith</p>
-        </div>
-        
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-label">Total Students</div>
-                <div class="stat-value">${studentsData.length}</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Highest Score</div>
-                <div class="stat-value">${Math.max(...studentsData.map(s => s.percentage))}%</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Average Score</div>
-                <div class="stat-value">${(studentsData.reduce((sum, s) => sum + s.percentage, 0) / studentsData.length).toFixed(1)}%</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">Generated On</div>
-                <div class="stat-value">${new Date().toLocaleDateString()}</div>
-            </div>
-        </div>
-        
-        <div class="students-grid">
-            ${studentsData.map(student => `
-                <div class="student-card">
-                    <img src="${student.image}" alt="${student.name}" class="student-image"
-                         onerror="this.src='https://via.placeholder.com/150/667eea/ffffff?text=${student.name.charAt(0)}'">
-                    <div class="student-name">${student.name}</div>
-                    <div class="student-percentage">${student.percentage}%</div>
-                    <div class="student-batch">${student.batch}</div>
-                </div>
-            `).join('')}
-        </div>
-    </div>
+    ${generateStudentHTML()}
 </body>
 </html>`;
-            
-            // Create and download the file
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `student-showcase-${new Date().toISOString().split('T')[0]}.html`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showStatus('✅ HTML file downloaded successfully!', 'success');
-        }
-
-        // ============================================================================
-        // UTILITY FUNCTIONS
-        // ============================================================================
-
-        function showStatus(message, type) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = message;
-            statusElement.className = `status-message status-${type}`;
-            statusElement.style.display = 'flex';
-            
-            setTimeout(() => {
-                statusElement.style.display = 'none';
-            }, 5000);
-        }
-
-        function showLoading(show) {
-            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
-        }
-
-        // ============================================================================
-        // FILE PREVIEW HANDLERS
-        // ============================================================================
-
-        document.getElementById('studentImageFile').addEventListener('change', function(e) {
-            previewFile(e.target.files[0], 'filePreview');
-        });
-
-        document.getElementById('editStudentImageFile').addEventListener('change', function(e) {
-            previewFile(e.target.files[0], 'editImagePreview');
-        });
-
-        function previewFile(file, previewElementId) {
-            const preview = document.getElementById(previewElementId);
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = `
-                        <img src="${e.target.result}" alt="Preview" 
-                             style="max-width: 200px; max-height: 200px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-                        <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">
-                            ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
-                        </p>
-                    `;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                preview.innerHTML = '';
-            }
-        }
-
-        // ============================================================================
-        // INITIALIZATION
-        // ============================================================================
-
-        // Check for saved GitHub token on page load
-        window.addEventListener('load', function() {
-            const savedToken = localStorage.getItem('githubToken');
-            if (savedToken) {
-                document.getElementById('githubToken').value = savedToken;
-                // Auto-authenticate if token exists
-                authenticateGitHub();
-            }
-        });
-
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            const modal = document.getElementById('editModal');
-            if (event.target === modal) {
-                closeEditModal();
-            }
-        });
-
-        // Handle escape key for modal
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closeEditModal();
-                hidePreview();
-            }
-        }); </script> 
+    
+    // Create download link
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'student-showcase.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showStatus('HTML file downloaded successfully!', 'success');
+}</script> 
         </body> 
         </html>
