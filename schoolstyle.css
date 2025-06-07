@@ -758,288 +758,220 @@
     overflow: hidden;
     position: relative;
 }
+  .slideshow-container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-.student-slideshow-wrapper {
-    display: flex; /* Helps in arranging slides if using JS for transitions */
-    position: relative; /* For positioning active slides */
-    height: 400px; /* Adjust as needed */
-}
+        .slide-wrapper {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+        }
 
-.student-slide {
-    display: none; /* Hide all by default */
-    flex-shrink: 0;
-    width: 100%;
-    padding: 20px;
-    text-align: center;
-    background-color: #f9f9f9;
-    box-sizing: border-box;
-}
+        .student-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+        }
 
-.student-slide.active {
-    display: block; /* Show active slide */
-}
+        .student-slide.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-.student-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 15px;
-    border: 2px solid #3498db;
-}
+        .student-slide.prev {
+            transform: translateX(-100px);
+        }
 
-.slide-indicators-container {
-    text-align: center;
-    padding: 10px 0;
-    background-color: #eee;
-}
+        .student-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
 
-.slide-indicator {
-    height: 10px;
-    width: 10px;
-    margin: 0 5px;
-    background-color: #bbb;
-    border-radius: 50%;
-    display: inline-block;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        .student-slide.active .student-image {
+            transform: scale(1.05);
+        }
 
-.slide-indicator.active {
-    background-color: #717171;
-}
+        .student-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.6s ease 0.2s both;
+        }
 
-/* Students Slideshow specific CSS */
-.student-slide {
-    display: none; /* By default, all slides are hidden */
-    /* Aapki baaki styling, jaise padding, margin, flexbox setup, etc. */
-}
+        .student-percentage {
+            font-size: 36px;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.6s ease 0.4s both;
+        }
 
-.student-slide.active {
-    display: block; /* The active slide will be shown */
-    /* Ya 'display: flex;' agar aap flexbox ka use kar rahe hain inner content ke liye */
-}
+        .student-batch {
+            font-size: 18px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            animation: slideUp 0.6s ease 0.6s both;
+        }
 
-/* Indicators (Dots) CSS */
-.indicator {
-    cursor: pointer;
-    height: 15px;
-    width: 15px;
-    margin: 0 5px;
-    background-color: #bbb; /* Default color of inactive dots */
-    border-radius: 50%;
-    display: inline-block;
-    transition: background-color 0.6s ease; /* Smooth transition for color change */
-}
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-.indicator.active,
-.indicator:hover {
-    background-color: #717171; /* Color when active or hovered */
-}
+        .slide-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
 
-/* Optional: Slideshow container ke liye basic styling */
-.slideshow-container {
-    position: relative;
-    max-width: 1200px; /* Adjust as per your design */
-    margin: auto;
-    overflow: hidden; /* Important if using transitions/overflow */
-}
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-.slides-wrapper {
-    display: flex; /* Agar aap ek row mein cards dikhana chahte hain */
-    transition: transform 0.5s ease-in-out; /* Smooth transition for sliding effect */
-    /* Iske liye thoda alag JS logic chahiye agar aap pure flexbox/transform based sliding chahte hain */
-}
+        .indicator::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+            transition: left 0.5s ease;
+        }
 
-/* Navigation Arrows */
-.slide-nav {
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    width: auto;
-    padding: 16px;
-    margin-top: -22px;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
-    user-select: none;
-    background-color: rgba(0,0,0,0.8);
-}
+        .indicator:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: scale(1.2);
+        }
 
-.slide-nav.prev {
-    left: 0;
-    border-radius: 3px 0 0 3px;
-}
+        .indicator.active {
+            background: #ffd700;
+            transform: scale(1.3);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+        }
 
-.slide-nav.next {
-    right: 0;
-    border-radius: 3px 0 0 3px;
-}
+        .indicator.active::before {
+            left: 100%;
+        }
 
-.slide-nav:hover {
-    background-color: rgba(0,0,0,1);
-}
+        .navigation-arrows {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
 
-.slide-indicators {
-    text-align: center;
-    padding: 20px 0;
-}
-/* General Body and Container Styling (Agar aapka page poore mein nahi faila hai) */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4; /* Light background for the page */
-}
+        .navigation-arrows:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
 
-/* Slideshow Container */
-.slideshow-container {
-    max-width: 900px; /* Overall width of your slideshow. Adjust as needed. */
-    position: relative;
-    margin: 0 auto 30px auto; /* Centered, with margin at bottom for indicators */
-    background-color: #fff; /* White background for the slideshow area */
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Ensures content stays within bounds */
-}
+        .prev-arrow {
+            left: -50px;
+        }
 
-/* Slides Wrapper (This needs to be adjusted based on your desired layout for multiple cards per slide) */
-/* Agar aap ek slide mein ek hi student dikhana chahte hain, toh display: flex; ki zaroorat nahi hai yahan. */
-/* Agar aap ek slide mein 2-3 students dikhana chahte hain, toh aapko JS logic bhi badalna padega. */
-/* Abhi ke liye, hum maan rahe hain ki ek slide = ek student card. */
-.slides-wrapper {
-    /* Agar aapke har student-slide mein sirf ek hi student-card hai, toh iski zaroorat nahi. */
-    /* display: flex;  */
-    /* transition: transform 0.5s ease-in-out; */
-}
+        .next-arrow {
+            right: -50px;
+        }
 
+        .loading-message {
+            text-align: center;
+            color: white;
+            font-size: 18px;
+            padding: 40px;
+        }
 
-/* Individual Student Slide (The main container for each student's details) */
-.student-slide {
-    display: none; /* By default, hide all slides */
-    padding: 20px;
-    text-align: center; /* Center the content within the slide */
-    box-sizing: border-box; /* Include padding in the element's total width and height */
-}
+        .error-message {
+            text-align: center;
+            color: #ff6b6b;
+            font-size: 16px;
+            padding: 40px;
+        }
 
-.student-slide.active {
-    display: block; /* Show the active slide */
-    /* Fading animation (optional) */
-    animation-name: fade;
-    animation-duration: 1.5s;
-}
-
-@keyframes fade {
-    from {opacity: .4}
-    to {opacity: 1}
-}
-
-
-/* Student Card Styling */
-.student-card {
-    display: flex; /* Use flexbox to align photo and info horizontally */
-    flex-direction: column; /* Stack photo and info vertically within the card */
-    align-items: center; /* Center items horizontally in the card */
-    max-width: 400px; /* Max width for each student card, adjust for desired narrowness */
-    margin: 0 auto; /* Center the card within its slide */
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* Student Photo */
-.student-photo {
-    width: 150px; /* Fixed width for student photo */
-    height: 150px; /* Fixed height for student photo */
-    object-fit: cover; /* Ensures image covers the area without distortion */
-    border-radius: 50%; /* Make it circular */
-    border: 3px solid #2c5aa0; /* Border around the photo */
-    margin-bottom: 15px; /* Space below the photo */
-}
-
-/* Student Info Styling */
-.student-info {
-    text-align: center; /* Center text within the info block */
-    width: 100%; /* Take full width of the student-card */
-}
-
-.student-info h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #333;
-    font-size: 1.8em; /* Larger font for name */
-    font-weight: bold;
-}
-
-.student-info .percentage {
-    font-size: 1.5em; /* Larger font for percentage */
-    font-weight: bold;
-    color: #008000; /* Green color for highlight */
-    margin-bottom: 5px; /* Space below percentage */
-}
-
-.student-info .batch {
-    font-size: 1.1em; /* Standard font for batch */
-    color: #666;
-    margin-bottom: 0;
-}
-
-/* Navigation Arrows (Prev/Next buttons) */
-.slide-nav {
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    width: auto;
-    padding: 16px;
-    margin-top: -22px; /* Vertically center */
-    color: white;
-    font-weight: bold;
-    font-size: 20px;
-    transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
-    user-select: none;
-    background-color: rgba(0,0,0,0.6); /* Slightly transparent */
-    border: none; /* Remove default button border */
-}
-
-.slide-nav.prev {
-    left: 0;
-    border-radius: 3px 0 0 3px;
-}
-
-.slide-nav.next {
-    right: 0;
-    border-radius: 0 3px 3px 0; /* Adjusted for right button */
-}
-
-.slide-nav:hover {
-    background-color: rgba(0,0,0,0.8); /* Darker on hover */
-}
-
-/* Slide Indicators (Dots) */
-.slide-indicators {
-    text-align: center;
-    padding: 10px 0;
-    margin-top: 10px; /* Space between slideshow and dots */
-}
-
-.indicator {
-    cursor: pointer;
-    height: 12px; /* Smaller dots */
-    width: 12px; /* Smaller dots */
-    margin: 0 4px; /* Space between dots */
-    background-color: #bbb; /* Default color */
-    border-radius: 50%; /* Circular */
-    display: inline-block;
-    transition: background-color 0.6s ease;
-}
-
-.indicator.active,
-.indicator:hover {
-    background-color: #717171; /* Active/hover color */
-}
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .slideshow-container {
+                margin: 10px;
+                padding: 20px;
+            }
+            
+            .slide-wrapper {
+                height: 350px;
+            }
+            
+            .student-image {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .student-name {
+                font-size: 20px;
+            }
+            
+            .student-percentage {
+                font-size: 28px;
+            }
+            
+            .navigation-arrows {
+                display: none;
+            }
+        }
 
