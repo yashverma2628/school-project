@@ -110,17 +110,20 @@
         </div>
 
         <!-- Students Slideshow -->
-        <div class="slideshow-container">
-            <div class="student-slide-wrapper"
-                 id="student-slideshow-wrapper"> </div>
-            <div id="slide-indicators-container" class="slide-indicators-container">
-            </div>
+       <div class="slideshow-container">
+        <div class="slide-wrapper" id="slideWrapper">
+            <div class="loading-message" id="loadingMessage">Loading student data...</div>
         </div>
+        
+        <button class="navigation-arrows prev-arrow" id="prevBtn">‹</button>
+        <button class="navigation-arrows next-arrow" id="nextBtn">›</button>
+        
+        <div class="slide-indicators" id="slideIndicators">
+            <!-- Indicators will be generated dynamically -->
+        </div>
+    </div>
               
-            <!-- Navigation Arrows -->
-            <button class="slide-nav prev" onclick="changeSlide(-1)">&#8249;</button>
-            <button class="slide-nav next" onclick="changeSlide(1)">&#8250;</button>
-
+        
             <!-- Slide Indicators -->
             <div class="slide-indicators">
                 <span class="indicator active" onclick="currentSlide(1)"></span>
