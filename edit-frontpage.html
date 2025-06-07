@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Website Editor - Shishu Vidya Pith</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* GitHub Authentication Section */
+        .auth-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            margin: 50px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        /* Main Editor Interface */
+        .main-content {
+            display: none;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .editor-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .editor-header h1 {
+            color: #667eea;
+            font-size: 1.8rem;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .editor-sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .editor-main {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .editor-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .editor-card h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        /* File Upload Styling */
+        .file-upload {
+            position: relative;
+            margin: 10px 0;
+        }
+
+        .file-label {
+            display: block;
+            padding: 20px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            background: rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .file-label:hover {
+            background: rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        /* Students Grid */
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-color: #667eea;
+        }
+
+        .student-card.new-item {
+            animation: slideInUp 0.5s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .student-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            display: block;
+            border: 3px solid #667eea;
+        }
+
+        .student-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .student-details {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .student-percentage {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .student-batch {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .student-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        /* Statistics */
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .stat-value {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: #667eea;
+            margin: 0;
+        }
+
+        .close {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* Status Messages */
+        .status-message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* Loading Indicator */
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .bulk-actions .btn {
+            flex: 1;
+            min-width: 120px;
+            justify-content: center;
+        }
+
+        /* Preview Section */
+        .preview-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .preview-content {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        /* File Preview */
+        .file-preview {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .file-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Count Badge */
+        .count-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .editor-sidebar {
+                order: 2;
+            }
+            
+            .editor-main {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-section {
+                margin: 20px;
+                padding: 30px 20px;
+            }
+            
+            .main-content {
+                padding: 10px;
+            }
+            
+            .editor-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .editor-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .students-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bulk-actions {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+
+        /* Additional Utility Classes */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mb-10 { margin-bottom: 10px; }
+        .mb-20 { margin-bottom: 20px; }
+        .mt-10 { margin-top: 10px; }
+        .mt-20 { margin-top: 20px; }
+        
+        .hidden { display: none; }
+        .visible { display: block; }
+    </style>
+</head>
+<body>
+    <!-- GitHub Authentication Section -->
+    <div id="authSection" class="auth-section">
+        <div class="auth-header">
+            <h1><i class="fas fa-graduation-cap"></i> Student Editor</h1>
+            <p>Connect to GitHub to manage your school's student showcase</p>
+        </div>
+        
+        <div class="auth-form">
+            <div class="form-group">
+                <label for="githubToken">
+                    <i class="fab fa-github"></i> GitHub Personal Access Token
+                </label>
+                <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required>
+                <small style="color: #666; margin-top: 5px; display: block;">
+                    <i class="fas fa-info-circle"></i> 
+                    Need a token? Go to GitHub Settings → Developer Settings → Personal Access Tokens → Generate new token
+                    <br>Required permissions: Contents, Metadata
+                </small>
+            </div>
+            
+            <button onclick="authenticateGitHub()" class="btn btn-primary">
+                <i class="fas fa-key"></i> Connect to GitHub
+            </button>
+        </div>
+        
+        <div id="statusMessage" class="status-message" style="display: none;"></div>
+        <div id="loadingIndicator" class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <p>Connecting to GitHub...</p>
+        </div>
+    </div>
+
+    <!-- Main Content (Hidden until authenticated) -->
+    <div id="mainContent" class="main-content">
+        <!-- Editor Header -->
+        <div class="editor-header">
+            <h1><i class="fas fa-users-cog"></i> Student Slideshow Manager</h1>
+            <div class="editor-actions">
+                <button id="refreshBtn" onclick="refreshStudents()" class="btn btn-secondary">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <button id="previewBtn" onclick="showPreview()" class="btn btn-warning">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+                <button id="exportBtn" onclick="generateStudentHTML()" class="btn btn-success">
+                    <i class="fas fa-download"></i> Export HTML
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Editor Container -->
+        <div class="editor-container">
+            <!-- Left Sidebar - Editor Panel -->
+            <div class="editor-sidebar">
+                <!-- Add New Student Form -->
+                <div class="editor-card">
+                    <h4><i class="fas fa-user-plus"></i> Add New Student</h4>
+                    <form id="addStudentForm">
+                        <div class="form-group">
+                            <label for="studentName">Student Name:</label>
+                            <input type="text" id="studentName" name="studentName" placeholder="Enter student name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="studentPercentage">Percentage:</label>
+                            <input type="number" id="studentPercentage" name="studentPercentage" 
+                                   step="0.1" min="0" max="100" placeholder="0.0" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="studentBatch">Batch:</label>
+                            <input type="text" id="studentBatch" name="studentBatch" 
+                                   placeholder="e.g., Batch 2024" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="studentImage">Image URL (Optional):</label>
+                            <input type="url" id="studentImage" name="studentImage" 
+                                   placeholder="https://example.com/image.jpg">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Or Upload Image:</label>
+                            <div class="file-upload">
+                                <input type="file" id="studentImageFile" class="file-input" accept="image/*">
+                                <label for="studentImageFile" class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <br>Click or drag image here
+                                    <br><small>JPG, PNG, GIF (Max 5MB)</small>
+                                </label>
+                            </div>
+                            <div id="filePreview" class="file-preview"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Student
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Bulk Actions -->
+                <div class="editor-card">
+                    <h4><i class="fas fa-cogs"></i> Bulk Actions</h4>
+                    <div class="bulk-actions">
+                        <button id="sortByPercentage" onclick="sortStudents('percentage')" class="btn btn-secondary">
+                            <i class="fas fa-sort-numeric-down"></i> Sort by Score
+                        </button>
+                        <button id="sortByName" onclick="sortStudents('name')" class="btn btn-secondary">
+                            <i class="fas fa-sort-alpha-down"></i> Sort by Name
+                        </button>
+                        <button id="clearAll" onclick="clearAllStudents()" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="editor-card">
+                    <h4><i class="fas fa-chart-bar"></i> Statistics</h4>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Total Students:</span>
+                            <span id="totalStudents" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Highest Score:</span>
+                            <span id="highestScore" class="stat-value">0%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Average Score:</span>
+                            <span id="averageScore" class="stat-value">0%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Updated:</span>
+                            <span id="lastUpdated" class="stat-value">Never</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="editor-main">
+                <!-- Students List -->
+                <div class="students-list">
+                    <div class="list-header">
+                        <h3><i class="fas fa-users"></i> Current Students</h3>
+                        <span id="studentCount" class="count-badge">0</span>
+                    </div>
+                    
+                    <div id="studentsList" class="students-grid">
+                        <!-- Student cards will be dynamically added here -->
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: rgba(102, 126, 234, 0.7);">
+                            <i class="fas fa-user-graduate" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                            <h3>No students added yet</h3>
+                            <p>Use the form on the left to add your first student!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div id="previewSection" class="preview-section" style="display: none;">
+                    <div class="preview-header">
+                        <h3><i class="fas fa-eye"></i> Live Preview</h3>
+                        <button id="closePreview" onclick="hidePreview()" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Close Preview
+                        </button>
+                    </div>
+                    <div id="previewContent" class="preview-content">
+                        <!-- Preview will be generated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Student Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Edit Student</h3>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editStudentForm">
+                    <input type="hidden" id="editStudentIndex">
+                    
+                    <div class="form-group">
+                        <label for="editStudentName">Student Name:</label>
+                        <input type="text" id="editStudentName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editStudentPercentage">Percentage:</label>
+                        <input type="number" id="editStudentPercentage" 
+                               step="0.1" min="0" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editStudentBatch">Batch:</label>
+                        <input type="text" id="editStudentBatch" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editStudentImage">Image URL:</label>
+                        <input type="url" id="editStudentImage">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Or Upload New Image:</label>
+                        <div class="file-upload">
+                            <input type="file" id="editStudentImageFile" class="file-input" accept="image/*">
+                            <label for="editStudentImageFile" class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <br>Click or drag image here
+                            </label>
+                        </div>
+                        <div id="editImagePreview" class="file-preview"></div>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>// ============================================================================
+        // GITHUB STORAGE CONFIGURATION
+        // ============================================================================
+        
+        // Global variables
+        let githubToken = '';
+        let studentsData = [];
+        let currentEditIndex = -1;
+        
+        // GitHub configuration
+        // 🔧 CONFIGURATION: Replace with your GitHub details
+        const githubConfig = {
+            owner: 'yashverma2628',     // ← Replace with your GitHub username
+            repo: 'school-project',     // ← Replace with your repository name
+            branch: 'main'              // ← Replace with your branch name if different
+        };
+
+        // ============================================================================
+        // GITHUB AUTHENTICATION
+        // ============================================================================
+
+        async function authenticateGitHub() {
+            const token = document.getElementById('githubToken').value.trim();
+            
+            if (!token) {
+                showStatus('Please enter your GitHub Personal Access Token', 'error');
+                return;
+            }
+
+            showLoading(true);
+            githubToken = token;
+            
+            // Test the token by accessing the repository
+            fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}`, {
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            })
+            .then(async response => {
+                if (response.ok) {
+                    // Store token locally for convenience (not secure for production)
+                    localStorage.setItem('githubToken', token);
+                    
+                    showStatus('✅ Successfully connected to GitHub repository!', 'success');
+                    document.getElementById('authSection').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                    await loadStudentsData();
+                } else {
+                    throw new Error('Invalid token or repository access denied. Check your token permissions.');
+                }
+            })
+            .catch(error => {
+                showStatus('❌ Authentication failed: ' + error.message, 'error');
+                console.error('GitHub auth error:', error);
+            })
+            .finally(() => {
+                showLoading(false);
+            });
+        }
+
+        // ============================================================================
+        // GITHUB DATA MANAGEMENT
+        // ============================================================================
+
+        async function loadStudentsData() {
+            try {
+                // Load students data from GitHub JSON file
+                const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/students-data.json`, {
+                    headers: {
+                        'Authorization': `token ${githubToken}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (response.ok) {
+                    const fileData = await response.json();
+                    const decodedContent = atob(fileData.content);
+                    studentsData = JSON.parse(decodedContent);
+                    renderStudents();
+                    updateStatistics();
+                } else {
+                    // Initialize with sample data if file doesn't exist
+                    initializeSampleData();
+                }
+            } catch (error) {
+                console.error('Error loading students data:', error);
+                initializeSampleData();
+            }
+        }
+
+        async function saveStudentsData() {
+            try {
+                // Get current file SHA if exists
+                let sha = null;
+                try {
+                    const getResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/students-data.json`, {
+                        headers: {
+                            'Authorization': `token ${githubToken}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (getResponse.ok) {
+                        const existingFile = await getResponse.json();
+                        sha = existingFile.sha;
+                    }
+                } catch (e) {
+                    // File doesn't exist, will create new
+                }
+
+                // Prepare commit data
+                const commitData = {
+                    message: `Update students data - ${new Date().toISOString()}`,
+                    content: btoa(JSON.stringify(studentsData, null, 2)),
+                    branch: githubConfig.branch
+                };
+
+                if (sha) {
+                    commitData.sha = sha;
+                }
+
+                // Save to GitHub
+                const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/students-data.json`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${githubToken}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(commitData)
+                });
+
+                if (response.ok) {
+                    showStatus('✅ Data saved to GitHub successfully!', 'success');
+                    updateStatistics();
+                } else {
+                    throw new Error('Failed to save to GitHub');
+                }
+            } catch (error) {
+                console.error('Error saving to GitHub:', error);
+                showStatus('❌ Failed to save data to GitHub: ' + error.message, 'error');
+            }
+        }
+
+        function initializeSampleData() {
+            studentsData = [
+                {
+                    name: "Sample Student 1",
+                    percentage: 95.5,
+                    batch: "Batch 2024",
+                    image: "https://via.placeholder.com/150/667eea/ffffff?text=S1"
+                },
+                {
+                    name: "Sample Student 2", 
+                    percentage: 88.7,
+                    batch: "Batch 2024",
+                    image: "https://via.placeholder.com/150/764ba2/ffffff?text=S2"
+                }
+            ];
+            renderStudents();
+            updateStatistics();
+        }
+
+        // ============================================================================
+        // STUDENT MANAGEMENT FUNCTIONS
+        // ============================================================================
+
+        function addStudent(studentData) {
+            studentsData.push({
+                name: studentData.name,
+                percentage: parseFloat(studentData.percentage),
+                batch: studentData.batch,
+                image: studentData.image || 'https://via.placeholder.com/150/667eea/ffffff?text=' + studentData.name.charAt(0)
+            });
+            
+            renderStudents();
+            saveStudentsData();
+        }
+
+        function editStudent(index, studentData) {
+            if (index >= 0 && index < studentsData.length) {
+                studentsData[index] = {
+                    name: studentData.name,
+                    percentage: parseFloat(studentData.percentage),
+                    batch: studentData.batch,
+                    image: studentData.image || studentsData[index].image
+                };
+                
+                renderStudents();
+                saveStudentsData();
+            }
+        }
+
+        function deleteStudent(index) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                studentsData.splice(index, 1);
+                renderStudents();
+                saveStudentsData();
+            }
+        }
+
+        function sortStudents(criteria) {
+            if (criteria === 'percentage') {
+                studentsData.sort((a, b) => b.percentage - a.percentage);
+            } else if (criteria === 'name') {
+                studentsData.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            
+            renderStudents();
+            saveStudentsData();
+        }
+
+        function clearAllStudents() {
+            if (confirm('Are you sure you want to delete all students? This action cannot be undone.')) {
+                studentsData = [];
+                renderStudents();
+                saveStudentsData();
+            }
+        }
+
+        function refreshStudents() {
+            loadStudentsData();
+        }
+
+        // ============================================================================
+        // UI RENDERING FUNCTIONS
+        // ============================================================================
+
+        function renderStudents() {
+            const container = document.getElementById('studentsList');
+            
+            if (studentsData.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: rgba(102, 126, 234, 0.7);">
+                        <i class="fas fa-user-graduate" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <h3>No students added yet</h3>
+                        <p>Use the form on the left to add your first student!</p>
+                    </div>
+                `;
+                document.getElementById('studentCount').textContent = '0';
+                return;
+            }
+
+            container.innerHTML = studentsData.map((student, index) => `
+                <div class="student-card new-item" data-index="${index}">
+                    <img src="${student.image}" alt="${student.name}" class="student-image" 
+                         onerror="this.src='https://via.placeholder.com/150/667eea/ffffff?text=${student.name.charAt(0)}'">
+                    <div class="student-name">${student.name}</div>
+                    <div class="student-details">
+                        <div class="student-percentage">${student.percentage}%</div>
+                        <div class="student-batch">${student.batch}</div>
+                    </div>
+                    <div class="student-actions">
+                        <button onclick="openEditModal(${index})" class="btn btn-warning btn-small">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button onclick="deleteStudent(${index})" class="btn btn-danger btn-small">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('studentCount').textContent = studentsData.length;
+        }
+
+        function updateStatistics() {
+            const total = studentsData.length;
+            const highest = total > 0 ? Math.max(...studentsData.map(s => s.percentage)) : 0;
+            const average = total > 0 ? (studentsData.reduce((sum, s) => sum + s.percentage, 0) / total).toFixed(1) : 0;
+            
+            document.getElementById('totalStudents').textContent = total;
+            document.getElementById('highestScore').textContent = highest + '%';
+            document.getElementById('averageScore').textContent = average + '%';
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+        }
+
+        // ============================================================================
+        // FORM HANDLING
+        // ============================================================================
+
+        document.getElementById('addStudentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const imageFile = document.getElementById('studentImageFile').files[0];
+            let imageUrl = formData.get('studentImage');
+            
+            // Handle image upload
+            if (imageFile && !imageUrl) {
+                try {
+                    imageUrl = await uploadImageToGitHub(imageFile);
+                } catch (error) {
+                    showStatus('❌ Failed to upload image: ' + error.message, 'error');
+                    return;
+                }
+            }
+            
+            const studentData = {
+                name: formData.get('studentName'),
+                percentage: formData.get('studentPercentage'),
+                batch: formData.get('studentBatch'),
+                image: imageUrl
+            };
+            
+            addStudent(studentData);
+            this.reset();
+            document.getElementById('filePreview').innerHTML = '';
+            showStatus('✅ Student added successfully!', 'success');
+        });
+
+        document.getElementById('editStudentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const index = parseInt(document.getElementById('editStudentIndex').value);
+            const imageFile = document.getElementById('editStudentImageFile').files[0];
+            let imageUrl = document.getElementById('editStudentImage').value;
+            
+            // Handle image upload
+            if (imageFile) {
+                try {
+                    imageUrl = await uploadImageToGitHub(imageFile);
+                } catch (error) {
+                    showStatus('❌ Failed to upload image: ' + error.message, 'error');
+                    return;
+                }
+            }
+            
+            const studentData = {
+                name: document.getElementById('editStudentName').value,
+                percentage: document.getElementById('editStudentPercentage').value,
+                batch: document.getElementById('editStudentBatch').value,
+                image: imageUrl
+            };
+            
+            editStudent(index, studentData);
+            closeEditModal();
+            showStatus('✅ Student updated successfully!', 'success');
+        });
+
+        // ============================================================================
+        // IMAGE UPLOAD TO GITHUB
+        // ============================================================================
+
+        async function uploadImageToGitHub(file) {
+            if (!file) return null;
+            
+            const fileName = `images/student_${Date.now()}_${file.name}`;
+            const reader = new FileReader();
+            
+            return new Promise((resolve, reject) => {
+                reader.onload = async function(e) {
+                    try {
+                        const base64Content = e.target.result.split(',')[1];
+                        
+                        const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${fileName}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Authorization': `token ${githubToken}`,
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                message: `Upload student image: ${fileName}`,
+                                content: base64Content,
+                                branch: githubConfig.branch
+                            })
+                        });
+                        
+                        if (response.ok) {
+                            const result = await response.json();
+                            resolve(result.content.download_url);
+                        } else {
+                            throw new Error('Failed to upload image to GitHub');
+                        }
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                
+                reader.onerror = () => reject(new Error('Failed to read file'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // ============================================================================
+        // MODAL FUNCTIONS
+        // ============================================================================
+
+        function openEditModal(index) {
+            const student = studentsData[index];
+            
+            document.getElementById('editStudentIndex').value = index;
+            document.getElementById('editStudentName').value = student.name;
+            document.getElementById('editStudentPercentage').value = student.percentage;
+            document.getElementById('editStudentBatch').value = student.batch;
+            document.getElementById('editStudentImage').value = student.image;
+            
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editImagePreview').innerHTML = '';
+        }
+
+        // ============================================================================
+        // PREVIEW FUNCTIONS
+        // ============================================================================
+
+        function showPreview() {
+            const previewSection = document.getElementById('previewSection');
+            const previewContent = document.getElementById('previewContent');
+            
+            if (studentsData.length === 0) {
+                showStatus('❌ No students to preview. Add some students first!', 'error');
+                return;
+            }
+            
+            previewContent.innerHTML = generatePreviewHTML();
+            previewSection.style.display = 'block';
+            previewSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hidePreview() {
+            document.getElementById('previewSection').style.display = 'none';
+        }
+
+        function generatePreviewHTML() {
+            return `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                    <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">
+                        <i class="fas fa-graduation-cap"></i> Student Achievement Showcase
+                    </h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        ${studentsData.map(student => `
+                            <div style="background: white; border-radius: 15px; padding: 20px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                <img src="${student.image}" alt="${student.name}" 
+                                     style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #667eea; margin-bottom: 15px;"
+                                     onerror="this.src='https://via.placeholder.com/150/667eea/ffffff?text=${student.name.charAt(0)}'">
+                                <h3 style="color: #333; margin-bottom: 10px;">${student.name}</h3>
+                                <div style="font-size: 1.5rem; font-weight: bold; color: #667eea; margin-bottom: 5px;">${student.percentage}%</div>
+                                <div style="color: #666; font-size: 0.9rem;">${student.batch}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================================================
+        // HTML EXPORT FUNCTION
+        // ============================================================================
+
+        function generateStudentHTML() {
+            if (studentsData.length === 0) {
+                showStatus('❌ No students to export. Add some students first!', 'error');
+                return;
+            }
+            
+            const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Achievement Showcase - Shishu Vidya Pith</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .student-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .student-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+        }
+        
+        .student-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .student-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .student-percentage {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .student-batch {
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .stats {
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+        }
+        
+        .stat-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .students-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Student Achievement Showcase</h1>
+            <p>Celebrating Excellence at Shishu Vidya Pith</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-label">Total Students</div>
+                <div class="stat-value">${studentsData.length}</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Highest Score</div>
+                <div class="stat-value">${Math.max(...studentsData.map(s => s.percentage))}%</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Average Score</div>
+                <div class="stat-value">${(studentsData.reduce((sum, s) => sum + s.percentage, 0) / studentsData.length).toFixed(1)}%</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Generated On</div>
+                <div class="stat-value">${new Date().toLocaleDateString()}</div>
+            </div>
+        </div>
+        
+        <div class="students-grid">
+            ${studentsData.map(student => `
+                <div class="student-card">
+                    <img src="${student.image}" alt="${student.name}" class="student-image"
+                         onerror="this.src='https://via.placeholder.com/150/667eea/ffffff?text=${student.name.charAt(0)}'">
+                    <div class="student-name">${student.name}</div>
+                    <div class="student-percentage">${student.percentage}%</div>
+                    <div class="student-batch">${student.batch}</div>
+                </div>
+            `).join('')}
+        </div>
+    </div>
+</body>
+</html>`;
+            
+            // Create and download the file
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `student-showcase-${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus('✅ HTML file downloaded successfully!', 'success');
+        }
+
+        // ============================================================================
+        // UTILITY FUNCTIONS
+        // ============================================================================
+
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = `status-message status-${type}`;
+            statusElement.style.display = 'flex';
+            
+            setTimeout(() => {
+                statusElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+        }
+
+        // ============================================================================
+        // FILE PREVIEW HANDLERS
+        // ============================================================================
+
+        document.getElementById('studentImageFile').addEventListener('change', function(e) {
+            previewFile(e.target.files[0], 'filePreview');
+        });
+
+        document.getElementById('editStudentImageFile').addEventListener('change', function(e) {
+            previewFile(e.target.files[0], 'editImagePreview');
+        });
+
+        function previewFile(file, previewElementId) {
+            const preview = document.getElementById(previewElementId);
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" 
+                             style="max-width: 200px; max-height: 200px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                            ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
+                        </p>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.innerHTML = '';
+            }
+        }
+
+        // ============================================================================
+        // INITIALIZATION
+        // ============================================================================
+
+        // Check for saved GitHub token on page load
+        window.addEventListener('load', function() {
+            const savedToken = localStorage.getItem('githubToken');
+            if (savedToken) {
+                document.getElementById('githubToken').value = savedToken;
+                // Auto-authenticate if token exists
+                authenticateGitHub();
+            }
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        });
+
+        // Handle escape key for modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeEditModal();
+                hidePreview();
+            }
+        }); </script> 
+        </body> </html>
