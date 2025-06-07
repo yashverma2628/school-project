@@ -886,4 +886,160 @@
     text-align: center;
     padding: 20px 0;
 }
+/* General Body and Container Styling (Agar aapka page poore mein nahi faila hai) */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4; /* Light background for the page */
+}
+
+/* Slideshow Container */
+.slideshow-container {
+    max-width: 900px; /* Overall width of your slideshow. Adjust as needed. */
+    position: relative;
+    margin: 0 auto 30px auto; /* Centered, with margin at bottom for indicators */
+    background-color: #fff; /* White background for the slideshow area */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Ensures content stays within bounds */
+}
+
+/* Slides Wrapper (This needs to be adjusted based on your desired layout for multiple cards per slide) */
+/* Agar aap ek slide mein ek hi student dikhana chahte hain, toh display: flex; ki zaroorat nahi hai yahan. */
+/* Agar aap ek slide mein 2-3 students dikhana chahte hain, toh aapko JS logic bhi badalna padega. */
+/* Abhi ke liye, hum maan rahe hain ki ek slide = ek student card. */
+.slides-wrapper {
+    /* Agar aapke har student-slide mein sirf ek hi student-card hai, toh iski zaroorat nahi. */
+    /* display: flex;  */
+    /* transition: transform 0.5s ease-in-out; */
+}
+
+
+/* Individual Student Slide (The main container for each student's details) */
+.student-slide {
+    display: none; /* By default, hide all slides */
+    padding: 20px;
+    text-align: center; /* Center the content within the slide */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+}
+
+.student-slide.active {
+    display: block; /* Show the active slide */
+    /* Fading animation (optional) */
+    animation-name: fade;
+    animation-duration: 1.5s;
+}
+
+@keyframes fade {
+    from {opacity: .4}
+    to {opacity: 1}
+}
+
+
+/* Student Card Styling */
+.student-card {
+    display: flex; /* Use flexbox to align photo and info horizontally */
+    flex-direction: column; /* Stack photo and info vertically within the card */
+    align-items: center; /* Center items horizontally in the card */
+    max-width: 400px; /* Max width for each student card, adjust for desired narrowness */
+    margin: 0 auto; /* Center the card within its slide */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Student Photo */
+.student-photo {
+    width: 150px; /* Fixed width for student photo */
+    height: 150px; /* Fixed height for student photo */
+    object-fit: cover; /* Ensures image covers the area without distortion */
+    border-radius: 50%; /* Make it circular */
+    border: 3px solid #2c5aa0; /* Border around the photo */
+    margin-bottom: 15px; /* Space below the photo */
+}
+
+/* Student Info Styling */
+.student-info {
+    text-align: center; /* Center text within the info block */
+    width: 100%; /* Take full width of the student-card */
+}
+
+.student-info h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1.8em; /* Larger font for name */
+    font-weight: bold;
+}
+
+.student-info .percentage {
+    font-size: 1.5em; /* Larger font for percentage */
+    font-weight: bold;
+    color: #008000; /* Green color for highlight */
+    margin-bottom: 5px; /* Space below percentage */
+}
+
+.student-info .batch {
+    font-size: 1.1em; /* Standard font for batch */
+    color: #666;
+    margin-bottom: 0;
+}
+
+/* Navigation Arrows (Prev/Next buttons) */
+.slide-nav {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    padding: 16px;
+    margin-top: -22px; /* Vertically center */
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    background-color: rgba(0,0,0,0.6); /* Slightly transparent */
+    border: none; /* Remove default button border */
+}
+
+.slide-nav.prev {
+    left: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.slide-nav.next {
+    right: 0;
+    border-radius: 0 3px 3px 0; /* Adjusted for right button */
+}
+
+.slide-nav:hover {
+    background-color: rgba(0,0,0,0.8); /* Darker on hover */
+}
+
+/* Slide Indicators (Dots) */
+.slide-indicators {
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 10px; /* Space between slideshow and dots */
+}
+
+.indicator {
+    cursor: pointer;
+    height: 12px; /* Smaller dots */
+    width: 12px; /* Smaller dots */
+    margin: 0 4px; /* Space between dots */
+    background-color: #bbb; /* Default color */
+    border-radius: 50%; /* Circular */
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.indicator.active,
+.indicator:hover {
+    background-color: #717171; /* Active/hover color */
+}
 
