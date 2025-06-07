@@ -2,13 +2,13 @@
   {
     "name": "yoyo",
     "percentage": 88,
-    "batch": "2020",
-    "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749300467103_school%20%20achievements.png"
+    "batchyear": "2020",
+    "imageurl": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749300467103_school%20%20achievements.png"
   },
   {
     "name": "yoyo",
     "percentage": 99,
-    "batch": "2026",
-    "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749300616310_IMG-20230807-WA0022.jpg"
+    "batchurl": "2026",
+    "imageyear": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749300616310_IMG-20230807-WA0022.jpg"
   }
 ]
