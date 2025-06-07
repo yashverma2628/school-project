@@ -2,21 +2,13 @@
     {
         "name": "Alice Smith",
         "imageUrl": "images/alice.jpg",
-        "description": "A passionate computer science student with a knack for web development.",
-        "major": "Computer Science",
-        "gradYear": 2026,
-        "hobbies": ["coding", "hiking", "reading"],
-        "email": "alice@example.com",
-        "linkedin": "https://www.linkedin.com/in/alicesmith"
+        "percentage": "95.6%",
+        "batchYear": "Batch 2026"
     },
     {
-        "name": "Bob Johnson",
+        "name": "Bob Johnson", 
         "imageUrl": "images/bob.jpg",
-        "description": "An enthusiastic design student focused on user experience.",
-        "major": "Graphic Design",
-        "gradYear": 2025,
-        "hobbies": ["drawing", "photography"],
-        "email": "bob@example.com",
-        "linkedin": "https://www.linkedin.com/in/bobjohnson"
+        "percentage": "92.4%",
+        "gradYear": 2025
     }
 ]
