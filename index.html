@@ -528,8 +528,8 @@
 
     async loadStudentData() {
         try {
-            console.log('Loading student data from students-data.json...');
-            const response = await fetch('students-data.json');
+            console.log('Loading student data from students_data.json...');
+            const response = await fetch('students_data.json');
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
