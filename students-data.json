@@ -8,19 +8,19 @@
   {
     "name": "yoyo",
     "percentage": 99,
-    "batchurl": "2026",
-    "imageyear": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749300616310_IMG-20230807-WA0022.jpg"
+    "batchyear": "2026",
+    "imageurl": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749300616310_IMG-20230807-WA0022.jpg"
   },
   {
     "name": "yoyo",
     "percentage": 88,
-    "batch": "2026",
-    "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749324106072_school%20emoji.png"
+    "batchyear": "2026",
+    "imageurl": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749324106072_school%20emoji.png"
   },
   {
     "name": "yash",
     "percentage": 97.5,
-    "batch": "2024",
-    "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749324961288_Snapchat-1437269081.jpg"
+    "batchyear": "2024",
+    "imageurl": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/student_1749324961288_Snapchat-1437269081.jpg"
   }
 ]
