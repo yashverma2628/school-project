@@ -1,5 +1,4 @@
-
-        class StudentSlideshow {
+  class StudentSlideshow {
             constructor() {
                 this.students = [];
                 this.currentSlide = 0;
@@ -94,10 +93,14 @@
                 const slide = document.createElement('div');
                 slide.className = 'student-slide';
                 slide.innerHTML = `
-                    <img src="${student.imageUrl}" alt="${student.name}" class="student-image" loading="lazy">
-                    <div class="student-name">${student.name}</div>
-                    <div class="student-percentage">${student.percentage}</div>
-                    <div class="student-batch">${student.batchYear}</div>
+                    <div class="student-card">
+                        <img src="${student.imageUrl}" alt="${student.name}" class="student-photo" loading="lazy">
+                        <div class="student-info">
+                            <h3>${student.name}</h3>
+                            <div class="percentage">${student.percentage}</div>
+                            <div class="batch">${student.batchYear}</div>
+                        </div>
+                    </div>
                 `;
                 return slide;
             }
