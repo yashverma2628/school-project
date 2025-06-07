@@ -1,166 +1,244 @@
-// slideshow.js
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // Path to your students_data.json file (relative to index.html)
-    const studentsDataUrl = 'students_data.json';
-    const slidesWrapper = document.getElementById('student-slideshow-wrapper');
-    const indicatorsContainer = document.getElementById('slide-indicators-container');
-
-    // Make sure these elements exist in your index.html
-    if (!slidesWrapper || !indicatorsContainer) {
-        console.error("Slideshow containers not found. Please ensure 'student-slideshow-wrapper' and 'slide-indicators-container' IDs exist in index.html.");
-        return;
-    }
-
-    let students = []; // Global array to store student data
-    let currentSlideIndex = 0;
-    let slideInterval; // For auto-slide functionality
-    const AUTO_SLIDE_INTERVAL = 5000; // 5 seconds
-
-    // --- Function to fetch and render student data ---
-    async function loadStudentsAndRenderSlideshow() {
-        try {
-            const response = await fetch(studentsDataUrl);
-            if (!response.ok) {
-                // If the file doesn't exist or there's an error, log it.
-                // For a new setup, students_data.json might not exist yet.
-                console.warn(`Could not load students_data.json from ${studentsDataUrl}. Status: ${response.status}`);
-                // You might want to display a message to the user or show a default empty state
-                slidesWrapper.innerHTML = '<p style="text-align: center; color: #555;">No student data found. Please use the editor to add students.</p>';
-                return;
+        class StudentSlideshow {
+            constructor() {
+                this.students = [];
+                this.currentSlide = 0;
+                this.slideInterval = null;
+                this.autoSlideDelay = 5000; // 5 seconds
+                
+                this.slideWrapper = document.getElementById('slideWrapper');
+                this.indicatorsContainer = document.getElementById('slideIndicators');
+                this.loadingMessage = document.getElementById('loadingMessage');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                
+                this.init();
             }
-            students = await response.json();
-            renderSlideshow(students);
-            startAutoSlide(); // Start auto-sliding only if data is loaded
-        } catch (error) {
-            console.error("Error loading or parsing student data:", error);
-            slidesWrapper.innerHTML = '<p style="text-align: center; color: red;">Error loading student data. Please check console for details.</p>';
+
+            async init() {
+                try {
+                    await this.loadStudentData();
+                    this.renderSlideshow();
+                    this.setupEventListeners();
+                    this.startAutoSlide();
+                } catch (error) {
+                    this.showError('Failed to load student data');
+                    console.error('Slideshow initialization error:', error);
+                }
+            }
+
+            async loadStudentData() {
+                try {
+                    const response = await fetch('students_data.json');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    this.students = await response.json();
+                    
+                    // Process the data to match our slideshow format
+                    this.students = this.students.map(student => ({
+                        name: student.name,
+                        imageUrl: student.imageUrl || 'https://via.placeholder.com/200x200?text=No+Image',
+                        percentage: student.percentage || 'N/A',
+                        batchYear: student.batchYear || `Batch ${student.gradYear}` || 'Unknown Batch'
+                    }));
+                    
+                } catch (error) {
+                    console.error('Error loading student data:', error);
+                    // Fallback to sample data if JSON file is not found
+                    console.warn('Using fallback sample data');
+                    this.students = [
+                        {
+                            "name": "Sample Student 1",
+                            "imageUrl": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
+                            "percentage": "95.6%",
+                            "batchYear": "Batch 2026"
+                        },
+                        {
+                            "name": "Sample Student 2",
+                            "imageUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+                            "percentage": "92.4%",
+                            "batchYear": "Batch 2025"
+                        }
+                    ];
+                }
+            }
+
+            renderSlideshow() {
+                if (this.students.length === 0) {
+                    this.slideWrapper.innerHTML = '<div class="error-message">No student data available</div>';
+                    return;
+                }
+
+                // Clear existing content
+                this.slideWrapper.innerHTML = '';
+                this.indicatorsContainer.innerHTML = '';
+
+                // Create slides
+                this.students.forEach((student, index) => {
+                    const slide = this.createSlide(student, index);
+                    this.slideWrapper.appendChild(slide);
+                });
+
+                // Create indicators
+                this.students.forEach((_, index) => {
+                    const indicator = this.createIndicator(index);
+                    this.indicatorsContainer.appendChild(indicator);
+                });
+
+                // Show first slide
+                this.showSlide(0);
+            }
+
+            createSlide(student, index) {
+                const slide = document.createElement('div');
+                slide.className = 'student-slide';
+                slide.innerHTML = `
+                    <img src="${student.imageUrl}" alt="${student.name}" class="student-image" loading="lazy">
+                    <div class="student-name">${student.name}</div>
+                    <div class="student-percentage">${student.percentage}</div>
+                    <div class="student-batch">${student.batchYear}</div>
+                `;
+                return slide;
+            }
+
+            createIndicator(index) {
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator';
+                indicator.addEventListener('click', () => {
+                    this.goToSlide(index);
+                });
+                return indicator;
+            }
+
+            showSlide(index) {
+                const slides = this.slideWrapper.querySelectorAll('.student-slide');
+                const indicators = this.indicatorsContainer.querySelectorAll('.indicator');
+
+                // Remove active classes
+                slides.forEach(slide => {
+                    slide.classList.remove('active', 'prev');
+                });
+                indicators.forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+
+                // Add prev class to current slide before changing
+                if (slides[this.currentSlide]) {
+                    slides[this.currentSlide].classList.add('prev');
+                }
+
+                // Update current slide index
+                this.currentSlide = index;
+
+                // Add active classes
+                if (slides[this.currentSlide]) {
+                    setTimeout(() => {
+                        slides[this.currentSlide].classList.add('active');
+                    }, 50);
+                }
+                
+                if (indicators[this.currentSlide]) {
+                    indicators[this.currentSlide].classList.add('active');
+                }
+            }
+
+            goToSlide(index) {
+                if (index >= 0 && index < this.students.length) {
+                    this.showSlide(index);
+                    this.resetAutoSlide();
+                }
+            }
+
+            nextSlide() {
+                const nextIndex = (this.currentSlide + 1) % this.students.length;
+                this.showSlide(nextIndex);
+            }
+
+            prevSlide() {
+                const prevIndex = (this.currentSlide - 1 + this.students.length) % this.students.length;
+                this.showSlide(prevIndex);
+            }
+
+            startAutoSlide() {
+                this.slideInterval = setInterval(() => {
+                    this.nextSlide();
+                }, this.autoSlideDelay);
+            }
+
+            stopAutoSlide() {
+                if (this.slideInterval) {
+                    clearInterval(this.slideInterval);
+                    this.slideInterval = null;
+                }
+            }
+
+            resetAutoSlide() {
+                this.stopAutoSlide();
+                this.startAutoSlide();
+            }
+
+            setupEventListeners() {
+                // Navigation buttons
+                this.prevBtn.addEventListener('click', () => {
+                    this.prevSlide();
+                    this.resetAutoSlide();
+                });
+
+                this.nextBtn.addEventListener('click', () => {
+                    this.nextSlide();
+                    this.resetAutoSlide();
+                });
+
+                // Pause on hover
+                this.slideWrapper.addEventListener('mouseenter', () => {
+                    this.stopAutoSlide();
+                });
+
+                this.slideWrapper.addEventListener('mouseleave', () => {
+                    this.startAutoSlide();
+                });
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') {
+                        this.prevSlide();
+                        this.resetAutoSlide();
+                    } else if (e.key === 'ArrowRight') {
+                        this.nextSlide();
+                        this.resetAutoSlide();
+                    }
+                });
+
+                // Touch/swipe support
+                let startX = 0;
+                let endX = 0;
+
+                this.slideWrapper.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                });
+
+                this.slideWrapper.addEventListener('touchend', (e) => {
+                    endX = e.changedTouches[0].clientX;
+                    const diff = startX - endX;
+
+                    if (Math.abs(diff) > 50) { // Minimum swipe distance
+                        if (diff > 0) {
+                            this.nextSlide(); // Swipe left - next slide
+                        } else {
+                            this.prevSlide(); // Swipe right - previous slide
+                        }
+                        this.resetAutoSlide();
+                    }
+                });
+            }
+
+            showError(message) {
+                this.slideWrapper.innerHTML = `<div class="error-message">${message}</div>`;
+            }
         }
-    }
 
-    // --- Function to dynamically render slides and indicators ---
-    function renderSlideshow(studentsData) {
-        slidesWrapper.innerHTML = ''; // Clear existing slides
-        indicatorsContainer.innerHTML = ''; // Clear existing indicators
-
-        if (studentsData.length === 0) {
-            slidesWrapper.innerHTML = '<p style="text-align: center; color: #555;">No students to display.</p>';
-            return;
-        }
-
-        studentsData.forEach((student, index) => {
-            // Create slide element
-            const slide = document.createElement('div');
-            slide.classList.add('student-slide');
-            if (index === 0) {
-                slide.classList.add('active'); // First slide is active by default
-            }
-
-            // Populate slide content (customize this based on your student data structure)
-            slide.innerHTML = `
-                <img src="${student.imageUrl || 'path/to/default-avatar.png'}" alt="${student.name}'s image" class="student-image">
-                <h3>${student.name}</h3>
-                <p>${student.description || 'No description provided.'}</p>
-                <div class="student-details">
-                    ${student.major ? `<p><strong>Major:</strong> ${student.major}</p>` : ''}
-                    ${student.gradYear ? `<p><strong>Graduation Year:</strong> ${student.gradYear}</p>` : ''}
-                    ${student.hobbies ? `<p><strong>Hobbies:</strong> ${student.hobbies.join(', ')}</p>` : ''}
-                    ${student.email ? `<p><strong>Email:</strong> <a href="mailto:${student.email}">${student.email}</a></p>` : ''}
-                    ${student.linkedin ? `<p><strong>LinkedIn:</strong> <a href="${student.linkedin}" target="_blank">Profile</a></p>` : ''}
-                </div>
-            `;
-            slidesWrapper.appendChild(slide);
-
-            // Create indicator element
-            const indicator = document.createElement('span');
-            indicator.classList.add('slide-indicator');
-            if (index === 0) {
-                indicator.classList.add('active');
-            }
-            indicator.dataset.slideIndex = index; // Store index for navigation
-            indicator.addEventListener('click', () => {
-                goToSlide(index);
-                resetAutoSlide();
-            });
-            indicatorsContainer.appendChild(indicator);
+        // Initialize slideshow when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new StudentSlideshow();
         });
-
-        // Add navigation buttons if you want them (optional)
-        addNavigationButtons();
-    }
-
-    // --- Function to show a specific slide ---
-    function showSlide(index) {
-        const slides = document.querySelectorAll('.student-slide');
-        const indicators = document.querySelectorAll('.slide-indicator');
-
-        // Ensure index wraps around for continuous slideshow
-        if (index >= slides.length) {
-            currentSlideIndex = 0;
-        } else if (index < 0) {
-            currentSlideIndex = slides.length - 1;
-        } else {
-            currentSlideIndex = index;
-        }
-
-        // Deactivate all slides and indicators
-        slides.forEach(slide => slide.classList.remove('active'));
-        indicators.forEach(indicator => indicator.classList.remove('active'));
-
-        // Activate the current slide and indicator
-        slides[currentSlideIndex].classList.add('active');
-        indicators[currentSlideIndex].classList.add('active');
-    }
-
-    // --- Function to go to a specific slide and update state ---
-    function goToSlide(index) {
-        showSlide(index);
-    }
-
-    // --- Function to go to the next slide ---
-    function nextSlide() {
-        showSlide(currentSlideIndex + 1);
-    }
-
-    // --- Function to go to the previous slide ---
-    function prevSlide() {
-        showSlide(currentSlideIndex - 1);
-    }
-
-    // --- Auto-slide functionality ---
-    function startAutoSlide() {
-        clearInterval(slideInterval); // Clear any existing interval
-        slideInterval = setInterval(nextSlide, AUTO_SLIDE_INTERVAL);
-    }
-
-    function resetAutoSlide() {
-        startAutoSlide(); // Restart the timer
-    }
-
-    // --- Add navigation buttons (optional, you'll need HTML for these) ---
-    function addNavigationButtons() {
-        // You might want to add buttons in your HTML and get references to them here
-        // Example:
-        // const prevBtn = document.getElementById('prev-slide-btn');
-        // const nextBtn = document.getElementById('next-slide-btn');
-
-        // if (prevBtn) {
-        //     prevBtn.addEventListener('click', () => {
-        //         prevSlide();
-        //         resetAutoSlide();
-        //     });
-        // }
-        // if (nextBtn) {
-        //     nextBtn.addEventListener('click', () => {
-        //         nextSlide();
-        //         resetAutoSlide();
-        //     });
-        // }
-
-        // For now, let's assume you'll manually add them or add a simple example
-        // (This part can be integrated into your HTML or dynamically created here)
-    }
-
-    // --- Initial load ---
-    loadStudentsAndRenderSlideshow();
-});
