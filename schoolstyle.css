@@ -750,3 +750,61 @@
 .fa-youtube {
     color: #FF0000;
 }
+.slideshow-container {
+    max-width: 800px;
+    margin: 50px auto;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.student-slideshow-wrapper {
+    display: flex; /* Helps in arranging slides if using JS for transitions */
+    position: relative; /* For positioning active slides */
+    height: 400px; /* Adjust as needed */
+}
+
+.student-slide {
+    display: none; /* Hide all by default */
+    flex-shrink: 0;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+}
+
+.student-slide.active {
+    display: block; /* Show active slide */
+}
+
+.student-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 2px solid #3498db;
+}
+
+.slide-indicators-container {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #eee;
+}
+
+.slide-indicator {
+    height: 10px;
+    width: 10px;
+    margin: 0 5px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.slide-indicator.active {
+    background-color: #717171;
+}
