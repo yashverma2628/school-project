@@ -10,5 +10,11 @@
     "imageUrl": "images/bob.jpg",
     "percentage": "92.4%",
     "gradYear": 2025
+  },
+  {
+    "name": "yt",
+    "imageUrl": "https://github.com/yashverma2628/school-project/blob/main/images/1749318136457_school  achievements.png?raw=true",
+    "percentage": "69%",
+    "batchYear": "2026"
   }
 ]
