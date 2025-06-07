@@ -73,7 +73,7 @@
             height: 100vh;
             /* REPLACE WITH LARGE SCHOOL BUILDING IMAGE */
             background: linear-gradient(rgba(44, 90, 160, 0.7), rgba(183, 212, 255, 0.7)),
-                        url('https://www.google.com/maps/place/SHISHU+VIDYA+PITH+ENGLISH+MEDIUM+Hr+Sec+SCHOOL/@23.1804613,79.967197,3a,75y,90t/data=!3m8!1e2!3m6!1sCIABIhCQtAQk2YBS_HlrDzTEYhZ2!2e10!3e12!6shttps:%2F%2Flh3.googleusercontent.com%2Fgps-cs-s%2FAC9h4nrvr7Skv83dbmUd9DzeuXOScYvCdS2YCCPIAGIviadVtuZE91f-fIj0OKt7wi2wrKOaBdygHRuo3IAdv01Dawd3IMAUkuEgTWn4VGkQW_kE3uL4DnMJC-KOpTie3BHI7bZH1KX7efOaBxI%3Dw203-h122-k-no!7i1505!8i907!4m11!1m2!2m1!1sshishu+vidya+peeth+jabalpur!3m7!1s0x3981af5fcb3a2487:0x78431a6d75a9e46b!8m2!3d23.1804649!4d79.9672829!10e5!15sChtzaGlzaHUgdmlkeWEgcGVldGggamFiYWxwdXKSARhnZW5lcmFsX2VkdWNhdGlvbl9zY2hvb2yqAVwQASoWIhJzaGlzaHUgdmlkeWEgcGVldGgoADIfEAEiG7iVk1FC2xfXJ_XlnYvV3TALjDPYT4w_sgVuNTIfEAIiG3NoaXNodSB2aWR5YSBwZWV0aCBqYWJhbHB1cuABAA!16s%2Fg%2F11thqg3czc?entry=ttu&g_ep=EgoyMDI1MDYwNC4wIKXMDSoASAFQAw%3D%3D#') center/cover;
+                        url('https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrunTX3RgToWd_GExwuQtcXMk85dpnUFhDTmu5CkplIOdlsnEDdXRq1KwMKtFtLTyJAThGJGDnU19EFsNArJ9jrMs7JdNjaX7MwLpOW7kn9dXymkQfTyeY4U9YX8-NpwkjbK1q5Iw=s1360-w1360-h1020-rw') center/cover;
             display: flex;
             align-items: center;
             justify-content: center;
