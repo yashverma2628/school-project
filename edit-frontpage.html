@@ -1087,9 +1087,9 @@ async function handleAddStudent(event) {
     
     const newStudent = {
         name: formData.get('studentName'),
-        imageUrl: imageUrl || 'https://via.placeholder.com/150',
+        image: imageUrl || 'https://via.placeholder.com/150',
         percentage: formData.get('studentPercentage') + '%',
-        batchYear: formData.get('studentBatch')
+        batch: formData.get('studentBatch')
     };
     
     studentsData.push(newStudent);
