@@ -19,20 +19,20 @@
   },
   {
     "name": "eoruwieri",
-    "imageUrl": "https://github.com/yashverma2628/school-project/blob/main/images/1749319469821_school emoji.png?raw=true",
+    "image": "https://github.com/yashverma2628/school-project/blob/main/images/1749319469821_school emoji.png?raw=true",
     "percentage": "88%",
-    "batchYear": "2026"
+    "batch": "2026"
   },
   {
     "name": "yoyotedhgg",
-    "imageUrl": "https://github.com/yashverma2628/school-project/blob/main/images/1749326213203_class room.png?raw=true",
+    "image": "https://github.com/yashverma2628/school-project/blob/main/images/1749326213203_class room.png?raw=true",
     "percentage": "99%",
-    "batchYear": "2026"
+    "batch": "2026"
   },
   {
     "name": "yash",
-    "imageUrl": "https://via.placeholder.com/150",
+    "image": "https://via.placeholder.com/150",
     "percentage": "99.9%",
-    "batchYear": "2024"
+    "batch": "2024"
   }
 ]
