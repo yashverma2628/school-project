@@ -1071,7 +1071,7 @@ async function handleAddStudent(event) {
     const formData = new FormData(event.target);
     const imageFile = document.getElementById('studentImageFile').files[0];
     
-    let imageUrl = formData.get('studentImage');
+    let image = formData.get('studentImage');
     
     // If file is uploaded, upload to GitHub first
     if (imageFile) {
@@ -1087,7 +1087,7 @@ async function handleAddStudent(event) {
     
     const newStudent = {
         name: formData.get('studentName'),
-        image: imageUrl || 'https://via.placeholder.com/150',
+        image: image || 'https://via.placeholder.com/150',
         percentage: formData.get('studentPercentage') + '%',
         batch: formData.get('studentBatch')
     };
@@ -1116,13 +1116,13 @@ async function handleEditStudent(event) {
     const index = parseInt(document.getElementById('editStudentIndex').value);
     const imageFile = document.getElementById('editStudentImageFile').files[0];
     
-    let imageUrl = document.getElementById('editStudentImage').value;
+    let image = document.getElementById('editStudentImage').value;
     
     // If new file is uploaded, upload to GitHub
     if (imageFile) {
         try {
             showLoading(true);
-            imageUrl = await uploadImageToGitHub(imageFile);
+            image = await uploadImageToGitHub(imageFile);
         } catch (error) {
             showStatus(`Failed to upload image: ${error.message}`, 'error');
             showLoading(false);
@@ -1132,9 +1132,9 @@ async function handleEditStudent(event) {
     
     const updatedStudent = {
         name: document.getElementById('editStudentName').value,
-        imageUrl: imageUrl || studentsData[index].imageUrl,
+        image: image || studentsData[index].imageUrl,
         percentage: document.getElementById('editStudentPercentage').value + '%',
-        batchYear: document.getElementById('editStudentBatch').value
+        batch: document.getElementById('editStudentBatch').value
     };
     
     studentsData[index] = updatedStudent;
@@ -1181,7 +1181,7 @@ async function uploadImageToGitHub(file) {
                 
                 const result = await response.json();
                 const imageUrl = `https://github.com/${githubOwner}/${githubRepo}/blob/main/${fileName}?raw=true`;
-                resolve(imageUrl);
+                resolve(image);
                 
             } catch (error) {
                 reject(error);
@@ -1242,12 +1242,12 @@ function renderStudents() {
     
     container.innerHTML = studentsData.map((student, index) => `
         <div class="student-card new-item">
-            <img src="${student.imageUrl}" alt="${student.name}" class="student-image" 
+            <img src="${student.image}" alt="${student.name}" class="student-image" 
                  onerror="this.src='https://via.placeholder.com/150'">
             <div class="student-name">${student.name}</div>
             <div class="student-details">
                 <div class="student-percentage">${student.percentage}</div>
-                <div class="student-batch">${student.batchYear}</div>
+                <div class="student-batch">${student.batch}</div>
             </div>
             <div class="student-actions">
                 <button onclick="editStudent(${index})" class="btn btn-warning btn-small">
@@ -1270,8 +1270,8 @@ function editStudent(index) {
     document.getElementById('editStudentIndex').value = index;
     document.getElementById('editStudentName').value = student.name;
     document.getElementById('editStudentPercentage').value = parseFloat(student.percentage);
-    document.getElementById('editStudentBatch').value = student.batchYear;
-    document.getElementById('editStudentImage').value = student.imageUrl;
+    document.getElementById('editStudentBatch').value = student.batch;
+    document.getElementById('editStudentImage').value = student.image;
     document.getElementById('editImagePreview').innerHTML = 
         `<img src="${student.imageUrl}" alt="Current" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
     
