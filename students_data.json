@@ -1,21 +1,21 @@
 [
   {
     "name": "Alice Smith",
-    "imageUrl": "https://github.com/yashverma2628/school-project/blob/main/Snapchat-416427894.jpg?raw=true",
+    "image": "https://github.com/yashverma2628/school-project/blob/main/Snapchat-416427894.jpg?raw=true",
     "percentage": "95.6%",
-    "batchYear": "Batch 2026"
+    "batch": "Batch 2026"
   },
   {
     "name": "Bob Johnson",
-    "imageUrl": "images/bob.jpg",
+    "image": "images/bob.jpg",
     "percentage": "92.4%",
     "gradYear": 2025
   },
   {
     "name": "yt",
-    "imageUrl": "https://github.com/yashverma2628/school-project/blob/main/images/1749318136457_school  achievements.png?raw=true",
+    "image": "https://github.com/yashverma2628/school-project/blob/main/images/1749318136457_school  achievements.png?raw=true",
     "percentage": "69%",
-    "batchYear": "2026"
+    "batch": "2026"
   },
   {
     "name": "eoruwieri",
