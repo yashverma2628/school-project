@@ -1087,7 +1087,7 @@ async function handleAddStudent(event) {
     
     const newStudent = {
         name: formData.get('studentName'),
-        image: image || 'https://via.placeholder.com/150',
+        image: imageUrl || 'https://via.placeholder.com/150',
         percentage: formData.get('studentPercentage') + '%',
         batch: formData.get('studentBatch')
     };
@@ -1116,7 +1116,7 @@ async function handleEditStudent(event) {
     const index = parseInt(document.getElementById('editStudentIndex').value);
     const imageFile = document.getElementById('editStudentImageFile').files[0];
     
-    let image = document.getElementById('editStudentImage').value;
+    let imageUrl = document.getElementById('editStudentImage').value;
     
     // If new file is uploaded, upload to GitHub
     if (imageFile) {
@@ -1132,7 +1132,7 @@ async function handleEditStudent(event) {
     
     const updatedStudent = {
         name: document.getElementById('editStudentName').value,
-        image: image || studentsData[index].imageUrl,
+        image: imageUrl || studentsData[index].imageUrl,
         percentage: document.getElementById('editStudentPercentage').value + '%',
         batch: document.getElementById('editStudentBatch').value
     };
@@ -1242,7 +1242,7 @@ function renderStudents() {
     
     container.innerHTML = studentsData.map((student, index) => `
         <div class="student-card new-item">
-            <img src="${student.image}" alt="${student.name}" class="student-image" 
+            <img src="${student.imageUrl}" alt="${student.name}" class="student-image" 
                  onerror="this.src='https://via.placeholder.com/150'">
             <div class="student-name">${student.name}</div>
             <div class="student-details">
@@ -1271,7 +1271,7 @@ function editStudent(index) {
     document.getElementById('editStudentName').value = student.name;
     document.getElementById('editStudentPercentage').value = parseFloat(student.percentage);
     document.getElementById('editStudentBatch').value = student.batch;
-    document.getElementById('editStudentImage').value = student.image;
+    document.getElementById('editStudentImage').value = student.imageUrl;
     document.getElementById('editImagePreview').innerHTML = 
         `<img src="${student.imageUrl}" alt="Current" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
     
@@ -1402,7 +1402,7 @@ ${studentsData.map(student => `
         <div class="student-info">
             <h3>${student.name}</h3>
             <div class="student-percentage">${student.percentage}</div>
-            <div class="student-batch">${student.batchYear}</div>
+            <div class="student-batch">${student.batch}</div>
         </div>
     </div>`).join('')}
 </div>`;
