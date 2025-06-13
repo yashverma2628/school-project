@@ -950,6 +950,57 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+// Function to toggle mobile menu
+function toggleMobileMenu() {
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const hamburger = document.querySelector('.mobile-menu-toggle');
+    
+    if (overlay.classList.contains('active')) {
+        overlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    } else {
+        overlay.classList.add('active');
+        hamburger.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Function to close mobile menu and navigate to section
+function closeMobileMenuAndNavigate(sectionId) {
+    toggleMobileMenu();
+    setTimeout(() => {
+        scrollToSection(sectionId);
+    }, 300);
+}
+
+// Function to close mobile menu and redirect to page
+function closeMobileMenuAndRedirect(pageName) {
+    toggleMobileMenu();
+    setTimeout(() => {
+        redirectToPage(pageName);
+    }, 300);
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const menuContent = document.querySelector('.mobile-menu-content');
+    
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            toggleMobileMenu();
+        }
+    });
+    
+    // Close menu on window resize if screen becomes larger
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768 && overlay.classList.contains('active')) {
+            toggleMobileMenu();
+        }
+    });
+});
+
     </script>
 </body>
 </html>
