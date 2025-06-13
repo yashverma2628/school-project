@@ -973,6 +973,374 @@ html {
     color: white;
 }
 
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(30, 30, 60, 0.9) 100%);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mobile-menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-menu-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #667eea 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    overflow-y: auto;
+    border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.mobile-menu-overlay.active .mobile-menu-content {
+    transform: translateX(0);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.mobile-menu-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.mobile-menu-header:hover::before {
+    left: 100%;
+}
+
+.mobile-menu-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.mobile-menu-close {
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+ 
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    position: relative;
+    overflow: hidden;
+}
+
+.mobile-menu-close::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+
+.mobile-menu-close:hover {
+    
+    transform: rotate(90deg) scale(1.1);
+}
+
+.mobile-menu-close:hover::before {
+    width: 100%;
+    height: 100%;
+}
+
+.mobile-menu-close span {
+    
+    font-size: 28px;
+    line-height: 1;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+}
+
+.mobile-nav-menu {
+    list-style: none;
+    padding: 30px 0;
+    margin: 0;
+}
+
+.mobile-nav-menu li {
+    margin: 8px 0;
+    opacity: 0;
+    transform: translateX(50px);
+    animation: slideInLeft 0.6s ease forwards;
+}
+
+.mobile-nav-menu li:nth-child(1) { animation-delay: 0.1s; }
+.mobile-nav-menu li:nth-child(2) { animation-delay: 0.2s; }
+.mobile-nav-menu li:nth-child(3) { animation-delay: 0.3s; }
+.mobile-nav-menu li:nth-child(4) { animation-delay: 0.4s; }
+.mobile-nav-menu li:nth-child(5) { animation-delay: 0.5s; }
+.mobile-nav-menu li:nth-child(6) { animation-delay: 0.6s; }
+.mobile-nav-menu li:nth-child(7) { animation-delay: 0.7s; }
+
+@keyframes slideInLeft {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.mobile-nav-menu a {
+    display: block;
+    padding: 18px 25px;
+    margin: 0 15px;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-left: 4px solid transparent;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-nav-menu a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.mobile-nav-menu a::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: -1;
+}
+
+.mobile-nav-menu a:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-left-color: #ffeb3b;
+    transform: translateX(8px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    color: #ffeb3b;
+}
+
+.mobile-nav-menu a:hover::before {
+    left: 100%;
+}
+
+.mobile-nav-menu a:hover::after {
+    width: 100%;
+}
+
+.mobile-nav-menu a:active {
+    transform: translateX(8px) scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+/* Icon Animation for Menu Items */
+.mobile-nav-menu a {
+    position: relative;
+}
+
+.mobile-nav-menu a:nth-child(1)::before { content: '🏠'; position: absolute; right: 25px; top: 50%; transform: translateY(-50%); opacity: 0; transition: all 0.3s ease; }
+.mobile-nav-menu a:nth-child(2)::before { content: '📖'; position: absolute; right: 25px; top: 50%; transform: translateY(-50%); opacity: 0; transition: all 0.3s ease; }
+.mobile-nav-menu a:nth-child(3)::before { content: '🔐'; position: absolute; right: 25px; top: 50%; transform: translateY(-50%); opacity: 0; transition: all 0.3s ease; }
+.mobile-nav-menu a:nth-child(4)::before { content: '📰'; position: absolute; right: 25px; top: 50%; transform: translateY(-50%); opacity: 0; transition: all 0.3s ease; }
+.mobile-nav-menu a:nth-child(5)::before { content: '🏛️'; position: absolute; right: 25px; top: 50%; transform: translateY(-50%); opacity: 0; transition: all 0.3s ease; }
+.mobile-nav-menu a:nth-child(6)::before { content: '🖼️'; position: absolute; right: 25px; top: 50%; transform: translateY(-50%); opacity: 0; transition: all 0.3s ease; }
+.mobile-nav-menu a:nth-child(7)::before { content: '📞'; position: absolute; right: 25px; top: 50%; transform: translateY(-50%); opacity: 0; transition: all 0.3s ease; }
+
+.mobile-nav-menu a:hover::before {
+    opacity: 1;
+    transform: translateY(-50%) translateX(-5px);
+}
+
+/* Media Queries for Mobile Menu */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex;
+    }
+    
+    .nav-menu {
+        display: none;
+    }
+    
+    /* Adjust header for mobile */
+    .nav {
+        justify-content: space-between;
+        padding: 15px 20px;
+    }
+    
+    .logo {
+        flex: 1;
+    }
+    
+    .header {
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+}
+
+@media (max-width: 480px) {
+    .mobile-menu-content {
+        width: 100%;
+        border-left: none;
+    }
+    
+    .mobile-menu-toggle {
+        width: 32px;
+        height: 28px;
+        padding: 6px;
+    }
+    
+    .hamburger-line {
+        width: 18px;
+        height: 2px;
+    }
+    
+    .logo span {
+        font-size: 16px;
+    }
+    
+    .logo img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .mobile-nav-menu a {
+        font-size: 15px;
+        padding: 16px 20px;
+        margin: 0 10px;
+    }
+    
+    .mobile-menu-header {
+        padding: 20px 15px;
+    }
+    
+    .mobile-menu-title {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 360px) {
+    .mobile-nav-menu a {
+        font-size: 14px;
+        padding: 14px 15px;
+        margin: 0 8px;
+    }
+    
+    .mobile-menu-header {
+        padding: 18px 12px;
+    }
+    
+    .mobile-menu-close {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .mobile-menu-close span {
+        font-size: 24px;
+    }
+}
+
+/* Additional animations for better UX */
+.mobile-menu-overlay.active .mobile-nav-menu li {
+    animation: bounceIn 0.6s ease forwards;
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: translateX(50px) scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(-10px) scale(1.05);
+    }
+    70% {
+        transform: translateX(5px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* Pulse animation for hamburger menu */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 25px rgba(102, 126, 234, 0.5);
+    }
+    100% {
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+}
+
+.mobile-menu-toggle {
+    animation: pulse 2s infinite;
+}
+
+.mobile-menu-toggle:hover {
+    animation: none;
+}
+
 /* Animations */
 @keyframes slideInLeft {
     from {
