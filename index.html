@@ -200,6 +200,14 @@
                 <img src="https://github.com/yashverma2628/school-project/blob/main/Picsart_25-06-04_10-53-12-323.png?raw=true" alt="School Logo">
                 <span>Shishu Vidya Pith</span>
             </div>
+            
+<div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+</div>
+
+
             <ul class="nav-menu">
                 <li><a onclick="scrollToSection('home')">Home</a></li>
                 <li><a onclick="scrollToSection('about')">About</a></li>
@@ -210,6 +218,29 @@
                 <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
             </ul>
         </nav>
+        
+<div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <div class="mobile-menu-content">
+        <div class="mobile-menu-header">
+            <span class="mobile-menu-title">Menu</span>
+            <div class="mobile-menu-close" onclick="toggleMobileMenu()">
+              
+            </div>
+        </div>
+        <ul class="mobile-nav-menu">
+            <li><a onclick="closeMobileMenuAndNavigate('home')">Home</a></li>
+            <li><a onclick="closeMobileMenuAndNavigate('about')">About</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('loginpage.html')">Login</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('news.html')">News</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('gallery.html?category=facilities')">Facilities</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('gallery.html')">Gallery</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('contact.html')">Contact</a></li>
+        </ul>
+    </div>
+</div>
+
+
+
     </header>
 
     <!-- Hero Section -->
