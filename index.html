@@ -189,6 +189,143 @@
                 right: 10px;
             }
         }
+            
+
+/* Sports Section Specific Styles */
+.sports-section {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+    padding: 80px 0;
+}
+
+.sports-section .section-title h2 {
+    color: white;
+}
+
+.sports-description {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 16px;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    text-align: center;
+}
+
+.sports-slideshow {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sports-slide {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: white;
+}
+
+.sports-card {
+    text-align: center;
+    max-width: 350px;
+    width: 100%;
+    color: #333;
+}
+
+.sports-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #1e3c72;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.sports-info h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.sports-name {
+    font-size: 18px;
+    color: #1e3c72;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.achievement {
+    font-size: 16px;
+    color: #2a5298;
+    font-weight: 600;
+    margin-bottom: 8px;
+    background: #f0f4ff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.sport-type {
+    font-size: 14px;
+    color: #666;
+    background: #e8f2ff;
+    padding: 6px 12px;
+    border-radius: 15px;
+    display: inline-block;
+    margin: 5px;
+}
+
+.batch-year {
+    font-size: 14px;
+    color: #888;
+    margin-top: 8px;
+}
+
+.sports-summary {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.sports-summary h3 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Responsive adjustments for sports section */
+@media (max-width: 768px) {
+    .sports-section {
+        padding: 60px 0;
+    }
+    
+    .sports-photo {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .sports-info h3 {
+        font-size: 20px;
+    }
+    
+    .sports-name {
+        font-size: 16px;
+    }
+    
+    .achievement {
+        font-size: 14px;
+    }
+}
+
+
+
     </style>
 </head>
 <body>
@@ -357,6 +494,58 @@
         </div>
     </div>
 </section>
+
+    
+<!-- Sports Student Appreciation Section -->
+<section id="sports-results" class="sports-section">
+    <div class="container">
+        <div class="section-title">
+            <h2>SPORTS EXCELLENCE</h2>
+            <p class="sports-description">
+                Celebrating our talented athletes who have brought glory to our school through their exceptional 
+                performance in various sports competitions and tournaments. Their dedication and hard work inspire 
+                the entire school community.
+            </p>
+        </div>
+        
+        <div class="slideshow-container sports-slideshow">
+            <div class="slides-wrapper" id="sportsSlideWrapper">
+                <div class="loading-message" id="sportsLoadingMessage">Loading sports data...</div>
+            </div>
+            
+            <button class="slide-nav prev" id="sportsPrevBtn">‹</button>
+            <button class="slide-nav next" id="sportsNextBtn">›</button>
+            
+            <div class="slide-indicators" id="sportsSlideIndicators">
+                <!-- Indicators will be generated dynamically -->
+            </div>
+        </div>
+
+        <!-- Sports Summary -->
+        <div class="sports-summary">
+            <h3>Sports Achievement Summary</h3>
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Sports Champions</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Competitions Won</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Different Sports</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2024</div>
+                    <div class="stat-label">Current Year</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 
     <!-- News and Agenda -->
     <section id="news" class="news">
@@ -999,6 +1188,324 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleMobileMenu();
         }
     });
+});
+
+
+    
+class SportsSlideshow {
+    constructor() {
+        this.sportsStudents = [];
+        this.currentSlide = 0;
+        this.slideInterval = null;
+        this.autoSlideDelay = 6000; // 6 seconds
+        
+        this.slideWrapper = document.getElementById('sportsSlideWrapper');
+        this.indicatorsContainer = document.getElementById('sportsSlideIndicators');
+        this.loadingMessage = document.getElementById('sportsLoadingMessage');
+        this.prevBtn = document.getElementById('sportsPrevBtn');
+        this.nextBtn = document.getElementById('sportsNextBtn');
+        
+        this.init();
+    }
+
+    async init() {
+        try {
+            this.showLoadingMessage();
+            await this.loadSportsData();
+            this.hideLoadingMessage();
+            this.renderSlideshow();
+            this.setupEventListeners();
+            this.startAutoSlide();
+            
+            console.log(`Sports slideshow initialized with ${this.sportsStudents.length} students`);
+        } catch (error) {
+            this.showError('Failed to load sports data: ' + error.message);
+            console.error('Sports slideshow initialization error:', error);
+        }
+    }
+
+    showLoadingMessage() {
+        if (this.loadingMessage) {
+            this.loadingMessage.style.display = 'flex';
+        }
+    }
+
+    hideLoadingMessage() {
+        if (this.loadingMessage) {
+            this.loadingMessage.style.display = 'none';
+        }
+    }
+
+    async loadSportsData() {
+        try {
+            console.log('Loading sports data from sports_students_data.json...');
+            const response = await fetch('sports_students_data.json');
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Raw sports data loaded:', data);
+            
+            if (Array.isArray(data)) {
+                this.sportsStudents = this.processSportsData(data);
+            } else {
+                throw new Error('Expected an array of sports students');
+            }
+            
+            console.log(`Processed ${this.sportsStudents.length} valid sports students:`, this.sportsStudents);
+            
+            if (this.sportsStudents.length === 0) {
+                throw new Error('No valid sports student data found');
+            }
+            
+        } catch (error) {
+            console.error('Error loading sports data:', error);
+            console.warn('Using fallback sports data');
+            
+            // Fallback data
+            const fallbackData = [
+                {
+                    "name": "Rahul Kumar",
+                    "achievement": "State Champion",
+                    "competition": "Inter-State Football Championship",
+                    "sport": "Football",
+                    "batch": "2023",
+                    "image": "https://via.placeholder.com/200x200?text=Rahul"
+                },
+                {
+                    "name": "Priya Sharma",
+                    "achievement": "Gold Medal",
+                    "competition": "District Athletics Meet",
+                    "sport": "Athletics",
+                    "batch": "2024",
+                    "image": "https://via.placeholder.com/200x200?text=Priya"
+                }
+            ];
+            
+            this.sportsStudents = this.processSportsData(fallbackData);
+        }
+    }
+
+    processSportsData(rawData) {
+        return rawData.map((student, index) => {
+            if (!student || typeof student !== 'object') {
+                console.warn(`Invalid sports student data at index ${index}:`, student);
+                return null;
+            }
+            
+            return {
+                name: student.name || `Student ${index + 1}`,
+                imageUrl: student.image || 'https://via.placeholder.com/200x200?text=No+Image',
+                achievement: student.achievement || 'Participant',
+                competition: student.competition || 'School Competition',
+                sport: student.sport || 'General Sports',
+                batchYear: this.formatBatch(student.batch)
+            };
+        }).filter(student => student !== null);
+    }
+
+    formatBatch(batch) {
+        if (batch) {
+            return `Batch ${batch}`;
+        }
+        return 'Unknown Batch';
+    }
+
+    renderSlideshow() {
+        console.log(`Rendering sports slideshow with ${this.sportsStudents.length} students`);
+        
+        if (this.sportsStudents.length === 0) {
+            this.slideWrapper.innerHTML = '<div class="error-message">No sports data available</div>';
+            return;
+        }
+
+        this.slideWrapper.innerHTML = '';
+        this.indicatorsContainer.innerHTML = '';
+
+        const slidesContainer = document.createElement('div');
+        slidesContainer.className = 'slides-container';
+        slidesContainer.style.width = `${this.sportsStudents.length * 100}%`;
+
+        this.sportsStudents.forEach((student, index) => {
+            const slide = this.createSportsSlide(student, index);
+            slidesContainer.appendChild(slide);
+        });
+
+        this.slideWrapper.appendChild(slidesContainer);
+
+        this.sportsStudents.forEach((_, index) => {
+            const indicator = this.createIndicator(index);
+            this.indicatorsContainer.appendChild(indicator);
+        });
+
+        this.showSlide(0);
+        console.log('Sports slideshow rendering complete');
+    }
+
+    createSportsSlide(student, index) {
+        const slide = document.createElement('div');
+        slide.className = 'sports-slide';
+        slide.style.width = `${100 / this.sportsStudents.length}%`;
+        
+        const imageUrl = student.imageUrl;
+        const fallbackImage = 'https://via.placeholder.com/200x200?text=' + encodeURIComponent(student.name.charAt(0));
+        
+        slide.innerHTML = `
+            <div class="sports-card">
+                <img src="${imageUrl}" 
+                     alt="${student.name}" 
+                     class="sports-photo" 
+                     loading="lazy"
+                     onerror="this.src='${fallbackImage}'">
+                <div class="sports-info">
+                    <h3>${student.name}</h3>
+                    <div class="achievement">${student.achievement}</div>
+                    <div class="sports-name">${student.competition}</div>
+                    <div class="sport-type">${student.sport}</div>
+                    <div class="batch-year">${student.batchYear}</div>
+                </div>
+            </div>
+        `;
+        
+        return slide;
+    }
+
+    createIndicator(index) {
+        const indicator = document.createElement('div');
+        indicator.className = 'indicator';
+        indicator.setAttribute('data-slide', index);
+        indicator.addEventListener('click', () => {
+            this.goToSlide(index);
+        });
+        return indicator;
+    }
+
+    showSlide(index) {
+        const slidesContainer = this.slideWrapper.querySelector('.slides-container');
+        const indicators = this.indicatorsContainer.querySelectorAll('.indicator');
+
+        if (!slidesContainer) {
+            console.error('Sports slides container not found');
+            return;
+        }
+
+        if (index < 0) {
+            index = this.sportsStudents.length - 1;
+        } else if (index >= this.sportsStudents.length) {
+            index = 0;
+        }
+
+        this.currentSlide = index;
+
+        const translateX = -index * (100 / this.sportsStudents.length);
+        slidesContainer.style.transform = `translateX(${translateX}%)`;
+
+        indicators.forEach((indicator, i) => {
+            indicator.classList.toggle('active', i === index);
+        });
+
+        console.log(`Showing sports slide ${index + 1} of ${this.sportsStudents.length}`);
+    }
+
+    goToSlide(index) {
+        if (index >= 0 && index < this.sportsStudents.length) {
+            this.showSlide(index);
+            this.resetAutoSlide();
+        }
+    }
+
+    nextSlide() {
+        const nextIndex = (this.currentSlide + 1) % this.sportsStudents.length;
+        this.showSlide(nextIndex);
+    }
+
+    prevSlide() {
+        const prevIndex = (this.currentSlide - 1 + this.sportsStudents.length) % this.sportsStudents.length;
+        this.showSlide(prevIndex);
+    }
+
+    startAutoSlide() {
+        if (this.sportsStudents.length <= 1) return;
+        
+        this.slideInterval = setInterval(() => {
+            this.nextSlide();
+        }, this.autoSlideDelay);
+    }
+
+    stopAutoSlide() {
+        if (this.slideInterval) {
+            clearInterval(this.slideInterval);
+            this.slideInterval = null;
+        }
+    }
+
+    resetAutoSlide() {
+        this.stopAutoSlide();
+        this.startAutoSlide();
+    }
+
+    setupEventListeners() {
+        if (this.prevBtn) {
+            this.prevBtn.addEventListener('click', () => {
+                this.prevSlide();
+                this.resetAutoSlide();
+            });
+        }
+
+        if (this.nextBtn) {
+            this.nextBtn.addEventListener('click', () => {
+                this.nextSlide();
+                this.resetAutoSlide();
+            });
+        }
+
+        this.slideWrapper.addEventListener('mouseenter', () => {
+            this.stopAutoSlide();
+        });
+
+        this.slideWrapper.addEventListener('mouseleave', () => {
+            this.startAutoSlide();
+        });
+
+        // Touch/swipe support
+        let startX = 0;
+        let endX = 0;
+
+        this.slideWrapper.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            this.stopAutoSlide();
+        });
+
+        this.slideWrapper.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    this.nextSlide();
+                } else {
+                    this.prevSlide();
+                }
+            }
+            this.resetAutoSlide();
+        });
+    }
+
+    showError(message) {
+        this.slideWrapper.innerHTML = `<div class="error-message">${message}</div>`;
+        console.error('Sports slideshow error:', message);
+    }
+}
+
+// Initialize sports slideshow when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Add a small delay to ensure the academic slideshow is initialized first
+    setTimeout(() => {
+        const sportsSlideshow = new SportsSlideshow();
+        window.sportsSlideshow = sportsSlideshow;
+    }, 500);
 });
 
     </script>
