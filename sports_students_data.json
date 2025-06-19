@@ -14,13 +14,5 @@
     "sport": "Athletics - 100m Sprint",
     "batch": "2024",
     "image": "https://github.com/yashverma2628/school-project/blob/main/images/sports_student_2.jpg?raw=true"
-  },
-  {
-    "name": "Arjun Singh",
-    "achievement": "Best Player Award",
-    "competition": "Regional Cricket Tournament",
-    "sport": "Cricket",
-    "batch": "2023",
-    "image": "https://github.com/yashverma2628/school-project/blob/main/images/sports_student_3.jpg?raw=true"
   }
 ]
