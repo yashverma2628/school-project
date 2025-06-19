@@ -14,5 +14,13 @@
     "sport": "karate ",
     "batch": "2024",
     "image": "https://via.placeholder.com/150"
+  },
+  {
+    "name": "Yash Verma",
+    "achievement": "gold medal",
+    "competition": "national chess compitition ",
+    "sport": "chess",
+    "batch": "2024",
+    "image": "https://github.com/yashverma2628/school-project/blob/main/images/sports_student_1750354039041_Snapchat-1437269081 (1).jpg?raw=true"
   }
 ]
