@@ -34,17 +34,16 @@
       "image": "https://via.placeholder.com/120x120/FF9800/white?text=SV"
     },
     {
-      "name": "Mr. Amit Singh",
-      "image": "https://via.placeholder.com/120x120/9C27B0/white?text=AS",
-      "post": "Computer Science Teacher",
+      "name": "Arvind Rai sir",
+      "post": "senior physics Teacher",
       "subjects": [
-        "Programming",
-        "Web Development",
-        "Data Science",
-        "Digital Literacy"
+        "physics",
+        "IP",
+        "science"
       ],
-      "experience": "10 Years"
+      "experience": "15 Years",
+      "image": "https://via.placeholder.com/120x120/9C27B0/white?text=AS"
     }
   ],
-  "lastUpdated": "2025-07-01T16:16:46.597Z"
+  "lastUpdated": "2025-07-01T16:20:03.032Z"
 }
