@@ -25,16 +25,13 @@
       "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751386112278_falguni%20madam.jpg"
     },
     {
-      "name": "Ms. Sunita Verma",
-      "image": "https://via.placeholder.com/120x120/FF9800/white?text=SV",
-      "post": "English Literature Teacher",
+      "name": "Pawan Puri sir",
+      "post": "senior mathematics teacher",
       "subjects": [
-        "English Literature",
-        "Creative Writing",
-        "Grammar",
-        "Public Speaking"
+        "mathematics"
       ],
-      "experience": "12 Years"
+      "experience": "18 Years",
+      "image": "https://via.placeholder.com/120x120/FF9800/white?text=SV"
     },
     {
       "name": "Mr. Amit Singh",
@@ -49,5 +46,5 @@
       "experience": "10 Years"
     }
   ],
-  "lastUpdated": "2025-07-01T16:08:35.408Z"
+  "lastUpdated": "2025-07-01T16:16:46.597Z"
 }
