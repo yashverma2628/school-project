@@ -4,57 +4,84 @@
       "name": "Dr. Priya Sharma",
       "image": "https://via.placeholder.com/120x120/4CAF50/white?text=PS",
       "post": "Principal & Senior Mathematics Teacher",
-      "subjects": ["Advanced Mathematics", "Calculus", "Statistics", "Algebra"],
+      "subjects": [
+        "Advanced Mathematics",
+        "Calculus",
+        "Statistics",
+        "Algebra"
+      ],
       "experience": "18 Years"
     },
     {
       "name": "Mr. Rajesh Kumar",
       "image": "https://via.placeholder.com/120x120/2196F3/white?text=RK",
       "post": "Head of Science Department",
-      "subjects": ["Physics", "Chemistry", "Environmental Science"],
+      "subjects": [
+        "Physics",
+        "Chemistry",
+        "Environmental Science"
+      ],
       "experience": "15 Years"
     },
     {
       "name": "Ms. Sunita Verma",
       "image": "https://via.placeholder.com/120x120/FF9800/white?text=SV",
       "post": "English Literature Teacher",
-      "subjects": ["English Literature", "Creative Writing", "Grammar", "Public Speaking"],
+      "subjects": [
+        "English Literature",
+        "Creative Writing",
+        "Grammar",
+        "Public Speaking"
+      ],
       "experience": "12 Years"
     },
     {
       "name": "Mr. Amit Singh",
       "image": "https://via.placeholder.com/120x120/9C27B0/white?text=AS",
       "post": "Computer Science Teacher",
-      "subjects": ["Programming", "Web Development", "Data Science", "Digital Literacy"],
+      "subjects": [
+        "Programming",
+        "Web Development",
+        "Data Science",
+        "Digital Literacy"
+      ],
       "experience": "10 Years"
     },
     {
       "name": "Mrs. Kavita Gupta",
       "image": "https://via.placeholder.com/120x120/F44336/white?text=KG",
       "post": "Hindi Literature Teacher",
-      "subjects": ["Hindi Literature", "Sanskrit", "Indian Culture"],
+      "subjects": [
+        "Hindi Literature",
+        "Sanskrit",
+        "Indian Culture"
+      ],
       "experience": "14 Years"
     },
     {
       "name": "Mr. Suresh Patel",
       "image": "https://via.placeholder.com/120x120/795548/white?text=SP",
       "post": "Social Studies Teacher",
-      "subjects": ["History", "Geography", "Political Science", "Economics"],
+      "subjects": [
+        "History",
+        "Geography",
+        "Political Science",
+        "Economics"
+      ],
       "experience": "16 Years"
     },
     {
       "name": "Ms. Ritu Jain",
       "image": "https://via.placeholder.com/120x120/607D8B/white?text=RJ",
       "post": "Art & Craft Teacher",
-      "subjects": ["Fine Arts", "Craft Work", "Drawing", "Painting"],
+      "subjects": [
+        "Fine Arts",
+        "Craft Work",
+        "Drawing",
+        "Painting"
+      ],
       "experience": "8 Years"
-    },
-    {
-      "name": "Mr. Vikram Chouhan",
-      "image": "https://via.placeholder.com/120x120/3F51B5/white?text=VC",
-      "post": "Physical Education Teacher",
-      "subjects": ["Physical Education", "Sports Training", "Yoga", "Health Education"],
-      "experience": "11 Years"
     }
-  ]
+  ],
+  "lastUpdated": "2025-07-01T15:44:09.389Z"
 }
