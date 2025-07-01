@@ -12,15 +12,17 @@
       "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751385073624_principal%20madam.jpg"
     },
     {
-      "name": "Mr. Rajesh Kumar",
-      "image": "https://via.placeholder.com/120x120/2196F3/white?text=RK",
-      "post": "Head of Science Department",
+      "name": "Falguni ma'am",
+      "post": "social studies teacher",
       "subjects": [
-        "Physics",
-        "Chemistry",
-        "Environmental Science"
+        "SST",
+        "economics",
+        "history",
+        "civics",
+        "geography"
       ],
-      "experience": "15 Years"
+      "experience": "10 Years",
+      "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751386112278_falguni%20madam.jpg"
     },
     {
       "name": "Ms. Sunita Verma",
@@ -47,5 +49,5 @@
       "experience": "10 Years"
     }
   ],
-  "lastUpdated": "2025-07-01T15:52:01.085Z"
+  "lastUpdated": "2025-07-01T16:08:35.408Z"
 }
