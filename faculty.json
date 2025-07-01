@@ -1,16 +1,15 @@
 {
   "faculty": [
     {
-      "name": "Dr. Priya Sharma",
-      "image": "https://via.placeholder.com/120x120/4CAF50/white?text=PS",
-      "post": "Principal & Senior Mathematics Teacher",
+      "name": "Sumana ma'am",
+      "post": "Principal & Senior English Teacher",
       "subjects": [
-        "Advanced Mathematics",
-        "Calculus",
-        "Statistics",
-        "Algebra"
+        "English",
+        "literature",
+        "English grammer"
       ],
-      "experience": "18 Years"
+      "experience": "18 Years",
+      "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751385070633_principal%20madam.jpg"
     },
     {
       "name": "Mr. Rajesh Kumar",
@@ -59,5 +58,5 @@
       "experience": "14 Years"
     }
   ],
-  "lastUpdated": "2025-07-01T15:44:21.148Z"
+  "lastUpdated": "2025-07-01T15:51:14.636Z"
 }
