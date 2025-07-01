@@ -56,27 +56,16 @@
       "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751388598320_preti%20madam.jpg"
     },
     {
-      "name": "Preeti ma'am",
-      "post": "senior accounts teacher",
+      "name": "Akansha ma'am",
+      "post": "economis teacher",
       "subjects": [
         "accounts",
-        "hindi",
+        "SST",
         "commerce"
       ],
-      "experience": "15 years",
-      "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751388615870_preti%20madam.jpg"
-    },
-    {
-      "name": "Preeti ma'am",
-      "post": "senior accounts teacher",
-      "subjects": [
-        "accounts",
-        "hindi",
-        "commerce"
-      ],
-      "experience": "15 years",
-      "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751388617563_preti%20madam.jpg"
+      "experience": "8 years",
+      "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751388779348_akansha%20maam%20.jpg"
     }
   ],
-  "lastUpdated": "2025-07-01T16:50:30.138Z"
+  "lastUpdated": "2025-07-01T16:53:09.116Z"
 }
