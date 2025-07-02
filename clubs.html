@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Governing Board - Shishu Vidya Pith</title>
+    <link rel="stylesheet" href="schoolstyle.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Main page styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-top: 10%;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin: 0 0 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .board-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 25px;
+            border-radius: 15px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .board-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .board-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .member-image {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid white;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .member-image:hover {
+            transform: scale(1.05);
+        }
+
+        .member-name {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .member-post {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 8px 0 0 0;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
+        }
+
+        .member-title {
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 15px;
+            border-radius: 20px;
+            margin-top: 10px;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-body {
+            padding: 30px;
+        }
+
+        .info-section {
+            margin-bottom: 22px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-label::before {
+            content: '';
+            width: 4px;
+            height: 18px;
+            background: #1e3c72;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .info-content {
+            color: #666;
+            line-height: 1.6;
+            padding-left: 14px;
+            font-size: 1rem;
+        }
+
+        .expertise-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-left: 14px;
+        }
+
+        .expertise-tag {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+        }
+
+        .expertise-tag:hover {
+            transform: scale(1.05);
+        }
+
+        .experience-badge {
+            background: #f8f9fa;
+            color: #1e3c72;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            border: 2px solid #e9ecef;
+            margin-left: 14px;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            font-size: 1rem;
+        }
+
+        .experience-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .experience-badge:hover::before {
+            left: 100%;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 50px 0;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .retry-btn {
+            background: white;
+            color: #ff5252;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: #f5f5f5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .position-filter {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            font-weight: 500;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: #1e3c72;
+            border-color: white;
+        }
+
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .board-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+
+            .board-stats {
+                gap: 15px;
+            }
+
+            .stat-item {
+                padding: 10px 15px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .position-filter {
+                gap: 10px;
+            }
+
+            .filter-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">
+                <img src="https://github.com/yashverma2628/school-project/blob/main/Picsart_25-06-04_10-53-12-323.png?raw=true" alt="School Logo">
+                <span>Shishu Vidya Pith</span>
+            </div>
+            
+            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a onclick="scrollToSection('home')">Home</a></li>
+                <li><a onclick="scrollToSection('about')">About</a></li>
+                <li><a onclick="redirectToPage('faculty.html')">Faculty</a></li>
+                <li><a onclick="redirectToPage('clubs.html')" class="active">commitee</a></li>
+                <li><a onclick="redirectToPage('loginpage.html')">Login</a></li>
+                <li><a onclick="redirectToPage('news.html')">News</a></li>
+                <li><a onclick="redirectToPage('gallery.html')">Gallery</a></li>
+                <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
+            </ul>
+        </nav>
+        
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+            <div class="mobile-menu-content">
+                <div class="mobile-menu-header">
+                    <span class="mobile-menu-title">Menu</span>
+                    <div class="mobile-menu-close" onclick="toggleMobileMenu()">
+                      <span>&times;</span>
+                    </div>
+                </div>
+                <ul class="mobile-nav-menu">
+                    <li><a onclick="closeMobileMenuAndNavigate('home')">Home</a></li>
+                    <li><a onclick="closeMobileMenuAndNavigate('about')">About</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('faculty.html')">Faculty</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('clubs.html')">commitee</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('loginpage.html')">Login</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('news.html')">News</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('gallery.html?category=facilities')">Facilities</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('gallery.html')">Gallery</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('contact.html')">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-university"></i> Our DB club commitee members</h1>
+            <p>Distinguished leaders guiding our institution towards excellence</p>
+            <div class="board-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalMembers">0</div>
+                    <div class="stat-label"> Members</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="avgExperience">0</div>
+                    <div class="stat-label">Avg Experience</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalExpertise">0</div>
+                    <div class="stat-label">Areas of Expertise</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-filter" id="positionFilter">
+            <button class="filter-btn active" onclick="filterByPosition('all')">All Members</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <div>Loading board members information...</div>
+        </div>
+        
+        <div class="error" id="error" style="display: none;">
+            <div id="errorMessage"></div>
+            <button class="retry-btn" onclick="loadBoardData()">
+                <i class="fas fa-redo"></i> Try Again
+            </button>
+        </div>
+        
+        <div class="board-grid" id="boardGrid"></div>
+        
+        <div class="no-results" id="noResults" style="display: none;">
+            <i class="fas fa-search"></i>
+            <p>No board members found for the selected position.</p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let allBoardData = [];
+        let currentFilter = 'all';
+
+        // Sample board data as fallback
+        const sampleBoardData = {
+            "board_members": [
+                {
+                    "name": "Dr. Rajesh Agarwal",
+                    "image": "https://via.placeholder.com/130x130/1e3c72/white?text=RA",
+                    "post": "Chairman",
+                    "title": "Former IAS Officer",
+                    "experience": "45 Years",
+                    "expertise": ["Educational Administration", "Policy Making", "Strategic Planning", "Governance"]
+                },
+                {
+                    "name": "Mrs. Sunita Sharma",
+                    "image": "https://via.placeholder.com/130x130/2a5298/white?text=SS",
+                    "post": "Vice Chairperson",
+                    "title": "Retired Principal",
+                    "experience": "40 Years",
+                    "expertise": ["Educational Leadership", "Curriculum Development", "Teacher Training", "Student Welfare"]
+                },
+                {
+                    "name": "Mr. Vikash Kumar Singh",
+                    "image": "https://via.placeholder.com/130x130/4CAF50/white?text=VKS",
+                    "post": "Secretary",
+                    "title": "Chartered Accountant",
+                    "experience": "35 Years",
+                    "expertise": ["Financial Management", "Audit & Compliance", "Budget Planning", "Risk Assessment"]
+                },
+                {
+                    "name": "Dr. Priya Mehta",
+                    "image": "https://via.placeholder.com/130x130/FF9800/white?text=PM",
+                    "post": "Treasurer",
+                    "title": "Banking Professional",
+                    "experience": "38 Years",
+                    "expertise": ["Financial Planning", "Investment Management", "Banking Operations", "Fund Management"]
+                }
+            ]
+        };
+
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            overlay.classList.toggle('active');
+        }
+
+        function closeMobileMenuAndNavigate(section) {
+            toggleMobileMenu();
+            scrollToSection(section);
+        }
+
+        function closeMobileMenuAndRedirect(page) {
+            toggleMobileMenu();
+            redirectToPage(page);
+        }
+
+        function scrollToSection(section) {
+            window.location.href = `index.html#${section}`;
+        }
+
+        function redirectToPage(page) {
+            window.location.href = page;
+        }
+
+        // Board data loading and display functions
+        async function loadBoardData() {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const gridEl = document.getElementById('boardGrid');
+            const noResultsEl = document.getElementById('noResults');
+
+            // Show loading, hide others
+            loadingEl.style.display = 'block';
+            errorEl.style.display = 'none';
+            gridEl.innerHTML = '';
+            noResultsEl.style.display = 'none';
+
+            try {
+                console.log('Attempting to load dbclub.json...');
+                
+                const response = await fetch('./dbclub.json');
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to load dbclub.json (Status: ${response.status})`);
+                }
+                
+                const data = await response.json();
+                console.log('Board data loaded successfully:', data);
+                
+                if (!data.board_members || !Array.isArray(data.board_members)) {
+                    throw new Error('Invalid JSON format: "board_members" array not found');
+                }
+                
+                allBoardData = data.board_members;
+                updateStats();
+                createPositionFilters();
+                displayBoardMembers(allBoardData);
+                loadingEl.style.display = 'none';
+                
+            } catch (error) {
+                console.error('Error loading board data:', error);
+                
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+                document.getElementById('errorMessage').innerHTML = `
+                    <strong><i class="fas fa-exclamation-triangle"></i> Unable to load dbclub.json file</strong><br>
+                    Error: ${error.message}<br><br>
+                    <em>Using sample data instead. Please ensure dbclub.json is in the same directory as this HTML file.</em>
+                `;
+                
+                // Use sample data as fallback
+                setTimeout(() => {
+                    console.log('Loading sample data...');
+                    allBoardData = sampleBoardData.board_members;
+                    updateStats();
+                    createPositionFilters();
+                    displayBoardMembers(allBoardData);
+                    errorEl.style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        function updateStats() {
+            const totalMembers = allBoardData.length;
+            const totalExpertise = new Set(allBoardData.flatMap(member => member.expertise || [])).size;
+            const avgExperience = Math.round(
+                allBoardData.reduce((sum, member) => {
+                    const exp = parseInt(member.experience) || 0;
+                    return sum + exp;
+                }, 0) / totalMembers
+            );
+
+            document.getElementById('totalMembers').textContent = totalMembers;
+            document.getElementById('avgExperience').textContent = avgExperience + ' Yrs';
+            document.getElementById('totalExpertise').textContent = totalExpertise;
+        }
+
+        function createPositionFilters() {
+            const positions = new Set(allBoardData.map(member => member.post || 'Member'));
+            
+            const filterContainer = document.getElementById('positionFilter');
+            positions.forEach(position => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = position;
+                btn.onclick = () => filterByPosition(position.toLowerCase());
+                filterContainer.appendChild(btn);
+            });
+        }
+
+        function filterByPosition(position) {
+            currentFilter = position;
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Filter and display board members
+            let filteredData = allBoardData;
+            if (position !== 'all') {
+                filteredData = allBoardData.filter(member => 
+                    (member.post || 'Member').toLowerCase().includes(position)
+                );
+            }
+
+            displayBoardMembers(filteredData);
+        }
+
+        function displayBoardMembers(membersArray) {
+            const grid = document.getElementById('boardGrid');
+            const noResults = document.getElementById('noResults');
+            
+            grid.innerHTML = '';
+            noResults.style.display = 'none';
+
+            if (!membersArray || membersArray.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+
+            membersArray.forEach((member, index) => {
+                const card = createBoardCard(member, index);
+                grid.appendChild(card);
+            });
+        }
+
+        function createBoardCard(member, index) {
+            const card = document.createElement('div');
+            card.className = 'board-card';
+            card.style.animationDelay = `${index * 0.1}s`;
+
+            // Ensure all required fields have default values
+            const name = member.name || 'Unknown Member';
+            const image = member.image || `https://via.placeholder.com/130x130/666/white?text=${name.charAt(0)}`;
+            const post = member.post || 'Board Member';
+            const title = member.title || 'Distinguished Professional';
+            const experience = member.experience || 'Not specified';
+            const expertise = Array.isArray(member.expertise) ? member.expertise : ['General Administration'];
+
+            const expertiseTags = expertise.map(exp => 
+                `<span class="expertise-tag">${exp}</span>`
+            ).join('');
+
+            card.innerHTML = `
+                <div class="card-header">
+                    <img src="${image}" alt="${name}" class="member-image" 
+                         onerror="this.src='https://via.placeholder.com/130x130/666/white?text=${name.charAt(0)}'">
+                    <h3 class="member-name">${name}</h3>
+                    <p class="member-post">${post}</p>
+                    <div class="member-title">${title}</div>
+                </div>
+                <div class="card-body">
+                    <div class="info-section">
+                        <div class="info-label">
+                            <i class="fas fa-briefcase"></i> Expertise
+                        </div>
+                        <div class="expertise-list">
+                            ${expertiseTags}
+                        </div>
+                    </div>
+                    <div class="info-section">
+                        <div class="info-label">
+                            <i class="fas fa-clock"></i> Experience
+                        </div>
+                        <div class="info-content">
+                            <span class="experience-badge">${experience}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Load board data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page loaded, starting board data load...');
+            loadBoardData();
+        });
+    </script>
+</body>
+</html>
