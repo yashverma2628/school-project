@@ -1,0 +1,83 @@
+{
+  "board_members": [
+    {
+      "name": "Dr. Rajesh Agarwal",
+      "image": "https://via.placeholder.com/130x130/1e3c72/white?text=RA",
+      "post": "president",
+      "title": "Former IAS Officer",
+      "experience": "45 Years",
+      "expertise": ["Educational Administration", "Policy Making", "Strategic Planning", "Governance", "Public Service"]
+    },
+    {
+      "name": "Mrs. Sunita Sharma",
+      "image": "https://via.placeholder.com/130x130/2a5298/white?text=SS",
+      "post": "Vice president",
+      "title": "Retired Principal",
+      "experience": "40 Years",
+      "expertise": ["Educational Leadership", "Curriculum Development", "Teacher Training", "Student Welfare", "Academic Excellence"]
+    },
+    {
+      "name": "Mr. Vikash Kumar Singh",
+      "image": "https://via.placeholder.com/130x130/4CAF50/white?text=VKS",
+      "post": "Secretary",
+      "title": "Chartered Accountant",
+      "experience": "35 Years",
+      "expertise": ["Financial Management", "Audit & Compliance", "Budget Planning", "Risk Assessment", "Tax Planning"]
+    },
+    {
+      "name": "Dr. Priya Mehta",
+      "image": "https://via.placeholder.com/130x130/FF9800/white?text=PM",
+      "post": "vice secretary",
+      "title": "Former Bank General Manager",
+      "experience": "38 Years",
+      "expertise": ["Financial Planning", "Investment Management", "Banking Operations", "Fund Management", "Capital Planning"]
+    },
+    {
+      "name": "Shri Ramesh Chandra Gupta",
+      "image": "https://via.placeholder.com/130x130/9C27B0/white?text=RCG",
+      "post": "Joint Secretary",
+      "title": "Social Worker & Philanthropist",
+      "experience": "42 Years",
+      "expertise": ["Community Development", "Social Welfare", "NGO Management", "Rural Development", "Education Advocacy"]
+    },
+    {
+      "name": "Dr. Anita Kumari",
+      "image": "https://via.placeholder.com/130x130/E91E63/white?text=AK",
+      "post": "Member",
+      "title": "Former Medical Superintendent",
+      "experience": "37 Years",
+      "expertise": ["Healthcare Management", "Public Health", "Medical Administration", "Student Health", "Emergency Planning"]
+    },
+    {
+      "name": "Mr. Suresh Tiwari",
+      "image": "https://via.placeholder.com/130x130/FF5722/white?text=ST",
+      "post": "Member",
+      "title": "Retired District Collector",
+      "experience": "41 Years",
+      "expertise": ["Administrative Management", "District Administration", "Policy Implementation", "Legal Affairs", "Public Relations"]
+    },
+    {
+      "name": "Mrs. Kavita Joshi",
+      "image": "https://via.placeholder.com/130x130/3F51B5/white?text=KJ",
+      "post": "Member",
+      "title": "Education Consultant",
+      "experience": "33 Years",
+      "expertise": ["Educational Consulting", "School Management", "Quality Assurance", "Teacher Development", "Modern Pedagogy"]
+    },
+    {
+      "name": "Shri Mohanlal Verma",
+      "image": "https://via.placeholder.com/130x130/795548/white?text=MLV",
+      "post": "Member",
+      "title": "Business Executive",
+      "experience": "39 Years",
+      "expertise": ["Business Development", "Strategic Management", "Corporate Affairs", "Human Resources", "Industrial Relations"]
+    },
+    {
+      "name": "Dr. Santosh Kumar",
+      "image": "https://via.placeholder.com/130x130/607D8B/white?text=SK",
+      "post": "Member",
+      "title": "Former University Vice Chancellor",
+      "experience": "44 Years",
+      "expertise": ["Higher Education", "Academic Research", "University Administration", "Educational Innovation", "Faculty Development"]
+    }]
+}
