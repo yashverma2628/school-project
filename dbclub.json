@@ -1,27 +1,27 @@
 {
   "board_members": [
     {
-      "name": "Dr. Rajesh Agarwal",
+      "name": "Sujit Ghosh Sir",
       "image": "https://via.placeholder.com/130x130/1e3c72/white?text=RA",
       "post": "president",
-      "title": "Former IAS Officer",
-      "experience": "45 Years",
+      "title": "",
+      "experience": "",
       "expertise": ["Educational Administration", "Policy Making", "Strategic Planning", "Governance", "Public Service"]
     },
     {
-      "name": "Mrs. Sunita Sharma",
-      "image": "https://via.placeholder.com/130x130/2a5298/white?text=SS",
+      "name": "Dilip Banerjee",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1751522668/it9vqwa0blnorpst2oit.jpg",
       "post": "Vice president",
-      "title": "Retired Principal",
-      "experience": "40 Years",
+      "title": "",
+      "experience": "",
       "expertise": ["Educational Leadership", "Curriculum Development", "Teacher Training", "Student Welfare", "Academic Excellence"]
     },
     {
-      "name": "Mr. Vikash Kumar Singh",
-      "image": "https://via.placeholder.com/130x130/4CAF50/white?text=VKS",
+      "name": "Soumen Goswami",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1751522612/a4prmmq5ibfpi70fwl9b.jpg",
       "post": "Secretary",
-      "title": "Chartered Accountant",
-      "experience": "35 Years",
+      "title": "",
+      "experience": "",
       "expertise": ["Financial Management", "Audit & Compliance", "Budget Planning", "Risk Assessment", "Tax Planning"]
     },
     {
