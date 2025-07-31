@@ -247,67 +247,130 @@
             font-size: 1.5rem;
         }
 
-        /* Members Section */
-        .members {
-            padding: 5rem 0;
-            background: var(--white);
-        }
 
-        .members-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
+/* Members Section */
+.members {
+    padding: 5rem 0;
+    background: var(--white);
+}
 
-        .member-card {
-            background: var(--white);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-soft);
-            transition: var(--transition-bounce);
-            position: relative;
-            overflow: hidden;
-        }
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
 
-        .member-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: var(--gradient-primary);
-        }
+.member-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition-bounce);
+    position: relative;
+    overflow: hidden;
+}
 
-        .member-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--shadow-strong);
-        }
+.member-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient-primary);
+}
 
-        .member-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: var(--gradient-accent);
-            margin: 0 auto 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: var(--white);
-            font-weight: bold;
-        }
+.member-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-strong);
+}
 
-        .member-role {
-            background: var(--gradient-secondary);
-            color: var(--white);
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
+.member-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--gradient-accent);
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--white);
+    font-weight: bold;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Image styling for member avatars */
+.member-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: var(--transition-smooth);
+}
+
+.member-card:hover .member-image {
+    transform: scale(1.1);
+}
+
+/* Fallback styling when no image is provided */
+.member-avatar:not(:has(img))::after {
+    content: attr(data-initials);
+    font-size: 3rem;
+    color: var(--white);
+    font-weight: bold;
+}
+
+.member-role {
+    background: var(--gradient-secondary);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.member-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.member-card p {
+    color: var(--text-light);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Section title styling */
+.section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+    font-weight: 700;
+}
+
+/* Alternative version with initials fallback */
+.member-avatar[data-initials]::before {
+    content: attr(data-initials);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: var(--white);
+    font-weight: bold;
+    z-index: 1;
+}
+
+.member-avatar img {
+    z-index: 2;
+    position: relative;
+}
 
         /* Events Section */
         .events {
@@ -643,32 +706,43 @@
         </div>
     </section>
 
-    <!-- Committee Members -->
-    <section class="members" id="members">
-        <div class="container">
-            <h2 class="section-title">Our Committee Members</h2>
-            <div class="members-grid">
-                <div class="member-card">
-                    <div class="member-avatar">AP</div>
-                    <div class="member-role">President</div>
-                    <h3>Alex Peterson</h3>
-                    <p>Leading the committee with passion for debate and student development. Alex has been instrumental in organizing major inter-school competitions and has a keen interest in parliamentary procedures.</p>
+   <!-- Committee Members -->
+<section class="members" id="members">
+    <div class="container">
+        <h2 class="section-title">Our Committee Members</h2>
+        <div class="members-grid">
+            <div class="member-card">
+                <!-- PASTE IMAGE LINK HERE -->
+                <div class="member-avatar">
+                    <img src="https://res.cloudinary.com/dprxaeuwi/image/upload/v1751523201/vnelng54fwmtzyl6xz6o.jpg" alt="Sujit Ghosh Sir" class="member-image">
                 </div>
-                <div class="member-card">
-                    <div class="member-avatar">SM</div>
-                    <div class="member-role">Vice President</div>
-                    <h3>Sarah Mitchell</h3>
-                    <p>Supporting our mission with expertise in event management and student engagement. Sarah specializes in workshop coordination and has helped increase student participation by 40% this year.</p>
+                <div class="member-role">President</div>
+                <h3>Sujit Ghosh Sir</h3>
+                <p>Leading the committee with passion for debate and student development. Sujit Sir has been instrumental in organizing major inter-school competitions and has a keen interest in parliamentary procedures.</p>
+            </div>
+            
+            <div class="member-card">
+                <!-- PASTE IMAGE LINK HERE -->
+                <div class="member-avatar">
+                    <img src="https://res.cloudinary.com/dprxaeuwi/image/upload/v1751522668/it9vqwa0blnorpst2oit.jpg" alt="Sarah Mitchell" class="member-image">
                 </div>
-                <div class="member-card">
-                    <div class="member-avatar">JD</div>
-                    <div class="member-role">Secretary</div>
-                    <h3>James Davis</h3>
-                    <p>Maintaining detailed records and coordinating communications. James ensures smooth operations and handles all administrative aspects of our events and meetings with exceptional attention to detail.</p>
+                <div class="member-role">Vice President</div>
+                <h3>Dilip Banerjee</h3>
+                <p>Supporting our mission with expertise in event management and student engagement. Sarah specializes in workshop coordination and has helped increase student participation by 40% this year.</p>
+            </div>
+            
+            <div class="member-card">
+                <!-- PASTE IMAGE LINK HERE -->
+                <div class="member-avatar">
+                    <img src="https://res.cloudinary.com/dprxaeuwi/image/upload/v1751522612/a4prmmq5ibfpi70fwl9b.jpg" alt="James Davis" class="member-image">
                 </div>
+                <div class="member-role">Secretary</div>
+                <h3>Soumen Goswami</h3>
+                <p>Maintaining detailed records and coordinating communications. James ensures smooth operations and handles all administrative aspects of our events and meetings with exceptional attention to detail.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Events Section -->
     <section class="events" id="events">
