@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D.B Club Committee - Our School</title>
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --white: #ffffff;
+            --light-bg: #f8f9fa;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-primary-result: linear-gradient(135deg, #719bf5 0%, #c634ff 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-medium: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --shadow-strong: 0 20px 50px rgba(0, 0, 0, 0.2);
+            --border-radius: 20px;
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient-primary);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            color: var(--white);
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--gradient-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,117.3C1248,117,1344,139,1392,149.3L1440,160L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            color: var(--white);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-content .highlight {
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-content p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            background: var(--gradient-secondary);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition-bounce);
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-card:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-card:nth-child(2) {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-card:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Committee Info Section */
+        .committee-info {
+            padding: 5rem 0;
+            background: var(--light-bg);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .info-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition-smooth);
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        /* Members Section */
+        .members {
+            padding: 5rem 0;
+            background: var(--white);
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .member-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--white);
+            font-weight: bold;
+        }
+
+        .member-role {
+            background: var(--gradient-secondary);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        /* Events Section */
+        .events {
+            padding: 5rem 0;
+            background: var(--light-bg);
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .event-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition-smooth);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 200px;
+            background: var(--gradient-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: var(--white);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .event-image.has-image {
+            font-size: 0;
+        }
+
+        .event-image .emoji-fallback {
+            font-size: 4rem;
+            color: var(--white);
+        }
+
+        .event-content {
+            padding: 1.5rem;
+        }
+
+        .event-date {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .event-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .event-description {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Upcoming Events */
+        .upcoming-events {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .upcoming-event {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            transition: var(--transition-smooth);
+        }
+
+        .upcoming-event:hover {
+            background: var(--light-bg);
+            transform: translateX(5px);
+        }
+
+        .upcoming-date {
+            background: var(--gradient-secondary);
+            color: var(--white);
+            padding: 0.5rem;
+            border-radius: 10px;
+            margin-right: 1rem;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        /* Card Animations */
+        .info-card, .member-card, .event-card {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .info-card:nth-child(1) { animation-delay: 0.1s; }
+        .info-card:nth-child(2) { animation-delay: 0.2s; }
+        .info-card:nth-child(3) { animation-delay: 0.3s; }
+
+        .member-card:nth-child(1) { animation-delay: 0.1s; }
+        .member-card:nth-child(2) { animation-delay: 0.3s; }
+        .member-card:nth-child(3) { animation-delay: 0.5s; }
+
+        .event-card:nth-child(1) { animation-delay: 0.1s; }
+        .event-card:nth-child(2) { animation-delay: 0.2s; }
+        .event-card:nth-child(3) { animation-delay: 0.3s; }
+        .event-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Pulse animation for member avatars */
+        .member-avatar {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0); }
+        }
+
+        /* Shimmer effect for event images */
+        .event-image {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        /* Bounce animation for CTA button */
+        .cta-button {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% {
+                animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+                transform: translate3d(0, 0, 0);
+            }
+            40%, 43% {
+                animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+                transform: translate3d(0, -5px, 0);
+            }
+            70% {
+                animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+                transform: translate3d(0, -3px, 0);
+            }
+            90% {
+                transform: translate3d(0, -1px, 0);
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--gradient-primary);
+            color: var(--white);
+            padding: 3rem 0 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,32L48,37.3C96,43,192,53,288,80C384,107,480,149,576,154.7C672,160,768,128,864,117.3C960,107,1056,117,1152,128C1248,139,1344,149,1392,154.7L1440,160L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"></path></svg>') no-repeat top;
+            background-size: cover;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-secondary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .footer-divider {
+            width: 100px;
+            height: 3px;
+            background: var(--gradient-secondary);
+            margin: 2rem auto;
+            border-radius: 2px;
+        }
+
+        .footer-bottom {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .floating-card {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">🏫 Our School</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#members">Members</a></li>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>D.B Club <span class="highlight">Committee</span></h1>
+                <p>Empowering students through debate, discussion, and intellectual growth. Join us in building a community of critical thinkers and confident speakers.</p>
+                <a href="#about" class="cta-button">Learn More</a>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-elements">
+                    <div class="floating-card">
+                        <h4>📚 Knowledge</h4>
+                        <p>Building expertise</p>
+                    </div>
+                    <div class="floating-card">
+                        <h4>🎤 Speaking</h4>
+                        <p>Confident communication</p>
+                    </div>
+                    <div class="floating-card">
+                        <h4>🤝 Leadership</h4>
+                        <p>Guiding others</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Committee Information -->
+    <section class="committee-info" id="about">
+        <div class="container">
+            <h2 class="section-title">About D.B Club Committee</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🎯 Our Mission</h3>
+                    <p>The D.B Club Committee is dedicated to fostering intellectual discourse, critical thinking, and public speaking skills among students. We create a platform where diverse perspectives meet and academic excellence thrives.</p>
+                </div>
+                <div class="info-card">
+                    <h3>👁️ Our Vision</h3>
+                    <p>To build a generation of confident speakers, critical thinkers, and ethical leaders who can articulate their thoughts clearly and contribute meaningfully to society through constructive dialogue and debate.</p>
+                </div>
+                <div class="info-card">
+                    <h3>🎯 Our Goals</h3>
+                    <p>Organize regular debates, workshops, and speaking events. Develop students' research, analytical, and presentation skills. Create an inclusive environment for intellectual growth and academic excellence.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Committee Members -->
+    <section class="members" id="members">
+        <div class="container">
+            <h2 class="section-title">Our Committee Members</h2>
+            <div class="members-grid">
+                <div class="member-card">
+                    <div class="member-avatar">AP</div>
+                    <div class="member-role">President</div>
+                    <h3>Alex Peterson</h3>
+                    <p>Leading the committee with passion for debate and student development. Alex has been instrumental in organizing major inter-school competitions and has a keen interest in parliamentary procedures.</p>
+                </div>
+                <div class="member-card">
+                    <div class="member-avatar">SM</div>
+                    <div class="member-role">Vice President</div>
+                    <h3>Sarah Mitchell</h3>
+                    <p>Supporting our mission with expertise in event management and student engagement. Sarah specializes in workshop coordination and has helped increase student participation by 40% this year.</p>
+                </div>
+                <div class="member-card">
+                    <div class="member-avatar">JD</div>
+                    <div class="member-role">Secretary</div>
+                    <h3>James Davis</h3>
+                    <p>Maintaining detailed records and coordinating communications. James ensures smooth operations and handles all administrative aspects of our events and meetings with exceptional attention to detail.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section class="events" id="events">
+        <div class="container">
+            <h2 class="section-title">Our Events & Activities</h2>
+            <div class="events-grid" id="events-container">
+                <!-- Events will be loaded from JSON -->
+            </div>
+            
+            <h3 style="margin-bottom: 2rem; color: var(--primary-color);">Upcoming Events</h3>
+            <div class="upcoming-events" id="upcoming-events">
+                <!-- Upcoming events will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>D.B Club Committee</h3>
+            <p>The D.B Club Committee serves as the cornerstone of intellectual development at our school, fostering a culture of critical thinking, eloquent communication, and respectful discourse. We believe that through structured debate and thoughtful discussion, students develop not only their speaking abilities but also their capacity for empathy, logical reasoning, and leadership.</p>
+            <p>Our committee is committed to creating an inclusive environment where every voice matters, every perspective is valued, and every student has the opportunity to grow into a confident, articulate, and thoughtful individual ready to make meaningful contributions to society.</p>
+            <div class="footer-divider"></div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 D.B Club Committee | Our School | Empowering Minds Through Dialogue</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample JSON data (in a real implementation, this would be loaded from committework.json)
+        const committeeWork = {
+            "past_events": [
+                {
+                    "id": 1,
+                    "title": "Annual Inter-School Debate Championship",
+                    "date": "2024-03-15",
+                    "description": "Our biggest event of the year featuring 20 schools competing in various debate formats. Students showcased exceptional speaking skills and critical thinking abilities.",
+                    "image_url": "https://example.com/images/debate-championship.jpg",
+                    "image_emoji": "🏆"
+                },
+                {
+                    "id": 2,
+                    "title": "Public Speaking Workshop Series",
+                    "date": "2024-02-20",
+                    "description": "A comprehensive 5-day workshop focusing on speech delivery, body language, and overcoming stage fright. Over 150 students participated and improved their confidence.",
+                    "image_url": "https://example.com/images/speaking-workshop.jpg",
+                    "image_emoji": "🎤"
+                },
+                {
+                    "id": 3,
+                    "title": "Model United Nations Conference",
+                    "date": "2024-01-28",
+                    "description": "Students represented different countries in heated discussions about global issues. This event enhanced their research skills and global awareness.",
+                    "image_url": "https://example.com/images/mun-conference.jpg",
+                    "image_emoji": "🌍"
+                },
+                {
+                    "id": 4,
+                    "title": "Freshman Orientation: Debate Basics",
+                    "date": "2024-01-10",
+                    "description": "Introduction to debate formats, logical reasoning, and argument construction for new students. A welcoming event that attracted 80+ new members.",
+                    "image_url": "https://example.com/images/mun-conference.jpg",
+                    "image_emoji": "📚"
+                }
+            ],
+            "upcoming_events": [
+                {
+                    "id": 1,
+                    "title": "Regional Debate Tournament",
+                    "date": "2024-05-10",
+                    "description": "Competing against top schools in the region for the prestigious Regional Championship Cup.",
+                    "image_url": "",
+                    "image_emoji": "🏅"
+                },
+                {
+                    "id": 2,
+                    "title": "Guest Speaker: Professional Orator",
+                    "date": "2024-04-25",
+                    "description": "Learning from industry experts about effective communication and persuasive speaking techniques.",
+                    "image_url": "https://example.com/images/guest-speaker.jpg",
+                    "image_emoji": "🎙️"
+                },
+                {
+                    "id": 3,
+                    "title": "Student Leadership Summit",
+                    "date": "2024-04-18",
+                    "description": "Developing leadership skills through interactive workshops and team-building activities.",
+                    "image_url": "",
+                    "image_emoji": "👑"
+                },
+                {
+                    "id": 4,
+                    "title": "Impromptu Speaking Challenge",
+                    "date": "2024-04-05",
+                    "description": "Testing quick thinking and spontaneous speaking abilities in a fun, competitive environment.",
+                    "image_url": "https://example.com/images/impromptu-challenge.jpg",
+                    "image_emoji": "⚡"
+                }
+            ]
+        };
+
+        // Load past events
+        function loadEvents() {
+            const eventsContainer = document.getElementById('events-container');
+            
+            committeeWork.past_events.forEach(event => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                
+                const eventDate = new Date(event.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Create image content based on whether image_url exists and is valid
+                let imageContent = '';
+                if (event.image_url && event.image_url.trim() !== '') {
+                    imageContent = `<div class="event-image has-image" style="background-image: url('${event.image_url}');">
+                        <div class="emoji-fallback" style="display: none;">${event.image_emoji}</div>
+                    </div>`;
+                } else {
+                    imageContent = `<div class="event-image">${event.image_emoji}</div>`;
+                }
+                
+                eventCard.innerHTML = `
+                    ${imageContent}
+                    <div class="event-content">
+                        <div class="event-date">${eventDate}</div>
+                        <h3 class="event-title">${event.title}</h3>
+                        <p class="event-description">${event.description}</p>
+                    </div>
+                `;
+                
+                // Add error handling for broken images
+                if (event.image_url && event.image_url.trim() !== '') {
+                    const img = new Image();
+                    img.onload = function() {
+                        // Image loaded successfully
+                        const eventImageDiv = eventCard.querySelector('.event-image');
+                        eventImageDiv.classList.add('has-image');
+                    };
+                    img.onerror = function() {
+                        // Image failed to load, show emoji fallback
+                        const eventImageDiv = eventCard.querySelector('.event-image');
+                        const emojiDiv = eventCard.querySelector('.emoji-fallback');
+                        eventImageDiv.style.backgroundImage = 'none';
+                        eventImageDiv.classList.remove('has-image');
+                        if (emojiDiv) {
+                            emojiDiv.style.display = 'flex';
+                        }
+                    };
+                    img.src = event.image_url;
+                }
+                
+                eventsContainer.appendChild(eventCard);
+            });
+        }
+
+        // Load upcoming events
+        function loadUpcomingEvents() {
+            const upcomingContainer = document.getElementById('upcoming-events');
+            
+            committeeWork.upcoming_events.forEach(event => {
+                const upcomingEvent = document.createElement('div');
+                upcomingEvent.className = 'upcoming-event';
+                
+                const eventDate = new Date(event.date);
+                const day = eventDate.getDate();
+                const month = eventDate.toLocaleDateString('en-US', { month: 'short' });
+                
+                upcomingEvent.innerHTML = `
+                    <div class="upcoming-date">
+                        <div style="font-size: 1.2rem; font-weight: bold;">${day}</div>
+                        <div style="font-size: 0.8rem;">${month}</div>
+                    </div>
+                    <div>
+                        <h4 style="margin-bottom: 0.5rem; color: var(--text-dark);">${event.title}</h4>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">${event.description}</p>
+                    </div>
+                `;
+                
+                upcomingContainer.appendChild(upcomingEvent);
+            });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEvents();
+            loadUpcomingEvents();
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(102, 126, 234, 0.95)';
+            } else {
+                header.style.background = 'var(--gradient-primary)';
+            }
+        });
+    </script>
+</body>
+</html>

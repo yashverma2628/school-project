@@ -1,4 +1,22 @@
 {
-  "past_events": [],
-  "upcoming_events": []
+  "past_events": [
+    {
+      "id": 1,
+      "title": "Annual Inter-School Debate Championship",
+      "date": "2024-03-15",
+      "description": "Event description...",
+      "image_url": "https://example.com/images/debate-championship.jpg",
+      "image_emoji": "🏆"
+    }
+  ],
+  "upcoming_events": [
+    {
+      "id": 1,
+      "title": "Regional Debate Tournament", 
+      "date": "2024-05-10",
+      "description": "Event description...",
+      "image_url": "https://example.com/images/regional-tournament.jpg",
+      "image_emoji": "🏅"
+    }
+  ]
 }
