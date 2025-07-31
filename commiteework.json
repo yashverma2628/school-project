@@ -1,22 +1,70 @@
 {
-  "past_events": [
-    {
-      "id": 1,
-      "title": "Annual Inter-School Debate Championship",
-      "date": "2024-03-15",
-      "description": "Event description...",
-      "image_url": "https://example.com/images/debate-championship.jpg",
-      "image_emoji": "🏆"
-    }
-  ],
-  "upcoming_events": [
-    {
-      "id": 1,
-      "title": "Regional Debate Tournament", 
-      "date": "2024-05-10",
-      "description": "Event description...",
-      "image_url": "https://example.com/images/regional-tournament.jpg",
-      "image_emoji": "🏅"
-    }
-  ]
-}
+            "past_events": [
+                {
+                    "id": 1,
+                    "title": "Annual Inter-School Debate Championship",
+                    "date": "2024-03-15",
+                    "description": "Our biggest event of the year featuring 20 schools competing in various debate formats. Students showcased exceptional speaking skills and critical thinking abilities.",
+                    "image_url": "https://example.com/images/debate-championship.jpg",
+                    "image_emoji": "🏆"
+                },
+                {
+                    "id": 2,
+                    "title": "Public Speaking Workshop Series",
+                    "date": "2024-02-20",
+                    "description": "A comprehensive 5-day workshop focusing on speech delivery, body language, and overcoming stage fright. Over 150 students participated and improved their confidence.",
+                    "image_url": "https://example.com/images/speaking-workshop.jpg",
+                    "image_emoji": "🎤"
+                },
+                {
+                    "id": 3,
+                    "title": "Model United Nations Conference",
+                    "date": "2024-01-28",
+                    "description": "Students represented different countries in heated discussions about global issues. This event enhanced their research skills and global awareness.",
+                    "image_url": "https://example.com/images/mun-conference.jpg",
+                    "image_emoji": "🌍"
+                },
+                {
+                    "id": 4,
+                    "title": "Freshman Orientation: Debate Basics",
+                    "date": "2024-01-10",
+                    "description": "Introduction to debate formats, logical reasoning, and argument construction for new students. A welcoming event that attracted 80+ new members.",
+                    "image_url": "https://example.com/images/mun-conference.jpg",
+                    "image_emoji": "📚"
+                }
+            ],
+            "upcoming_events": [
+                {
+                    "id": 1,
+                    "title": "Regional Debate Tournament",
+                    "date": "2024-05-10",
+                    "description": "Competing against top schools in the region for the prestigious Regional Championship Cup.",
+                    "image_url": "",
+                    "image_emoji": "🏅"
+                },
+                {
+                    "id": 2,
+                    "title": "Guest Speaker: Professional Orator",
+                    "date": "2024-04-25",
+                    "description": "Learning from industry experts about effective communication and persuasive speaking techniques.",
+                    "image_url": "https://example.com/images/guest-speaker.jpg",
+                    "image_emoji": "🎙️"
+                },
+                {
+                    "id": 3,
+                    "title": "Student Leadership Summit",
+                    "date": "2024-04-18",
+                    "description": "Developing leadership skills through interactive workshops and team-building activities.",
+                    "image_url": "",
+                    "image_emoji": "👑"
+                },
+                {
+                    "id": 4,
+                    "title": "Impromptu Speaking Challenge",
+                    "date": "2024-04-05",
+                    "description": "Testing quick thinking and spontaneous speaking abilities in a fun, competitive environment.",
+                    "image_url": "https://example.com/images/impromptu-challenge.jpg",
+                    "image_emoji": "⚡"
+                }
+            ]
+        }
