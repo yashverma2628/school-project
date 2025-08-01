@@ -24,6 +24,7 @@
             --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
+        
 
         * {
             margin: 0;
@@ -209,6 +210,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
+           
         }
 
         .section-title {
@@ -252,8 +254,16 @@
 .members {
     padding: 5rem 0;
     background: var(--white);
+   
+  
 }
+.committee-btn{
+display: flex;
+justify-content: center;
+padding-bottom: 2%;
 
+
+}
 .members-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -641,13 +651,56 @@
                 display: none;
             }
         }
+
+        .pbtn {
+    display: inline-block;
+    padding: 15px 40px;
+    background: var(--gradient-primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border: 2px solid var(--primary-deep-purple);
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    animation: bounceIn 1s ease-out 0.6s both;
+    box-shadow: 0 5px 20px var(--shadow-subtle);
+    justify-content: center;
+    align-self: center;
+}
+
+.pbtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--gradient-secondary);
+    transition: var(--transition-smooth);
+}
+
+.pbtn:hover::before {
+    left: 100%;
+}
+
+.pbtn:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px var(--shadow-medium);
+}
+
     </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <nav class="nav-container">
-            <a href="#" class="logo">🏫 Our School</a>
+            <a href="#" class="logo">Shishu Vidya Peeth</a>
             <ul class="nav-links">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#about">About</a></li>
@@ -741,8 +794,11 @@
                 <p>Maintaining detailed records and coordinating communications. James ensures smooth operations and handles all administrative aspects of our events and meetings with exceptional attention to detail.</p>
             </div>
         </div>
-    </div>
+    </div>        
 </section>
+<div class ="committee-btn">
+  <a class="pbtn" onclick="redirectToPage('clubs.html')">View More</a>
+      </div>           
 
     <!-- Events Section -->
     <section class="events" id="events">
