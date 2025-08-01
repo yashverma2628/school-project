@@ -1015,6 +1015,18 @@ padding-bottom: 2%;
                 header.style.background = 'var(--gradient-primary)';
             }
         });
+
+         // Function to redirect to different pages
+        function redirectToPage(pageName) {
+            console.log('Redirecting to:', pageName);
+            try {
+                window.location.href = pageName;
+            } catch (error) {
+                console.error('Error redirecting to page:', error);
+                // Fallback method
+                window.location.assign(pageName);
+            }
+        };
     </script>
 </body>
 </html>
