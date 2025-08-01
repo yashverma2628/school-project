@@ -829,182 +829,176 @@ padding-bottom: 2%;
     </footer>
 
     <script>
-        // Sample JSON data (in a real implementation, this would be loaded from committework.json)
-        const commiteeWork = {
+      // Global variable to store committee work data
+let committeeWork = null;
+
+// Function to load JSON data from file
+async function loadCommitteeData() {
+    try {
+        const response = await fetch('commiteework.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        committeeWork = await response.json();
+        console.log('Committee data loaded successfully:', committeeWork);
+    } catch (error) {
+        console.error('Error loading committee data:', error);
+        // Fallback to sample data if file loading fails
+        committeeWork = {
             "past_events": [
                 {
                     "id": 1,
-                    "title": "Annual Inter-School Debate Championship",
+                    "title": "Sample Event (File not found)",
                     "date": "2024-03-15",
-                    "description": "Our biggest event of the year featuring 20 schools competing in various debate formats. Students showcased exceptional speaking skills and critical thinking abilities.",
-                    "image_url": "https://example.com/images/debate-championship.jpg",
-                    "image_emoji": "🏆"
-                },
-                {
-                    "id": 2,
-                    "title": "Public Speaking Workshop Series",
-                    "date": "2024-02-20",
-                    "description": "A comprehensive 5-day workshop focusing on speech delivery, body language, and overcoming stage fright. Over 150 students participated and improved their confidence.",
-                    "image_url": "https://example.com/images/speaking-workshop.jpg",
-                    "image_emoji": "🎤"
-                },
-                {
-                    "id": 3,
-                    "title": "Model United Nations Conference",
-                    "date": "2024-01-28",
-                    "description": "Students represented different countries in heated discussions about global issues. This event enhanced their research skills and global awareness.",
-                    "image_url": "https://example.com/images/mun-conference.jpg",
-                    "image_emoji": "🌍"
-                },
-                {
-                    "id": 4,
-                    "title": "Freshman Orientation: Debate Basics",
-                    "date": "2024-01-10",
-                    "description": "Introduction to debate formats, logical reasoning, and argument construction for new students. A welcoming event that attracted 80+ new members.",
-                    "image_url": "https://example.com/images/mun-conference.jpg",
-                    "image_emoji": "📚"
+                    "description": "Could not load data from commiteework.json. Please check if the file exists in the same directory.",
+                    "image_url": "",
+                    "image_emoji": "⚠️"
                 }
             ],
             "upcoming_events": [
                 {
                     "id": 1,
-                    "title": "Regional Debate Tournament",
+                    "title": "Check JSON File",
                     "date": "2024-05-10",
-                    "description": "Competing against top schools in the region for the prestigious Regional Championship Cup.",
+                    "description": "Make sure commiteework.json is in the same directory as your HTML file.",
                     "image_url": "",
-                    "image_emoji": "🏅"
-                },
-                {
-                    "id": 2,
-                    "title": "Guest Speaker: Professional Orator",
-                    "date": "2024-04-25",
-                    "description": "Learning from industry experts about effective communication and persuasive speaking techniques.",
-                    "image_url": "https://example.com/images/guest-speaker.jpg",
-                    "image_emoji": "🎙️"
-                },
-                {
-                    "id": 3,
-                    "title": "Student Leadership Summit",
-                    "date": "2024-04-18",
-                    "description": "Developing leadership skills through interactive workshops and team-building activities.",
-                    "image_url": "",
-                    "image_emoji": "👑"
-                },
-                {
-                    "id": 4,
-                    "title": "Impromptu Speaking Challenge",
-                    "date": "2024-04-05",
-                    "description": "Testing quick thinking and spontaneous speaking abilities in a fun, competitive environment.",
-                    "image_url": "https://example.com/images/impromptu-challenge.jpg",
-                    "image_emoji": "⚡"
+                    "image_emoji": "📄"
                 }
             ]
         };
+    }
+}
 
-        // Load past events
-        function loadEvents() {
-            const eventsContainer = document.getElementById('events-container');
-            
-            commiteeWork.past_events.forEach(event => {
-                const eventCard = document.createElement('div');
-                eventCard.className = 'event-card';
-                
-                const eventDate = new Date(event.date).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                
-                // Create image content based on whether image_url exists and is valid
-                let imageContent = '';
-                if (event.image_url && event.image_url.trim() !== '') {
-                    imageContent = `<div class="event-image has-image" style="background-image: url('${event.image_url}');">
-                        <div class="emoji-fallback" style="display: none;">${event.image_emoji}</div>
-                    </div>`;
-                } else {
-                    imageContent = `<div class="event-image">${event.image_emoji}</div>`;
+// Load past events
+function loadEvents() {
+    const eventsContainer = document.getElementById('events-container');
+    
+    if (!committeeWork || !committeeWork.past_events) {
+        console.error('No committee data available');
+        return;
+    }
+    
+    committeeWork.past_events.forEach(event => {
+        const eventCard = document.createElement('div');
+        eventCard.className = 'event-card';
+        
+        const eventDate = new Date(event.date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Create image content based on whether image_url exists and is valid
+        let imageContent = '';
+        if (event.image_url && event.image_url.trim() !== '') {
+            imageContent = `<div class="event-image has-image" style="background-image: url('${event.image_url}');">
+                <div class="emoji-fallback" style="display: none;">${event.image_emoji}</div>
+            </div>`;
+        } else {
+            imageContent = `<div class="event-image">${event.image_emoji}</div>`;
+        }
+        
+        eventCard.innerHTML = `
+            ${imageContent}
+            <div class="event-content">
+                <div class="event-date">${eventDate}</div>
+                <h3 class="event-title">${event.title}</h3>
+                <p class="event-description">${event.description}</p>
+            </div>
+        `;
+        
+        // Add error handling for broken images
+        if (event.image_url && event.image_url.trim() !== '') {
+            const img = new Image();
+            img.onload = function() {
+                // Image loaded successfully
+                const eventImageDiv = eventCard.querySelector('.event-image');
+                eventImageDiv.classList.add('has-image');
+            };
+            img.onerror = function() {
+                // Image failed to load, show emoji fallback
+                const eventImageDiv = eventCard.querySelector('.event-image');
+                const emojiDiv = eventCard.querySelector('.emoji-fallback');
+                eventImageDiv.style.backgroundImage = 'none';
+                eventImageDiv.classList.remove('has-image');
+                if (emojiDiv) {
+                    emojiDiv.style.display = 'flex';
                 }
-                
-                eventCard.innerHTML = `
-                    ${imageContent}
-                    <div class="event-content">
-                        <div class="event-date">${eventDate}</div>
-                        <h3 class="event-title">${event.title}</h3>
-                        <p class="event-description">${event.description}</p>
-                    </div>
-                `;
-                
-                // Add error handling for broken images
-                if (event.image_url && event.image_url.trim() !== '') {
-                    const img = new Image();
-                    img.onload = function() {
-                        // Image loaded successfully
-                        const eventImageDiv = eventCard.querySelector('.event-image');
-                        eventImageDiv.classList.add('has-image');
-                    };
-                    img.onerror = function() {
-                        // Image failed to load, show emoji fallback
-                        const eventImageDiv = eventCard.querySelector('.event-image');
-                        const emojiDiv = eventCard.querySelector('.emoji-fallback');
-                        eventImageDiv.style.backgroundImage = 'none';
-                        eventImageDiv.classList.remove('has-image');
-                        if (emojiDiv) {
-                            emojiDiv.style.display = 'flex';
-                        }
-                    };
-                    img.src = event.image_url;
-                }
-                
-                eventsContainer.appendChild(eventCard);
+            };
+            img.src = event.image_url;
+        }
+        
+        eventsContainer.appendChild(eventCard);
+    });
+}
+
+// Load upcoming events
+function loadUpcomingEvents() {
+    const upcomingContainer = document.getElementById('upcoming-events');
+    
+    if (!committeeWork || !committeeWork.upcoming_events) {
+        console.error('No committee data available');
+        return;
+    }
+    
+    committeeWork.upcoming_events.forEach(event => {
+        const upcomingEvent = document.createElement('div');
+        upcomingEvent.className = 'upcoming-event';
+        
+        const eventDate = new Date(event.date);
+        const day = eventDate.getDate();
+        const month = eventDate.toLocaleDateString('en-US', { month: 'short' });
+        
+        upcomingEvent.innerHTML = `
+            <div class="upcoming-date">
+                <div style="font-size: 1.2rem; font-weight: bold;">${day}</div>
+                <div style="font-size: 0.8rem;">${month}</div>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 0.5rem; color: var(--text-dark);">${event.title}</h4>
+                <p style="color: var(--text-light); font-size: 0.9rem;">${event.description}</p>
+            </div>
+        `;
+        
+        upcomingContainer.appendChild(upcomingEvent);
+    });
+}
+
+// Smooth scrolling for navigation links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
             });
         }
+    });
+});
 
-        // Load upcoming events
-        function loadUpcomingEvents() {
-            const upcomingContainer = document.getElementById('upcoming-events');
-            
-            committeeWork.upcoming_events.forEach(event => {
-                const upcomingEvent = document.createElement('div');
-                upcomingEvent.className = 'upcoming-event';
-                
-                const eventDate = new Date(event.date);
-                const day = eventDate.getDate();
-                const month = eventDate.toLocaleDateString('en-US', { month: 'short' });
-                
-                upcomingEvent.innerHTML = `
-                    <div class="upcoming-date">
-                        <div style="font-size: 1.2rem; font-weight: bold;">${day}</div>
-                        <div style="font-size: 0.8rem;">${month}</div>
-                    </div>
-                    <div>
-                        <h4 style="margin-bottom: 0.5rem; color: var(--text-dark);">${event.title}</h4>
-                        <p style="color: var(--text-light); font-size: 0.9rem;">${event.description}</p>
-                    </div>
-                `;
-                
-                upcomingContainer.appendChild(upcomingEvent);
-            });
+// Initialize page
+document.addEventListener('DOMContentLoaded', async function() {
+    // First load the data from JSON file
+    await loadCommitteeData();
+    
+    // Then load the events into the page
+    loadEvents();
+    loadUpcomingEvents();
+});
+
+// Add scroll effect to header
+window.addEventListener('scroll', function() {
+    const header = document.querySelector('.header');
+    if (header) {
+        if (window.scrollY > 100) {
+            header.style.background = 'rgba(102, 126, 234, 0.95)';
+        } else {
+            header.style.background = 'var(--gradient-primary)';
         }
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function() {
-            loadEvents();
-            loadUpcomingEvents();
-        });
+    }
+});
 
         // Add scroll effect to header
         window.addEventListener('scroll', function() {
