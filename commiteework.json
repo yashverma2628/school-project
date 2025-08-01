@@ -6,7 +6,7 @@
       "date": "2024-03-15",
       "description": "Our biggest event of the year featuring 20 schools competing in various debate formats. Students showcased exceptional speaking skills and critical thinking abilities.",
       "image_url": "https://via.placeholder.com/300x200/667eea/white?text=Event",
-      "image_emoji": "📅"
+      "image_emoji": "ð"
     },
     {
       "id": 2,
@@ -14,7 +14,7 @@
       "date": "2024-02-20",
       "description": "A comprehensive 5-day workshop focusing on speech delivery, body language, and overcoming stage fright. Over 150 students participated and improved their confidence.",
       "image_url": "https://via.placeholder.com/300x200/667eea/white?text=Event",
-      "image_emoji": "ð"
+      "image_emoji": "Ã°ÂÂÂ"
     },
     {
       "id": 3,
@@ -22,7 +22,7 @@
       "date": "2024-01-28",
       "description": "Students represented different countries in heated discussions about global issues. This event enhanced their research skills and global awareness.",
       "image_url": "https://example.com/images/mun-conference.jpg",
-      "image_emoji": "Ã°ÂÂÂ"
+      "image_emoji": "ÃÂ°ÃÂÃÂÃÂ"
     },
     {
       "id": 4,
@@ -30,7 +30,15 @@
       "date": "2024-01-10",
       "description": "Introduction to debate formats, logical reasoning, and argument construction for new students. A welcoming event that attracted 80+ new members.",
       "image_url": "https://example.com/images/mun-conference.jpg",
-      "image_emoji": "Ã°ÂÂÂ"
+      "image_emoji": "ÃÂ°ÃÂÃÂÃÂ"
+    },
+    {
+      "id": 5,
+      "title": "Oath Taking ceremony ",
+      "date": "2025-07-31",
+      "description": "oath taking ceremony 2025",
+      "image_url": "https://raw.githubusercontent.com/yashverma2628/school-project/main/committee-images/event_1754029820709.jpg",
+      "image_emoji": "📅"
     }
   ],
   "upcoming_events": [
@@ -40,7 +48,7 @@
       "date": "2024-05-10",
       "description": "Competing against top schools in the region for the prestigious Regional Championship Cup.",
       "image_url": "",
-      "image_emoji": "Ã°ÂÂÂ"
+      "image_emoji": "ÃÂ°ÃÂÃÂÃÂ"
     },
     {
       "id": 2,
@@ -48,7 +56,7 @@
       "date": "2024-04-25",
       "description": "Learning from industry experts about effective communication and persuasive speaking techniques.",
       "image_url": "https://example.com/images/guest-speaker.jpg",
-      "image_emoji": "Ã°ÂÂÂÃ¯Â¸Â"
+      "image_emoji": "ÃÂ°ÃÂÃÂÃÂÃÂ¯ÃÂ¸ÃÂ"
     },
     {
       "id": 3,
@@ -56,7 +64,7 @@
       "date": "2024-04-18",
       "description": "Developing leadership skills through interactive workshops and team-building activities.",
       "image_url": "",
-      "image_emoji": "Ã°ÂÂÂ"
+      "image_emoji": "ÃÂ°ÃÂÃÂÃÂ"
     },
     {
       "id": 4,
@@ -64,7 +72,7 @@
       "date": "2024-04-05",
       "description": "Testing quick thinking and spontaneous speaking abilities in a fun, competitive environment.",
       "image_url": "https://example.com/images/impromptu-challenge.jpg",
-      "image_emoji": "Ã¢ÂÂ¡"
+      "image_emoji": "ÃÂ¢ÃÂÃÂ¡"
     }
   ]
 }
