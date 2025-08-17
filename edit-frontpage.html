@@ -1209,9 +1209,9 @@ async function handleAddStudent(event) {
     
     const newStudent = {
         name: formData.get('studentName'),
-        imageUrl: imageUrl || 'https://via.placeholder.com/150',
+        image: imageUrl || 'https://via.placeholder.com/150',
         percentage: formData.get('studentPercentage') + '%',
-        batchYear: formData.get('studentBatch')
+        batch: formData.get('studentBatch')
     };
     
     studentsData.push(newStudent);
@@ -1256,9 +1256,9 @@ async function handleEditStudent(event) {
     
     const updatedStudent = {
         name: document.getElementById('editStudentName').value,
-        imageUrl: imageUrl || studentsData[index].imageUrl,
+        image: imageUrl || studentsData[index].imageUrl,
         percentage: document.getElementById('editStudentPercentage').value + '%',
-        batchYear: document.getElementById('editStudentBatch').value
+        batch: document.getElementById('editStudentBatch').value
     };
     
     studentsData[index] = updatedStudent;
@@ -1325,12 +1325,12 @@ function renderStudents() {
     
     container.innerHTML = studentsData.map((student, index) => `
         <div class="student-card new-item">
-            <img src="${student.imageUrl}" alt="${student.name}" class="student-image" 
+            <img src="${student.image}" alt="${student.name}" class="student-image" 
                  onerror="this.src='https://via.placeholder.com/150'">
             <div class="student-name">${student.name}</div>
             <div class="student-details">
                 <div class="student-percentage">${student.percentage}</div>
-                <div class="student-batch">${student.batchYear}</div>
+                <div class="student-batch">${student.batch}</div>
             </div>
             <div class="student-actions">
                 <button onclick="editStudent(${index})" class="btn btn-warning btn-small">
@@ -1353,8 +1353,8 @@ function editStudent(index) {
     document.getElementById('editStudentIndex').value = index;
     document.getElementById('editStudentName').value = student.name;
     document.getElementById('editStudentPercentage').value = parseFloat(student.percentage);
-    document.getElementById('editStudentBatch').value = student.batchYear;
-    document.getElementById('editStudentImage').value = student.imageUrl;
+    document.getElementById('editStudentBatch').value = student.batch;
+    document.getElementById('editStudentImage').value = student.image;
     document.getElementById('editImagePreview').innerHTML = 
         `<img src="${student.imageUrl}" alt="Current" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
     
@@ -1481,11 +1481,11 @@ function generateStudentHTML() {
 <div class="student-slideshow">
 ${studentsData.map(student => `
     <div class="student-slide">
-        <img src="${student.imageUrl}" alt="${student.name}" class="student-image">
+        <img src="${student.image}" alt="${student.name}" class="student-image">
         <div class="student-info">
             <h3>${student.name}</h3>
             <div class="student-percentage">${student.percentage}</div>
-            <div class="student-batch">${student.batchYear}</div>
+            <div class="student-batch">${student.batch}</div>
         </div>
     </div>`).join('')}
 </div>`;
@@ -1593,4 +1593,5 @@ function generateStudentHTMLExport() {
     </script> 
         </body> 
         </html>
+
 
