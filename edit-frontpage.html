@@ -815,7 +815,9 @@
         </div>
     </div>
 
-    <script>// GitHub Student Editor JavaScript
+    <script>
+
+// GitHub Student Editor JavaScript with Cloudinary Integration
 // Global variables
 let githubToken = '';
 let githubRepo = 'school-project';
@@ -826,6 +828,10 @@ let repoFileSha = '';
 // GitHub API configuration
 const GITHUB_API_BASE = 'https://api.github.com';
 const STUDENTS_FILE_PATH = 'students_data.json';
+
+// Cloudinary configuration
+const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/dprxaeuwi/image/upload';
+const CLOUDINARY_UPLOAD_PRESET = 'yash-preset';
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -1064,6 +1070,121 @@ async function saveStudentsToGitHub() {
     }
 }
 
+// Compress image function
+function compressImage(file, targetSizeKB = 100) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+            // Calculate initial dimensions
+            let { width, height } = img;
+            
+            // Initial compression attempt
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Clear canvas with transparent background
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Detect if image has transparency
+            const hasTransparency = checkForTransparency(ctx, width, height);
+            const outputFormat = hasTransparency ? 'image/png' : 'image/jpeg';
+            
+            // Binary search for optimal quality
+            let minQuality = 0.1;
+            let maxQuality = 0.9;
+            let bestBlob = null;
+            
+            function tryCompression(quality) {
+                canvas.toBlob((blob) => {
+                    const sizeKB = blob.size / 1024;
+                    
+                    if (sizeKB <= targetSizeKB * 1.1) { // 10% tolerance
+                        bestBlob = blob;
+                        if (maxQuality - minQuality > 0.01) {
+                            minQuality = quality;
+                            tryCompression((minQuality + maxQuality) / 2);
+                        } else {
+                            resolve(bestBlob);
+                        }
+                    } else {
+                        if (maxQuality - minQuality > 0.01) {
+                            maxQuality = quality;
+                            tryCompression((minQuality + maxQuality) / 2);
+                        } else {
+                            // If still too large, try reducing dimensions
+                            width = Math.floor(width * 0.9);
+                            height = Math.floor(height * 0.9);
+                            canvas.width = width;
+                            canvas.height = height;
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            minQuality = 0.1;
+                            maxQuality = 0.9;
+                            tryCompression(0.7);
+                        }
+                    }
+                }, outputFormat, quality);
+            }
+            
+            tryCompression(0.7);
+        };
+        
+        img.src = URL.createObjectURL(file);
+    });
+}
+
+// Check for transparency in image
+function checkForTransparency(ctx, width, height) {
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    
+    for (let i = 3; i < data.length; i += 4) {
+        if (data[i] < 255) {
+            return true; // Found transparent pixel
+        }
+    }
+    return false;
+}
+
+// Upload image to Cloudinary
+async function uploadImageToCloudinary(file) {
+    try {
+        // Compress the image before uploading
+        const compressedBlob = await compressImage(file, 100); // 100KB target
+        
+        // Create FormData with compressed image
+        const formData = new FormData();
+        formData.append("file", compressedBlob, file.name);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+        
+        const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+            method: "POST",
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Cloudinary upload failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data.secure_url) {
+            throw new Error('No secure URL returned from Cloudinary');
+        }
+        
+        return data.secure_url;
+        
+    } catch (error) {
+        console.error('Cloudinary upload error:', error);
+        throw new Error(`Failed to upload image to Cloudinary: ${error.message}`);
+    }
+}
+
 // Handle adding new student
 async function handleAddStudent(event) {
     event.preventDefault();
@@ -1073,11 +1194,12 @@ async function handleAddStudent(event) {
     
     let imageUrl = formData.get('studentImage');
     
-    // If file is uploaded, upload to GitHub first
+    // If file is uploaded, upload to Cloudinary first
     if (imageFile) {
         try {
             showLoading(true);
-            imageUrl = await uploadImageToGitHub(imageFile);
+            showStatus('Uploading image to Cloudinary...', 'info');
+            imageUrl = await uploadImageToCloudinary(imageFile);
         } catch (error) {
             showStatus(`Failed to upload image: ${error.message}`, 'error');
             showLoading(false);
@@ -1087,14 +1209,15 @@ async function handleAddStudent(event) {
     
     const newStudent = {
         name: formData.get('studentName'),
-        image: imageUrl || 'https://via.placeholder.com/150',
+        imageUrl: imageUrl || 'https://via.placeholder.com/150',
         percentage: formData.get('studentPercentage') + '%',
-        batch: formData.get('studentBatch')
+        batchYear: formData.get('studentBatch')
     };
     
     studentsData.push(newStudent);
     
     try {
+        showStatus('Saving student data to GitHub...', 'info');
         await saveStudentsToGitHub();
         renderStudents();
         event.target.reset();
@@ -1118,11 +1241,12 @@ async function handleEditStudent(event) {
     
     let imageUrl = document.getElementById('editStudentImage').value;
     
-    // If new file is uploaded, upload to GitHub
+    // If new file is uploaded, upload to Cloudinary
     if (imageFile) {
         try {
             showLoading(true);
-            imageUrl = await uploadImageToGitHub(imageFile);
+            showStatus('Uploading new image to Cloudinary...', 'info');
+            imageUrl = await uploadImageToCloudinary(imageFile);
         } catch (error) {
             showStatus(`Failed to upload image: ${error.message}`, 'error');
             showLoading(false);
@@ -1132,14 +1256,15 @@ async function handleEditStudent(event) {
     
     const updatedStudent = {
         name: document.getElementById('editStudentName').value,
-        image: imageUrl || studentsData[index].image,
+        imageUrl: imageUrl || studentsData[index].imageUrl,
         percentage: document.getElementById('editStudentPercentage').value + '%',
-        batch: document.getElementById('editStudentBatch').value
+        batchYear: document.getElementById('editStudentBatch').value
     };
     
     studentsData[index] = updatedStudent;
     
     try {
+        showStatus('Saving updated student data to GitHub...', 'info');
         await saveStudentsToGitHub();
         renderStudents();
         closeEditModal();
@@ -1149,48 +1274,6 @@ async function handleEditStudent(event) {
     }
     
     showLoading(false);
-}
-
-// Upload image to GitHub repository
-async function uploadImageToGitHub(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            try {
-                const content = e.target.result.split(',')[1]; // Remove data:image/... prefix
-                const fileName = `images/${Date.now()}_${file.name}`;
-                
-                const payload = {
-                    message: `Upload image: ${fileName}`,
-                    content: content
-                };
-                
-                const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${fileName}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`Failed to upload image: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                const imageUrl = `https://github.com/${githubOwner}/${githubRepo}/blob/main/${fileName}?raw=true`;
-                resolve(imageUrl);
-                
-            } catch (error) {
-                reject(error);
-            }
-        };
-        
-        reader.onerror = () => reject(new Error('Failed to read file'));
-        reader.readAsDataURL(file);
-    });
 }
 
 // Handle image upload preview
@@ -1242,12 +1325,12 @@ function renderStudents() {
     
     container.innerHTML = studentsData.map((student, index) => `
         <div class="student-card new-item">
-            <img src="${student.image}" alt="${student.name}" class="student-image" 
+            <img src="${student.imageUrl}" alt="${student.name}" class="student-image" 
                  onerror="this.src='https://via.placeholder.com/150'">
             <div class="student-name">${student.name}</div>
             <div class="student-details">
                 <div class="student-percentage">${student.percentage}</div>
-                <div class="student-batch">${student.batch}</div>
+                <div class="student-batch">${student.batchYear}</div>
             </div>
             <div class="student-actions">
                 <button onclick="editStudent(${index})" class="btn btn-warning btn-small">
@@ -1270,10 +1353,10 @@ function editStudent(index) {
     document.getElementById('editStudentIndex').value = index;
     document.getElementById('editStudentName').value = student.name;
     document.getElementById('editStudentPercentage').value = parseFloat(student.percentage);
-    document.getElementById('editStudentBatch').value = student.batch;
-    document.getElementById('editStudentImage').value = student.image;
+    document.getElementById('editStudentBatch').value = student.batchYear;
+    document.getElementById('editStudentImage').value = student.imageUrl;
     document.getElementById('editImagePreview').innerHTML = 
-        `<img src="${student.image}" alt="Current" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
+        `<img src="${student.imageUrl}" alt="Current" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
     
     document.getElementById('editModal').style.display = 'block';
 }
@@ -1398,11 +1481,11 @@ function generateStudentHTML() {
 <div class="student-slideshow">
 ${studentsData.map(student => `
     <div class="student-slide">
-        <img src="${student.image}" alt="${student.name}" class="student-image">
+        <img src="${student.imageUrl}" alt="${student.name}" class="student-image">
         <div class="student-info">
             <h3>${student.name}</h3>
             <div class="student-percentage">${student.percentage}</div>
-            <div class="student-batch">${student.batch}</div>
+            <div class="student-batch">${student.batchYear}</div>
         </div>
     </div>`).join('')}
 </div>`;
@@ -1453,7 +1536,7 @@ function escapeHtml(unsafe) {
 }
 
 // Export functionality
-function exportStudentHTML() {
+function generateStudentHTMLExport() {
     const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1505,6 +1588,9 @@ function exportStudentHTML() {
     URL.revokeObjectURL(url);
     
     showStatus('HTML file downloaded successfully!', 'success');
-}</script> 
+}
+        
+    </script> 
         </body> 
         </html>
+
