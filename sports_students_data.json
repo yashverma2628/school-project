@@ -22,5 +22,13 @@
     "sport": "chess",
     "batch": "2024",
     "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755448654/sports-students/m7kbqid4dj8m5ihq430a.jpg"
+  },
+  {
+    "name": "khushi sahu",
+    "achievement": "gold medal",
+    "competition": "state badminton champianship",
+    "sport": "badminton",
+    "batch": "2026",
+    "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755448768/sports-students/oyt3hhibqcwzhfahdofz.jpg"
   }
 ]
