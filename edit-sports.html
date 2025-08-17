@@ -1080,7 +1080,7 @@ textarea:focus {
         </div>
     </div>
 <script>
-    // Sports Student Editor JavaScript
+ // Sports Student Editor JavaScript with Cloudinary Integration
 // Global variables
 let githubToken = '';
 let githubRepo = 'school-project';
@@ -1091,6 +1091,11 @@ let repoFileSha = '';
 // GitHub API configuration
 const GITHUB_API_BASE = 'https://api.github.com';
 const SPORTS_STUDENTS_FILE_PATH = 'sports_students_data.json';
+
+// Cloudinary configuration
+const CLOUDINARY_CLOUD_NAME = 'dprxaeuwi';
+const CLOUDINARY_UPLOAD_PRESET = 'yash-preset';
+const CLOUDINARY_API_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -1188,6 +1193,7 @@ async function showRepositorySelection(repos) {
     statusDiv.innerHTML = selectHTML;
     statusDiv.className = 'status-message status-info';
     statusDiv.style.display = 'block';
+    
     showLoading(false);
 }
 
@@ -1329,6 +1335,122 @@ async function saveSportsStudentsToGitHub() {
     }
 }
 
+// Compress and upload image to Cloudinary
+async function uploadImageToCloudinary(file, targetSizeKB = 100) {
+    try {
+        // First compress the image
+        const compressedBlob = await compressImage(file, targetSizeKB);
+        
+        // Create FormData for Cloudinary upload
+        const formData = new FormData();
+        formData.append("file", compressedBlob, file.name);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+        formData.append("folder", "sports-students"); // Organize images in folder
+        
+        const response = await fetch(CLOUDINARY_API_URL, {
+            method: "POST",
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Cloudinary upload failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data.secure_url) {
+            throw new Error('No secure URL returned from Cloudinary');
+        }
+        
+        return data.secure_url;
+        
+    } catch (error) {
+        console.error('Cloudinary upload error:', error);
+        throw new Error(`Failed to upload image to Cloudinary: ${error.message}`);
+    }
+}
+
+// Compress image function
+function compressImage(file, targetSizeKB) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+            // Calculate initial dimensions
+            let { width, height } = img;
+            
+            // Initial compression attempt
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Clear canvas with transparent background
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Detect if image has transparency
+            const hasTransparency = checkForTransparency(ctx, width, height);
+            const outputFormat = hasTransparency ? 'image/png' : 'image/jpeg';
+            
+            // Binary search for optimal quality
+            let minQuality = 0.1;
+            let maxQuality = 0.9;
+            let bestBlob = null;
+            
+            function tryCompression(quality) {
+                canvas.toBlob((blob) => {
+                    const sizeKB = blob.size / 1024;
+                    
+                    if (sizeKB <= targetSizeKB * 1.1) { // 10% tolerance
+                        bestBlob = blob;
+                        if (maxQuality - minQuality > 0.01) {
+                            minQuality = quality;
+                            tryCompression((minQuality + maxQuality) / 2);
+                        } else {
+                            resolve(bestBlob);
+                        }
+                    } else {
+                        if (maxQuality - minQuality > 0.01) {
+                            maxQuality = quality;
+                            tryCompression((minQuality + maxQuality) / 2);
+                        } else {
+                            // If still too large, try reducing dimensions
+                            width = Math.floor(width * 0.9);
+                            height = Math.floor(height * 0.9);
+                            canvas.width = width;
+                            canvas.height = height;
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            minQuality = 0.1;
+                            maxQuality = 0.9;
+                            tryCompression(0.7);
+                        }
+                    }
+                }, outputFormat, quality);
+            }
+            
+            tryCompression(0.7);
+        };
+        
+        img.src = URL.createObjectURL(file);
+    });
+}
+
+// Check for transparency in image
+function checkForTransparency(ctx, width, height) {
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    
+    for (let i = 3; i < data.length; i += 4) {
+        if (data[i] < 255) {
+            return true; // Found transparent pixel
+        }
+    }
+    return false;
+}
+
 // Handle adding new sports student
 async function handleAddSportsStudent(event) {
     event.preventDefault();
@@ -1338,11 +1460,13 @@ async function handleAddSportsStudent(event) {
     
     let imageUrl = formData.get('studentImage');
     
-    // If file is uploaded, upload to GitHub first
+    // If file is uploaded, upload to Cloudinary first
     if (imageFile) {
         try {
             showLoading(true);
-            imageUrl = await uploadImageToGitHub(imageFile);
+            showStatus('Compressing and uploading image to Cloudinary...', 'info');
+            imageUrl = await uploadImageToCloudinary(imageFile, 100); // 100KB target
+            showStatus('Image uploaded successfully! Saving student data...', 'info');
         } catch (error) {
             showStatus(`Failed to upload image: ${error.message}`, 'error');
             showLoading(false);
@@ -1385,11 +1509,13 @@ async function handleEditSportsStudent(event) {
     
     let imageUrl = document.getElementById('editStudentImage').value;
     
-    // If new file is uploaded, upload to GitHub
+    // If new file is uploaded, upload to Cloudinary
     if (imageFile) {
         try {
             showLoading(true);
-            imageUrl = await uploadImageToGitHub(imageFile);
+            showStatus('Compressing and uploading new image to Cloudinary...', 'info');
+            imageUrl = await uploadImageToCloudinary(imageFile, 100); // 100KB target
+            showStatus('Image uploaded successfully! Updating student data...', 'info');
         } catch (error) {
             showStatus(`Failed to upload image: ${error.message}`, 'error');
             showLoading(false);
@@ -1420,57 +1546,38 @@ async function handleEditSportsStudent(event) {
     showLoading(false);
 }
 
-// Upload image to GitHub repository
-async function uploadImageToGitHub(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = async function(e) {
-            try {
-                const content = e.target.result.split(',')[1]; // Remove data:image/... prefix
-                const fileName = `images/sports_student_${Date.now()}_${file.name}`;
-                
-                const payload = {
-                    message: `Upload sports student image: ${fileName}`,
-                    content: content
-                };
-                
-                const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${fileName}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`Failed to upload image: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                const imageUrl = `https://github.com/${githubOwner}/${githubRepo}/blob/main/${fileName}?raw=true`;
-                resolve(imageUrl);
-                
-            } catch (error) {
-                reject(error);
-            }
-        };
-        
-        reader.onerror = () => reject(new Error('Failed to read file'));
-        reader.readAsDataURL(file);
-    });
-}
-
 // Handle image upload preview
 function handleImageUpload(event) {
     const file = event.target.files[0];
     const preview = document.getElementById('filePreview');
     
     if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showStatus('Please select a valid image file', 'error');
+            event.target.value = '';
+            preview.innerHTML = '';
+            return;
+        }
+        
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            showStatus('Image file is too large. Please select an image smaller than 10MB', 'error');
+            event.target.value = '';
+            preview.innerHTML = '';
+            return;
+        }
+        
         const reader = new FileReader();
         reader.onload = function(e) {
-            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
+            const fileSizeMB = (file.size / 1024 / 1024).toFixed(2);
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 10px;">
+                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    ${file.name} (${fileSizeMB}MB)<br>
+                    <small>Will be compressed and uploaded to Cloudinary</small>
+                </p>
+            `;
         };
         reader.readAsDataURL(file);
     } else {
@@ -1484,9 +1591,32 @@ function handleEditImageUpload(event) {
     const preview = document.getElementById('editImagePreview');
     
     if (file) {
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            showStatus('Please select a valid image file', 'error');
+            event.target.value = '';
+            preview.innerHTML = '';
+            return;
+        }
+        
+        // Validate file size (max 10MB)
+        if (file.size > 10 * 1024 * 1024) {
+            showStatus('Image file is too large. Please select an image smaller than 10MB', 'error');
+            event.target.value = '';
+            preview.innerHTML = '';
+            return;
+        }
+        
         const reader = new FileReader();
         reader.onload = function(e) {
-            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 10px;">`;
+            const fileSizeMB = (file.size / 1024 / 1024).toFixed(2);
+            preview.innerHTML = `
+                <img src="${e.target.result}" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 10px;">
+                <p style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    ${file.name} (${fileSizeMB}MB)<br>
+                    <small>Will be compressed and uploaded to Cloudinary</small>
+                </p>
+            `;
         };
         reader.readAsDataURL(file);
     } else {
@@ -1814,4 +1944,5 @@ function exportSportsHTML() {
     
     showStatus('Sports students HTML file downloaded successfully!', 'success');
 }
+
 </script>
