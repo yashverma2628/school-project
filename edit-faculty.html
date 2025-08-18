@@ -599,603 +599,517 @@
     </div>
 
     <script>
-        // Faculty Editor JavaScript
-        // Global variables
-        let githubToken = '';
-        let githubRepo = '';
-        let githubOwner = '';
-        let facultyData = [];
-        let repoFileSha = '';
+    // Faculty Editor JavaScript with Cloudinary Integration
+// Global variables
+let githubToken = '';
+let githubRepo = '';
+let githubOwner = '';
+let facultyData = [];
+let repoFileSha = '';
 
-        // GitHub API configuration
-        const GITHUB_API_BASE = 'https://api.github.com';
-        const FACULTY_FILE_PATH = 'faculty.json';
+// GitHub API configuration
+const GITHUB_API_BASE = 'https://api.github.com';
+const FACULTY_FILE_PATH = 'faculty.json';
 
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            setupEventListeners();
-            loadFromLocalStorage();
+// Cloudinary configuration
+const CLOUDINARY_UPLOAD_URL = 'https://api.cloudinary.com/v1_1/dprxaeuwi/image/upload';
+const CLOUDINARY_UPLOAD_PRESET = 'yash-preset';
+
+// Initialize the application
+document.addEventListener('DOMContentLoaded', function() {
+    setupEventListeners();
+    loadFromLocalStorage();
+});
+
+// Setup all event listeners
+function setupEventListeners() {
+    // Form submissions
+    document.getElementById('addFacultyForm').addEventListener('submit', handleAddFaculty);
+    document.getElementById('editFacultyForm').addEventListener('submit', handleEditFaculty);
+    
+    // File input handlers
+    document.getElementById('facultyImageFile').addEventListener('change', handleImageUpload);
+    document.getElementById('editFacultyImageFile').addEventListener('change', handleEditImageUpload);
+    
+    // Modal close events
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target === modal) {
+            closeEditModal();
+        }
+    });
+}
+
+// GitHub Authentication
+async function authenticateGitHub() {
+    const token = document.getElementById('githubToken').value.trim();
+    const owner = document.getElementById('githubOwner').value.trim();
+    const repo = document.getElementById('githubRepo').value.trim();
+    
+    if (!token) {
+        showStatus('Please enter a GitHub token', 'error');
+        return;
+    }
+    
+    if (!owner) {
+        showStatus('Please enter repository owner', 'error');
+        return;
+    }
+    
+    if (!repo) {
+        showStatus('Please enter repository name', 'error');
+        return;
+    }
+    
+    showLoading(true);
+    githubToken = token;
+    githubOwner = owner;
+    githubRepo = repo;
+    
+    try {
+        // Test authentication by checking if the repository exists
+        const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
         });
-
-        // Setup all event listeners
-        function setupEventListeners() {
-            // Form submissions
-            document.getElementById('addFacultyForm').addEventListener('submit', handleAddFaculty);
-            document.getElementById('editFacultyForm').addEventListener('submit', handleEditFaculty);
-            
-            // File input handlers
-            document.getElementById('facultyImageFile').addEventListener('change', handleImageUpload);
-            document.getElementById('editFacultyImageFile').addEventListener('change', handleEditImageUpload);
-            
-            // Modal close events
-            window.addEventListener('click', function(event) {
-                const modal = document.getElementById('editModal');
-                if (event.target === modal) {
-                    closeEditModal();
-                }
-            });
-        }
-
-        // GitHub Authentication
-        async function authenticateGitHub() {
-            const token = document.getElementById('githubToken').value.trim();
-            const owner = document.getElementById('githubOwner').value.trim();
-            const repo = document.getElementById('githubRepo').value.trim();
-            
-            if (!token) {
-                showStatus('Please enter a GitHub token', 'error');
-                return;
-            }
-            
-            if (!owner) {
-                showStatus('Please enter repository owner', 'error');
-                return;
-            }
-            
-            if (!repo) {
-                showStatus('Please enter repository name', 'error');
-                return;
-            }
-            
-            showLoading(true);
-            githubToken = token;
-            githubOwner = owner;
-            githubRepo = repo;
-            
-            try {
-                // Test authentication by checking if the repository exists
-                const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}`, {
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                
-                if (!response.ok) {
-                    if (response.status === 404) {
-                        throw new Error('Repository not found. Please check the owner and repository name.');
-                    } else if (response.status === 401) {
-                        throw new Error('Invalid token or insufficient permissions.');
-                    } else {
-                        throw new Error(`Authentication failed: ${response.status}`);
-                    }
-                }
-                
-                // Try to load existing faculty data
-                await loadFacultyFromGitHub();
-                
-                // Save credentials to localStorage
-                localStorage.setItem('github_token', githubToken);
-                localStorage.setItem('github_repo', githubRepo);
-                localStorage.setItem('github_owner', githubOwner);
-                
-                // Show main interface
-                document.getElementById('authSection').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'grid';
-                
-                showStatus(`Successfully connected to ${githubOwner}/${githubRepo}`, 'success');
-                renderFaculty();
-                updateStatistics();
-                
-            } catch (error) {
-                console.error('GitHub authentication error:', error);
-                showStatus(`Authentication failed: ${error.message}`, 'error');
-            }
-            
-            showLoading(false);
-        }
-
-        // Load credentials from localStorage
-        function loadFromLocalStorage() {
-            const token = localStorage.getItem('github_token');
-            const repo = localStorage.getItem('github_repo');
-            const owner = localStorage.getItem('github_owner');
-            
-            if (token && repo && owner) {
-                githubToken = token;
-                githubRepo = repo;
-                githubOwner = owner;
-                
-                // Set values in form
-                document.getElementById('githubToken').value = token;
-                document.getElementById('githubOwner').value = owner;
-                document.getElementById('githubRepo').value = repo;
-                
-                // Auto-connect if credentials exist
-                loadFacultyFromGitHub().then(() => {
-                    document.getElementById('authSection').style.display = 'none';
-                    document.getElementById('mainContent').style.display = 'grid';
-                    renderFaculty();
-                    updateStatistics();
-                    showStatus('Automatically connected to repository', 'success');
-                }).catch((error) => {
-                    console.error('Auto-connect failed:', error);
-                    showStatus('Please re-authenticate', 'info');
-                    // Keep the auth section visible
-                });
-            }
-        }
-
-        // Load faculty data from GitHub
-        async function loadFacultyFromGitHub() {
-            try {
-                const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${FACULTY_FILE_PATH}`, {
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                
-                if (response.status === 404) {
-                    // File doesn't exist, create it with empty array
-                    facultyData = [];
-                    await saveFacultyToGitHub();
-                    return;
-                }
-                
-                if (!response.ok) {
-                    throw new Error(`Failed to load faculty data: ${response.status}`);
-                }
-                
-                const fileData = await response.json();
-                repoFileSha = fileData.sha;
-                
-                // Decode base64 content
-                const content = atob(fileData.content);
-                const jsonData = JSON.parse(content);
-                
-                // Handle different JSON structures
-                if (Array.isArray(jsonData)) {
-                    facultyData = jsonData;
-                } else if (jsonData.faculty && Array.isArray(jsonData.faculty)) {
-                    facultyData = jsonData.faculty;
-                } else {
-                    facultyData = [];
-                }
-                
-            } catch (error) {
-                console.error('Error loading faculty data:', error);
-                if (error.message.includes('404')) {
-                    facultyData = [];
-                } else {
-                    throw error;
-                }
-            }
-        }
-
-        // Save faculty data to GitHub
-        async function saveFacultyToGitHub() {
-            try {
-                const jsonData = {
-                    faculty: facultyData,
-                    lastUpdated: new Date().toISOString()
-                };
-                const content = JSON.stringify(jsonData, null, 2);
-                const encodedContent = btoa(unescape(encodeURIComponent(content)));
-                
-                const payload = {
-                    message: `Update faculty data - ${new Date().toISOString()}`,
-                    content: encodedContent
-                };
-                
-                // Include SHA if file exists
-                if (repoFileSha) {
-                    payload.sha = repoFileSha;
-                }
-                
-                const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${FACULTY_FILE_PATH}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(`Failed to save data: ${response.status} - ${errorData.message || 'Unknown error'}`);
-                }
-                
-                const result = await response.json();
-                repoFileSha = result.content.sha;
-                
-                updateStatistics();
-                showStatus('Faculty data saved to GitHub successfully!', 'success');
-                
-            } catch (error) {
-                console.error('Error saving faculty data:', error);
-                showStatus(`Failed to save data: ${error.message}`, 'error');
-                throw error;
-            }
-        }
-
-        // Handle adding new faculty member
-        async function handleAddFaculty(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const imageFile = document.getElementById('facultyImageFile').files[0];
-            
-            let imageUrl = formData.get('facultyImage');
-            
-            // If file is uploaded, upload to GitHub first
-            if (imageFile) {
-                try {
-                    showLoading(true);
-                    imageUrl = await uploadImageToGitHub(imageFile);
-                } catch (error) {
-                    showStatus(`Failed to upload image: ${error.message}`, 'error');
-                    showLoading(false);
-                    return;
-                }
-            }
-
-            // Process subjects
-            const subjectsText = formData.get('facultySubjects');
-            const subjects = subjectsText.split(',').map(s => s.trim()).filter(s => s.length > 0);
-            
-            const newFaculty = {
-                name: formData.get('facultyName'),
-                post: formData.get('facultyPost'),
-                subjects: subjects,
-                experience: formData.get('facultyExperience'),
-                image: imageUrl || 'https://via.placeholder.com/120x120/667eea/white?text=Faculty'
-            };
-            
-            facultyData.push(newFaculty);
-            
-            try {
-                await saveFacultyToGitHub();
-                renderFaculty();
-                event.target.reset();
-                document.getElementById('filePreview').innerHTML = '';
-                showStatus('Faculty member added successfully!', 'success');
-            } catch (error) {
-                // Remove the faculty if save failed
-                facultyData.pop();
-                showStatus(`Failed to add faculty member: ${error.message}`, 'error');
-            }
-            
-            showLoading(false);
-        }
-
-        // Handle editing faculty member
-        async function handleEditFaculty(event) {
-            event.preventDefault();
-            
-            const index = parseInt(document.getElementById('editFacultyIndex').value);
-            const imageFile = document.getElementById('editFacultyImageFile').files[0];
-            
-            let imageUrl = document.getElementById('editFacultyImage').value;
-            
-            // If file is uploaded, upload to GitHub first
-            if (imageFile) {
-                try {
-                    showLoading(true);
-                    imageUrl = await uploadImageToGitHub(imageFile);
-                } catch (error) {
-                    showStatus(`Failed to upload image: ${error.message}`, 'error');
-                    showLoading(false);
-                    return;
-                }
-            }
-
-            // Process subjects
-            const subjectsText = document.getElementById('editFacultySubjects').value;
-            const subjects = subjectsText.split(',').map(s => s.trim()).filter(s => s.length > 0);
-            
-            // Update faculty data
-            facultyData[index] = {
-                name: document.getElementById('editFacultyName').value,
-                post: document.getElementById('editFacultyPost').value,
-                subjects: subjects,
-                experience: document.getElementById('editFacultyExperience').value,
-                image: imageUrl || facultyData[index].image
-            };
-            
-            try {
-                await saveFacultyToGitHub();
-                renderFaculty();
-                closeEditModal();
-                showStatus('Faculty member updated successfully!', 'success');
-            } catch (error) {
-                showStatus(`Failed to update faculty member: ${error.message}`, 'error');
-            }
-            
-            showLoading(false);
-        }
-
-        // Upload image to GitHub
-        async function uploadImageToGitHub(file) {
-            const fileName = `images/faculty_${Date.now()}_${file.name}`;
-            
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    try {
-                        const content = e.target.result.split(',')[1]; // Remove data:image/... prefix
-                        
-                        const payload = {
-                            message: `Upload faculty image: ${fileName}`,
-                            content: content
-                        };
-                        
-                        const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${fileName}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Authorization': `token ${githubToken}`,
-                                'Accept': 'application/vnd.github.v3+json',
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(payload)
-                        });
-                        
-                        if (!response.ok) {
-                            throw new Error(`Failed to upload image: ${response.status}`);
-                        }
-                        
-                        const result = await response.json();
-                        resolve(result.content.download_url);
-                        
-                    } catch (error) {
-                        reject(error);
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        // Handle image upload preview
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('filePreview');
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = `
-                        <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #667eea;">
-                        <p style="margin-top: 10px; font-size: 14px; color: #666;">Preview: ${file.name}</p>
-                    `;
-                };
-                reader.readAsDataURL(file);
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('Repository not found. Please check the owner and repository name.');
+            } else if (response.status === 401) {
+                throw new Error('Invalid token or insufficient permissions.');
             } else {
-                preview.innerHTML = '';
+                throw new Error(`Authentication failed: ${response.status}`);
             }
         }
+        
+        // Try to load existing faculty data
+        await loadFacultyFromGitHub();
+        
+        // Save credentials to localStorage
+        localStorage.setItem('github_token', githubToken);
+        localStorage.setItem('github_repo', githubRepo);
+        localStorage.setItem('github_owner', githubOwner);
+        
+        // Show main interface
+        document.getElementById('authSection').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'grid';
+        
+        showStatus(`Successfully connected to ${githubOwner}/${githubRepo}`, 'success');
+        renderFaculty();
+        updateStatistics();
+        
+    } catch (error) {
+        console.error('GitHub authentication error:', error);
+        showStatus(`Authentication failed: ${error.message}`, 'error');
+    }
+    
+    showLoading(false);
+}
 
-        // Handle edit image upload preview
-        function handleEditImageUpload(event) {
-            const file = event.target.files[0];
-            const preview = document.getElementById('editImagePreview');
-            
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.innerHTML = `
-                        <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #667eea;">
-                        <p style="margin-top: 10px; font-size: 14px; color: #666;">New preview: ${file.name}</p>
-                    `;
-                };
-                reader.readAsDataURL(file);
-            } else {
-                preview.innerHTML = '';
-            }
-        }
-
-        // Render faculty list
-        function renderFaculty() {
-            const facultyList = document.getElementById('facultyList');
-            const facultyCount = document.getElementById('facultyCount');
-            
-            facultyCount.textContent = facultyData.length;
-            
-            if (facultyData.length === 0) {
-                facultyList.innerHTML = `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
-                        <i class="fas fa-users fa-3x" style="margin-bottom: 20px; opacity: 0.3;"></i>
-                        <p style="font-size: 1.2em;">No faculty members added yet.</p>
-                        <p>Add your first faculty member using the form on the left.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            facultyList.innerHTML = facultyData.map((faculty, index) => `
-                <div class="faculty-card new-item">
-                    <img src="${faculty.image}" alt="${faculty.name}" class="faculty-image" 
-                         onerror="this.src='https://via.placeholder.com/120x120/667eea/white?text=Faculty'">
-                    <div class="faculty-name">${faculty.name}</div>
-                    <div class="faculty-post">${faculty.post}</div>
-                    <div class="faculty-details">
-                        <div class="faculty-subjects">
-                            <strong>Subjects:</strong>
-                            <div class="subjects-list">
-                                ${faculty.subjects.map(subject => `<span class="subject-tag">${subject}</span>`).join('')}
-                            </div>
-                        </div>
-                        <div class="faculty-experience">
-                            <i class="fas fa-clock"></i> ${faculty.experience}
-                        </div>
-                    </div>
-                    <div class="faculty-actions">
-                        <button onclick="editFaculty(${index})" class="btn btn-warning btn-small">
-                            <i class="fas fa-edit"></i> Edit
-                        </button>
-                        <button onclick="deleteFaculty(${index})" class="btn btn-danger btn-small">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Update last updated time
-            document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleString()}`;
-        }
-
-        // Edit faculty member
-        function editFaculty(index) {
-            const faculty = facultyData[index];
-            
-            document.getElementById('editFacultyIndex').value = index;
-            document.getElementById('editFacultyName').value = faculty.name;
-            document.getElementById('editFacultyPost').value = faculty.post;
-            document.getElementById('editFacultySubjects').value = faculty.subjects.join(', ');
-            document.getElementById('editFacultyExperience').value = faculty.experience;
-            document.getElementById('editFacultyImage').value = faculty.image;
-            
-            // Clear file input and preview
-            document.getElementById('editFacultyImageFile').value = '';
-            document.getElementById('editImagePreview').innerHTML = '';
-            
-            document.getElementById('editModal').style.display = 'block';
-        }
-
-        // Delete faculty member
-        async function deleteFaculty(index) {
-            const faculty = facultyData[index];
-            
-            if (confirm(`Are you sure you want to delete ${faculty.name}?`)) {
-                showLoading(true);
-                
-                const backupFaculty = [...facultyData];
-                facultyData.splice(index, 1);
-                
-                try {
-                    await saveFacultyToGitHub();
-                    renderFaculty();
-                    showStatus('Faculty member deleted successfully!', 'success');
-                } catch (error) {
-                    // Restore data if save failed
-                    facultyData = backupFaculty;
-                    showStatus(`Failed to delete faculty member: ${error.message}`, 'error');
-                }
-                
-                showLoading(false);
-            }
-        }
-
-        // Close edit modal
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
-
-        // Sort faculty
-        function sortFaculty(criteria) {
-            if (criteria === 'name') {
-                facultyData.sort((a, b) => a.name.localeCompare(b.name));
-            } else if (criteria === 'experience') {
-                facultyData.sort((a, b) => {
-                    const aExp = parseInt(a.experience.match(/\d+/)?.[0] || 0);
-                    const bExp = parseInt(b.experience.match(/\d+/)?.[0] || 0);
-                    return bExp - aExp;
-                });
-            }
-            
+// Load credentials from localStorage
+function loadFromLocalStorage() {
+    const token = localStorage.getItem('github_token');
+    const repo = localStorage.getItem('github_repo');
+    const owner = localStorage.getItem('github_owner');
+    
+    if (token && repo && owner) {
+        githubToken = token;
+        githubRepo = repo;
+        githubOwner = owner;
+        
+        // Set values in form
+        document.getElementById('githubToken').value = token;
+        document.getElementById('githubOwner').value = owner;
+        document.getElementById('githubRepo').value = repo;
+        
+        // Auto-connect if credentials exist
+        loadFacultyFromGitHub().then(() => {
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'grid';
             renderFaculty();
-            showStatus(`Faculty sorted by ${criteria}`, 'info');
-        }
+            updateStatistics();
+            showStatus('Automatically connected to repository', 'success');
+        }).catch((error) => {
+            console.error('Auto-connect failed:', error);
+            showStatus('Please re-authenticate', 'info');
+            // Keep the auth section visible
+        });
+    }
+}
 
-        // Clear all faculty
-        async function clearAllFaculty() {
-            if (confirm('Are you sure you want to delete all faculty members? This action cannot be undone.')) {
-                showLoading(true);
-                
-                const backupFaculty = [...facultyData];
-                facultyData = [];
-                
-                try {
-                    await saveFacultyToGitHub();
-                    renderFaculty();
-                    showStatus('All faculty members cleared successfully!', 'success');
-                } catch (error) {
-                    // Restore data if save failed
-                    facultyData = backupFaculty;
-                    showStatus(`Failed to clear faculty data: ${error.message}`, 'error');
-                }
-                
-                showLoading(false);
+// Load faculty data from GitHub
+async function loadFacultyFromGitHub() {
+    try {
+        const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${FACULTY_FILE_PATH}`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
             }
+        });
+        
+        if (response.status === 404) {
+            // File doesn't exist, create it with empty array
+            facultyData = [];
+            await saveFacultyToGitHub();
+            return;
         }
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load faculty data: ${response.status}`);
+        }
+        
+        const fileData = await response.json();
+        repoFileSha = fileData.sha;
+        
+        // Decode base64 content
+        const content = atob(fileData.content);
+        const jsonData = JSON.parse(content);
+        
+        // Handle different JSON structures
+        if (Array.isArray(jsonData)) {
+            facultyData = jsonData;
+        } else if (jsonData.faculty && Array.isArray(jsonData.faculty)) {
+            facultyData = jsonData.faculty;
+        } else {
+            facultyData = [];
+        }
+        
+    } catch (error) {
+        console.error('Error loading faculty data:', error);
+        if (error.message.includes('404')) {
+            facultyData = [];
+        } else {
+            throw error;
+        }
+    }
+}
 
-        // Refresh faculty data
-        async function refreshFaculty() {
+// Save faculty data to GitHub
+async function saveFacultyToGitHub() {
+    try {
+        const jsonData = {
+            faculty: facultyData,
+            lastUpdated: new Date().toISOString()
+        };
+        const content = JSON.stringify(jsonData, null, 2);
+        const encodedContent = btoa(unescape(encodeURIComponent(content)));
+        
+        const payload = {
+            message: `Update faculty data - ${new Date().toISOString()}`,
+            content: encodedContent
+        };
+        
+        // Include SHA if file exists
+        if (repoFileSha) {
+            payload.sha = repoFileSha;
+        }
+        
+        const response = await fetch(`${GITHUB_API_BASE}/repos/${githubOwner}/${githubRepo}/contents/${FACULTY_FILE_PATH}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Failed to save data: ${response.status} - ${errorData.message || 'Unknown error'}`);
+        }
+        
+        const result = await response.json();
+        repoFileSha = result.content.sha;
+        
+        updateStatistics();
+        showStatus('Faculty data saved to GitHub successfully!', 'success');
+        
+    } catch (error) {
+        console.error('Error saving faculty data:', error);
+        showStatus(`Failed to save data: ${error.message}`, 'error');
+        throw error;
+    }
+}
+
+// Compress image function
+function compressImage(file, targetSizeKB = 100) {
+    return new Promise((resolve) => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        
+        img.onload = function() {
+            // Calculate initial dimensions
+            let { width, height } = img;
+            
+            // Initial compression attempt
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Clear canvas with transparent background
+            ctx.clearRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            
+            // Detect if image has transparency
+            const hasTransparency = checkForTransparency(ctx, width, height);
+            const outputFormat = hasTransparency ? 'image/png' : 'image/jpeg';
+            
+            // Binary search for optimal quality
+            let minQuality = 0.1;
+            let maxQuality = 0.9;
+            let bestBlob = null;
+            
+            function tryCompression(quality) {
+                canvas.toBlob((blob) => {
+                    const sizeKB = blob.size / 1024;
+                    
+                    if (sizeKB <= targetSizeKB * 1.1) { // 10% tolerance
+                        bestBlob = blob;
+                        if (maxQuality - minQuality > 0.01) {
+                            minQuality = quality;
+                            tryCompression((minQuality + maxQuality) / 2);
+                        } else {
+                            resolve(bestBlob);
+                        }
+                    } else {
+                        if (maxQuality - minQuality > 0.01) {
+                            maxQuality = quality;
+                            tryCompression((minQuality + maxQuality) / 2);
+                        } else {
+                            // If still too large, try reducing dimensions
+                            width = Math.floor(width * 0.9);
+                            height = Math.floor(height * 0.9);
+                            canvas.width = width;
+                            canvas.height = height;
+                            ctx.clearRect(0, 0, width, height);
+                            ctx.drawImage(img, 0, 0, width, height);
+                            
+                            minQuality = 0.1;
+                            maxQuality = 0.9;
+                            tryCompression(0.7);
+                        }
+                    }
+                }, outputFormat, quality);
+            }
+            
+            tryCompression(0.7);
+        };
+        
+        img.src = URL.createObjectURL(file);
+    });
+}
+
+// Check for transparency in image
+function checkForTransparency(ctx, width, height) {
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    
+    for (let i = 3; i < data.length; i += 4) {
+        if (data[i] < 255) {
+            return true; // Found transparent pixel
+        }
+    }
+    return false;
+}
+
+// Upload image to Cloudinary
+async function uploadImageToCloudinary(file) {
+    try {
+        // Compress the image before uploading
+        const compressedBlob = await compressImage(file, 100); // 100KB target
+        
+        // Create FormData with compressed image
+        const formData = new FormData();
+        formData.append("file", compressedBlob, file.name);
+        formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+        
+        const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+            method: "POST",
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Cloudinary upload failed: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (!data.secure_url) {
+            throw new Error('No secure URL returned from Cloudinary');
+        }
+        
+        return data.secure_url;
+        
+    } catch (error) {
+        console.error('Cloudinary upload error:', error);
+        throw new Error(`Failed to upload image to Cloudinary: ${error.message}`);
+    }
+}
+
+// Handle adding new faculty member
+async function handleAddFaculty(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const imageFile = document.getElementById('facultyImageFile').files[0];
+    
+    let imageUrl = formData.get('facultyImage');
+    
+    // If file is uploaded, upload to Cloudinary first
+    if (imageFile) {
+        try {
             showLoading(true);
-            
-            try {
-                await loadFacultyFromGitHub();
-                renderFaculty();
-                updateStatistics();
-                showStatus('Faculty data refreshed from GitHub!', 'success');
-            } catch (error) {
-                showStatus(`Failed to refresh data: ${error.message}`, 'error');
-            }
-            
+            showStatus('Uploading image to Cloudinary...', 'info');
+            imageUrl = await uploadImageToCloudinary(imageFile);
+        } catch (error) {
+            showStatus(`Failed to upload image: ${error.message}`, 'error');
             showLoading(false);
+            return;
         }
+    }
 
-        // Update statistics
-        function updateStatistics() {
-            const totalFaculty = facultyData.length;
-            const allSubjects = new Set();
-            let totalExperience = 0;
-            
-            facultyData.forEach(faculty => {
-                faculty.subjects.forEach(subject => allSubjects.add(subject));
-                const exp = parseInt(faculty.experience.match(/\d+/)?.[0] || 0);
-                totalExperience += exp;
-            });
-            
-            const avgExperience = totalFaculty > 0 ? Math.round(totalExperience / totalFaculty) : 0;
-            
-            document.getElementById('totalFaculty').textContent = totalFaculty;
-            document.getElementById('totalSubjects').textContent = allSubjects.size;
-            document.getElementById('avgExperience').textContent = avgExperience + ' yrs';
+    // Process subjects
+    const subjectsText = formData.get('facultySubjects');
+    const subjects = subjectsText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    
+    const newFaculty = {
+        name: formData.get('facultyName'),
+        post: formData.get('facultyPost'),
+        subjects: subjects,
+        experience: formData.get('facultyExperience'),
+        image: imageUrl || 'https://via.placeholder.com/120x120/667eea/white?text=Faculty'
+    };
+    
+    facultyData.push(newFaculty);
+    
+    try {
+        showStatus('Saving faculty data to GitHub...', 'info');
+        await saveFacultyToGitHub();
+        renderFaculty();
+        event.target.reset();
+        document.getElementById('filePreview').innerHTML = '';
+        showStatus('Faculty member added successfully!', 'success');
+    } catch (error) {
+        // Remove the faculty if save failed
+        facultyData.pop();
+        showStatus(`Failed to add faculty member: ${error.message}`, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Handle editing faculty member
+async function handleEditFaculty(event) {
+    event.preventDefault();
+    
+    const index = parseInt(document.getElementById('editFacultyIndex').value);
+    const imageFile = document.getElementById('editFacultyImageFile').files[0];
+    
+    let imageUrl = document.getElementById('editFacultyImage').value;
+    
+    // If file is uploaded, upload to Cloudinary first
+    if (imageFile) {
+        try {
+            showLoading(true);
+            showStatus('Uploading new image to Cloudinary...', 'info');
+            imageUrl = await uploadImageToCloudinary(imageFile);
+        } catch (error) {
+            showStatus(`Failed to upload image: ${error.message}`, 'error');
+            showLoading(false);
+            return;
         }
+    }
 
-        // Show preview
-        function showPreview() {
-            const previewSection = document.getElementById('previewSection');
-            const previewContent = document.getElementById('previewContent');
-            
-            const htmlContent = generateFacultyHTML();
-            previewContent.innerHTML = `<pre><code>${escapeHtml(htmlContent)}</code></pre>`;
-            previewSection.style.display = 'block';
-            previewSection.scrollIntoView({ behavior: 'smooth' });
-        }
+    // Process subjects
+    const subjectsText = document.getElementById('editFacultySubjects').value;
+    const subjects = subjectsText.split(',').map(s => s.trim()).filter(s => s.length > 0);
+    
+    // Update faculty data
+    facultyData[index] = {
+        name: document.getElementById('editFacultyName').value,
+        post: document.getElementById('editFacultyPost').value,
+        subjects: subjects,
+        experience: document.getElementById('editFacultyExperience').value,
+        image: imageUrl || facultyData[index].image
+    };
+    
+    try {
+        showStatus('Saving updated faculty data to GitHub...', 'info');
+        await saveFacultyToGitHub();
+        renderFaculty();
+        closeEditModal();
+        showStatus('Faculty member updated successfully!', 'success');
+    } catch (error) {
+        showStatus(`Failed to update faculty member: ${error.message}`, 'error');
+    }
+    
+    showLoading(false);
+}
 
-        // Hide preview
-        function hidePreview() {
-            document.getElementById('previewSection').style.display = 'none';
-        }
+// Handle image upload preview
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('filePreview');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #667eea;">
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">Preview: ${file.name}</p>
+            `;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.innerHTML = '';
+    }
+}
 
-        // Generate faculty HTML
-        function generateFacultyHTML() {
-            const facultyCards = facultyData.map(faculty => `
-        <div class="faculty-card">
-            <img src="${faculty.image}" alt="${faculty.name}" class="faculty-image">
+// Handle edit image upload preview
+function handleEditImageUpload(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById('editImagePreview');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.innerHTML = `
+                <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #667eea;">
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">New preview: ${file.name}</p>
+            `;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.innerHTML = '';
+    }
+}
+
+// Render faculty list
+function renderFaculty() {
+    const facultyList = document.getElementById('facultyList');
+    const facultyCount = document.getElementById('facultyCount');
+    
+    facultyCount.textContent = facultyData.length;
+    
+    if (facultyData.length === 0) {
+        facultyList.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                <i class="fas fa-users fa-3x" style="margin-bottom: 20px; opacity: 0.3;"></i>
+                <p style="font-size: 1.2em;">No faculty members added yet.</p>
+                <p>Add your first faculty member using the form on the left.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    facultyList.innerHTML = facultyData.map((faculty, index) => `
+        <div class="faculty-card new-item">
+            <img src="${faculty.image}" alt="${faculty.name}" class="faculty-image" 
+                 onerror="this.src='https://via.placeholder.com/120x120/667eea/white?text=Faculty'">
             <div class="faculty-name">${faculty.name}</div>
             <div class="faculty-post">${faculty.post}</div>
             <div class="faculty-details">
@@ -1209,9 +1123,179 @@
                     <i class="fas fa-clock"></i> ${faculty.experience}
                 </div>
             </div>
-        </div>`).join('\n');
+            <div class="faculty-actions">
+                <button onclick="editFaculty(${index})" class="btn btn-warning btn-small">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button onclick="deleteFaculty(${index})" class="btn btn-danger btn-small">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+        </div>
+    `).join('');
+    
+    // Update last updated time
+    document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleString()}`;
+}
 
-            return `<!DOCTYPE html>
+// Edit faculty member
+function editFaculty(index) {
+    const faculty = facultyData[index];
+    
+    document.getElementById('editFacultyIndex').value = index;
+    document.getElementById('editFacultyName').value = faculty.name;
+    document.getElementById('editFacultyPost').value = faculty.post;
+    document.getElementById('editFacultySubjects').value = faculty.subjects.join(', ');
+    document.getElementById('editFacultyExperience').value = faculty.experience;
+    document.getElementById('editFacultyImage').value = faculty.image;
+    
+    // Clear file input and preview
+    document.getElementById('editFacultyImageFile').value = '';
+    document.getElementById('editImagePreview').innerHTML = 
+        `<img src="${faculty.image}" alt="Current" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #667eea;">`;
+    
+    document.getElementById('editModal').style.display = 'block';
+}
+
+// Delete faculty member
+async function deleteFaculty(index) {
+    const faculty = facultyData[index];
+    
+    if (confirm(`Are you sure you want to delete ${faculty.name}?`)) {
+        showLoading(true);
+        
+        const backupFaculty = [...facultyData];
+        facultyData.splice(index, 1);
+        
+        try {
+            await saveFacultyToGitHub();
+            renderFaculty();
+            showStatus('Faculty member deleted successfully!', 'success');
+        } catch (error) {
+            // Restore data if save failed
+            facultyData = backupFaculty;
+            showStatus(`Failed to delete faculty member: ${error.message}`, 'error');
+        }
+        
+        showLoading(false);
+    }
+}
+
+// Close edit modal
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+// Sort faculty
+function sortFaculty(criteria) {
+    if (criteria === 'name') {
+        facultyData.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (criteria === 'experience') {
+        facultyData.sort((a, b) => {
+            const aExp = parseInt(a.experience.match(/\d+/)?.[0] || 0);
+            const bExp = parseInt(b.experience.match(/\d+/)?.[0] || 0);
+            return bExp - aExp;
+        });
+    }
+    
+    renderFaculty();
+    showStatus(`Faculty sorted by ${criteria}`, 'info');
+}
+
+// Clear all faculty
+async function clearAllFaculty() {
+    if (confirm('Are you sure you want to delete all faculty members? This action cannot be undone.')) {
+        showLoading(true);
+        
+        const backupFaculty = [...facultyData];
+        facultyData = [];
+        
+        try {
+            await saveFacultyToGitHub();
+            renderFaculty();
+            showStatus('All faculty members cleared successfully!', 'success');
+        } catch (error) {
+            // Restore data if save failed
+            facultyData = backupFaculty;
+            showStatus(`Failed to clear faculty data: ${error.message}`, 'error');
+        }
+        
+        showLoading(false);
+    }
+}
+
+// Refresh faculty data
+async function refreshFaculty() {
+    showLoading(true);
+    
+    try {
+        await loadFacultyFromGitHub();
+        renderFaculty();
+        updateStatistics();
+        showStatus('Faculty data refreshed from GitHub!', 'success');
+    } catch (error) {
+        showStatus(`Failed to refresh data: ${error.message}`, 'error');
+    }
+    
+    showLoading(false);
+}
+
+// Update statistics
+function updateStatistics() {
+    const totalFaculty = facultyData.length;
+    const allSubjects = new Set();
+    let totalExperience = 0;
+    
+    facultyData.forEach(faculty => {
+        faculty.subjects.forEach(subject => allSubjects.add(subject));
+        const exp = parseInt(faculty.experience.match(/\d+/)?.[0] || 0);
+        totalExperience += exp;
+    });
+    
+    const avgExperience = totalFaculty > 0 ? Math.round(totalExperience / totalFaculty) : 0;
+    
+    document.getElementById('totalFaculty').textContent = totalFaculty;
+    document.getElementById('totalSubjects').textContent = allSubjects.size;
+    document.getElementById('avgExperience').textContent = avgExperience + ' yrs';
+}
+
+// Show preview
+function showPreview() {
+    const previewSection = document.getElementById('previewSection');
+    const previewContent = document.getElementById('previewContent');
+    
+    const htmlContent = generateFacultyHTML();
+    previewContent.innerHTML = `<pre><code>${escapeHtml(htmlContent)}</code></pre>`;
+    previewSection.style.display = 'block';
+    previewSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Hide preview
+function hidePreview() {
+    document.getElementById('previewSection').style.display = 'none';
+}
+
+// Generate faculty HTML
+function generateFacultyHTML() {
+    const facultyCards = facultyData.map(faculty => `
+    <div class="faculty-card">
+        <img src="${faculty.image}" alt="${faculty.name}" class="faculty-image">
+        <div class="faculty-name">${faculty.name}</div>
+        <div class="faculty-post">${faculty.post}</div>
+        <div class="faculty-details">
+            <div class="faculty-subjects">
+                <strong>Subjects:</strong>
+                <div class="subjects-list">
+                    ${faculty.subjects.map(subject => `<span class="subject-tag">${subject}</span>`).join('')}
+                </div>
+            </div>
+            <div class="faculty-experience">
+                <i class="fas fa-clock"></i> ${faculty.experience}
+            </div>
+        </div>
+    </div>`).join('\n');
+
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -1252,46 +1336,50 @@ ${facultyCards}
     </div>
 </body>
 </html>`;
-        }
+}
 
-        // Export faculty HTML
-        function exportFacultyHTML() {
-            const htmlContent = generateFacultyHTML();
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'faculty.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showStatus('Faculty HTML file downloaded successfully!', 'success');
-        }
+// Export faculty HTML
+function exportFacultyHTML() {
+    const htmlContent = generateFacultyHTML();
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'faculty.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showStatus('Faculty HTML file downloaded successfully!', 'success');
+}
 
-        // Utility functions
-        function showStatus(message, type) {
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.textContent = message;
-            statusDiv.className = `status-message status-${type}`;
-            statusDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 5000);
-        }
+// Utility functions
+function showStatus(message, type) {
+    const statusDiv = document.getElementById('statusMessage');
+    statusDiv.textContent = message;
+    statusDiv.className = `status-message status-${type}`;
+    statusDiv.style.display = 'block';
+    
+    // Auto-hide after 5 seconds for success/info messages
+    if (type === 'success' || type === 'info') {
+        setTimeout(() => {
+            statusDiv.style.display = 'none';
+        }, 5000);
+    }
+}
 
-        function showLoading(show) {
-            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
-        }
+function showLoading(show) {
+    document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
+}
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
     </script>
 </body>
+
 </html>
