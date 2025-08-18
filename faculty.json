@@ -234,7 +234,16 @@
       ],
       "experience": "5 years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755519283/iqxhjjf7i3jagcmyrxwg.jpg"
+    },
+    {
+      "name": "Sonia Banafer",
+      "post": "lower division teacher",
+      "subjects": [
+        "English"
+      ],
+      "experience": "3 years",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T12:14:44.908Z"
+  "lastUpdated": "2025-08-18T16:51:16.646Z"
 }
