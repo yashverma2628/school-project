@@ -28,7 +28,16 @@
       ],
       "experience": "39 years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755516656/owpk9vevenxsaqpaq6q6.jpg"
+    },
+    {
+      "name": "Mallika choudhary",
+      "post": "lecturer",
+      "subjects": [
+        "Hindi"
+      ],
+      "experience": "30 years",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755516818/oi5dkajvsgfme0m4kakj.jpg"
     }
   ],
-  "lastUpdated": "2025-08-18T11:30:58.082Z"
+  "lastUpdated": "2025-08-18T11:33:40.185Z"
 }
