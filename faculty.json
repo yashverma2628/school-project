@@ -216,7 +216,16 @@
       ],
       "experience": "6 years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755518995/f1rqtuhlaofrx7ix2af2.jpg"
+    },
+    {
+      "name": "Preeti Tripati",
+      "post": "Assistant teacher",
+      "subjects": [
+        "Biology"
+      ],
+      "experience": "6 years",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T12:09:56.909Z"
+  "lastUpdated": "2025-08-18T12:12:33.911Z"
 }
