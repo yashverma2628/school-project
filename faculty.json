@@ -171,7 +171,16 @@
       ],
       "experience": "7 years",
       "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
+    },
+    {
+      "name": "Sarla Patel ",
+      "post": "lower division teacher",
+      "subjects": [
+        "Hindi"
+      ],
+      "experience": "7 years",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755518716/mehzz2thhbxemh06vsdg.jpg"
     }
   ],
-  "lastUpdated": "2025-08-18T12:04:20.142Z"
+  "lastUpdated": "2025-08-18T12:05:18.107Z"
 }
