@@ -608,21 +608,24 @@
             const departments = new Set();
             allFacultyData.forEach(teacher => {
                 if (teacher.post) {
-                    if (teacher.post.toLowerCase().includes('mathematics') || teacher.post.toLowerCase().includes('math')) {
+                    if (teacher.post.toLowerCase().includes('Mathematics') || teacher.post.toLowerCase().includes('Math')) {
                         departments.add('Mathematics');
-                    } else if (teacher.post.toLowerCase().includes('science') || teacher.post.toLowerCase().includes('physics') || teacher.post.toLowerCase().includes('chemistry')) {
+                    } else if (teacher.post.toLowerCase().includes('Science') || teacher.post.toLowerCase().includes('Physics') || teacher.post.toLowerCase().includes('Chemistry') || teacher.post.toLowerCase().includes('Biology')) {
                         departments.add('Science');
-                    } else if (teacher.post.toLowerCase().includes('english') || teacher.post.toLowerCase().includes('literature')) {
+                    } else if (teacher.post.toLowerCase().includes('English') || teacher.post.toLowerCase().includes('literature') || teacher.post.toLowerCase().includes('english')) {
                         departments.add('English');
-                    } else if (teacher.post.toLowerCase().includes('hindi') || teacher.post.toLowerCase().includes('sanskrit')) {
+                    } else if (teacher.post.toLowerCase().includes('Hindi') || teacher.post.toLowerCase().includes('hindi')) {
                         departments.add('Hindi');
-                    } else if (teacher.post.toLowerCase().includes('computer') || teacher.post.toLowerCase().includes('programming')) {
-                        departments.add('Computer Science');
-                    } else if (teacher.post.toLowerCase().includes('physical') || teacher.post.toLowerCase().includes('sports')) {
+                    } else if (teacher.post.toLowerCase().includes('Computer Application') || teacher.post.toLowerCase().includes('IP')) {
+                        departments.add('Computer');
+                          } else if (teacher.post.toLowerCase().includes('Commerce') || teacher.post.toLowerCase().includes('Accounts') || teacher.post.toLowerCase().includes('Economics')) {
+                        departments.add('Commerce');
+                         
+                    } else if (teacher.post.toLowerCase().includes('physical') || teacher.post.toLowerCase().includes('sports') || teacher.post.toLowerCase().includes('Yoga') || teacher.post.toLowerCase().includes('Karate') || teacher.post.toLowerCase().includes('Meditation')) {
                         departments.add('Physical Education');
-                    } else if (teacher.post.toLowerCase().includes('art') || teacher.post.toLowerCase().includes('craft')) {
+                    } else if (teacher.post.toLowerCase().includes('ART') || teacher.post.toLowerCase().includes('CRAFT')) {
                         departments.add('Arts');
-                    } else if (teacher.post.toLowerCase().includes('social') || teacher.post.toLowerCase().includes('history') || teacher.post.toLowerCase().includes('geography')) {
+                    } else if (teacher.post.toLowerCase().includes('social studies') || teacher.post.toLowerCase().includes('history') || teacher.post.toLowerCase().includes('geography') || teacher.post.toLowerCase().includes('SST') || teacher.post.toLowerCase().includes('EVS')) {
                         departments.add('Social Studies');
                     }
                 }
@@ -733,3 +736,4 @@
     </script>
 </body>
 </html>
+
