@@ -261,7 +261,16 @@
       ],
       "experience": "3 years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755536004/bqi4dmjfnzqix5lsi8ob.jpg"
+    },
+    {
+      "name": "Poonam Rajput",
+      "post": "lower division teacher",
+      "subjects": [
+        "ART & CRAFT"
+      ],
+      "experience": "4 years",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T16:53:25.202Z"
+  "lastUpdated": "2025-08-18T16:54:12.765Z"
 }
