@@ -162,7 +162,16 @@
       ],
       "experience": "9 years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755518572/rhrsypiqct5hd6pp3xrr.jpg"
+    },
+    {
+      "name": "Neetu Thapa",
+      "post": "lower division teacher",
+      "subjects": [
+        "English"
+      ],
+      "experience": "7 years",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T12:02:54.188Z"
+  "lastUpdated": "2025-08-18T12:04:20.142Z"
 }
