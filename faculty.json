@@ -46,7 +46,16 @@
       ],
       "experience": "24 years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755516908/vskjpcqzobcjercc8h7j.jpg"
+    },
+    {
+      "name": "Metali Mallick",
+      "post": "Upper division teacher",
+      "subjects": [
+        "sanskrit"
+      ],
+      "experience": "15 years",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755517037/jvmohxcantfy4uurlyij.jpg"
     }
   ],
-  "lastUpdated": "2025-08-18T11:35:09.724Z"
+  "lastUpdated": "2025-08-18T11:37:19.123Z"
 }
