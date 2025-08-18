@@ -118,7 +118,17 @@
       ],
       "experience": "12 years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755517725/yhq5xrvd9onr706wgvxh.jpg"
+    },
+    {
+      "name": "Arvind Kumar",
+      "post": "lecturer",
+      "subjects": [
+        "Physics",
+        "IP"
+      ],
+      "experience": "12 years",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755517911/bjmprygtzu7xwzmcp0zx.jpg"
     }
   ],
-  "lastUpdated": "2025-08-18T11:48:47.023Z"
+  "lastUpdated": "2025-08-18T11:51:52.253Z"
 }
