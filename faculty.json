@@ -243,7 +243,16 @@
       ],
       "experience": "3 years",
       "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
+    },
+    {
+      "name": "Neha Rajput ",
+      "post": "lower division teacher",
+      "subjects": [
+        "EVS"
+      ],
+      "experience": "3 years",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T16:51:16.646Z"
+  "lastUpdated": "2025-08-18T16:51:49.999Z"
 }
