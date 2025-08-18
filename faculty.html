@@ -607,8 +607,8 @@
         function createDepartmentFilters() {
             const departments = new Set();
             allFacultyData.forEach(teacher => {
-                if (teacher.post) {
-                    if (teacher.post.toLowerCase().includes('Mathematics') || teacher.post.toLowerCase().includes('Maths') || teacher.post.toLowerCase().includes('maths') || teacher.post.toLowerCase().includes('mathematics')) {
+                if (teacher.subjects) {
+                    if (teacher.subjects.toLowerCase().includes('Mathematics') || teacher.subjects.toLowerCase().includes('Maths') || teacher.subjects.toLowerCase().includes('maths') || teacher.subjects.toLowerCase().includes('mathematics')) {
                         departments.add('Mathematics');
                     } else if (teacher.post.toLowerCase().includes('Science') || teacher.post.toLowerCase().includes('Physics') || teacher.post.toLowerCase().includes('Chemistry') || teacher.post.toLowerCase().includes('Biology') || teacher.post.toLowerCase().includes('physics') || teacher.post.toLowerCase().includes('chemistry') || teacher.post.toLowerCase().includes('biology')) {
                         departments.add('Science');
@@ -736,5 +736,6 @@
     </script>
 </body>
 </html>
+
 
 
