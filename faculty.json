@@ -290,7 +290,16 @@
       ],
       "experience": "1 year",
       "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
+    },
+    {
+      "name": "Shiwali Mishra",
+      "post": "computer teacher",
+      "subjects": [
+        "computer application"
+      ],
+      "experience": "1 year",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T16:58:25.249Z"
+  "lastUpdated": "2025-08-18T16:59:05.403Z"
 }
