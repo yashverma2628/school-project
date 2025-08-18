@@ -225,7 +225,16 @@
       ],
       "experience": "6 years",
       "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
+    },
+    {
+      "name": "Niteesha singh",
+      "post": "lower division teacher",
+      "subjects": [
+        "English"
+      ],
+      "experience": "5 years",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755519283/iqxhjjf7i3jagcmyrxwg.jpg"
     }
   ],
-  "lastUpdated": "2025-08-18T12:12:33.911Z"
+  "lastUpdated": "2025-08-18T12:14:44.908Z"
 }
