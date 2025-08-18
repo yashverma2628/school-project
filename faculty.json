@@ -37,7 +37,16 @@
       ],
       "experience": "30 years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755516818/oi5dkajvsgfme0m4kakj.jpg"
+    },
+    {
+      "name": "Pawan Puri ",
+      "post": "lecturer",
+      "subjects": [
+        "mathematics"
+      ],
+      "experience": "24 years",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755516908/vskjpcqzobcjercc8h7j.jpg"
     }
   ],
-  "lastUpdated": "2025-08-18T11:33:40.185Z"
+  "lastUpdated": "2025-08-18T11:35:09.724Z"
 }
