@@ -1,7 +1,7 @@
 {
   "faculty": [
     {
-      "name": "Sumana ma'am",
+      "name": "Sumana chatterjee ma'am",
       "post": "Principal & Senior English Teacher",
       "subjects": [
         "English",
@@ -9,8 +9,8 @@
         "English grammer"
       ],
       "experience": "18 Years",
-      "image": "https://raw.githubusercontent.com/yashverma2628/school-project/main/images/faculty_1751385073624_principal%20madam.jpg"
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755516406/fvgzfbu2eieygpuaonwf.jpg"
     }
   ],
-  "lastUpdated": "2025-08-18T11:23:09.860Z"
+  "lastUpdated": "2025-08-18T11:26:47.929Z"
 }
