@@ -658,7 +658,7 @@
                         <div class="form-group">
                             <label for="imageFile"><i class="fas fa-image"></i> Select Image</label>
                             <div class="file-upload">
-                                <input type="file" id="imageFile" class="file-input" accept="image/*" required>
+                                <input type="file" id="imageFile" name="imageFile" class="file-input" accept="image/*" required>
                                 <label for="imageFile" class="file-label">
                                     <i class="fas fa-cloud-upload-alt"></i> Click to select image or drag & drop
                                 </label>
@@ -668,34 +668,34 @@
 
                         <div class="form-group">
                             <label for="imageTitle"><i class="fas fa-heading"></i> Image Title</label>
-                            <input type="text" id="imageTitle" class="form-input" placeholder="Enter image title" required>
+                            <input type="text" id="imageTitle" name="imageTitle" class="form-input" placeholder="Enter image title" required>
                         </div>
 
                         <div class="form-group">
                             <label for="imageAlt"><i class="fas fa-tag"></i> Alt Text</label>
-                            <input type="text" id="imageAlt" class="form-input" placeholder="Enter alt text for accessibility" required>
+                            <input type="text" id="imageAlt" name="imageAlt" class="form-input" placeholder="Enter alt text for accessibility" required>
                         </div>
 
                         <div class="form-group">
                             <label for="imageEvent"><i class="fas fa-calendar-alt"></i> Event/Category</label>
-                            <select id="imageEvent" class="form-select" required>
+                            <select id="imageEvent" name="imageEvent" class="form-select" required>
                                 <option value="">Select Event/Category</option>
-                                <option value="annual function">Annual Function</option>
+                                <option value="events">Events</option>
                                 <option value="classroom">Classroom</option>
-                                <option value="students">Students</option>
-                                <option value="computer lab">computer lab</option>
-                                <option value="science lab">Science Lab</option>
-                                <option value="kalakaari">Kalakaari</option>
-                                <option value="sports">Sports</option>
-                                <option value="activities">Activities</option>
                                 <option value="facilities">Facilities</option>
-                                <option value="other">Other</option>
+                                <option value="extra curricular activity">Extra Curricular Activity</option>
+                                <option value="sports activity">Sports Activity</option>
+                                <option value="annual function">Annual Function</option>
+                                <option value="competition and tournament">Competition and Tournament</option>
+                                <option value="art and craft">Art and Craft</option>
+                                <option value="students">Students</option>
+                                <option value="other activity">Other Activity</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="imageDescription"><i class="fas fa-align-left"></i> Description</label>
-                            <textarea id="imageDescription" class="form-input form-textarea" placeholder="Enter detailed description of the image" required></textarea>
+                            <textarea id="imageDescription" name="imageDescription" class="form-input form-textarea" placeholder="Enter detailed description of the image" required></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary" style="width: 100%;">
@@ -711,17 +711,17 @@
                     <!-- Filter Controls -->
                     <div class="filter-controls">
                         <select id="eventFilter" class="filter-select" onchange="filterGalleryItems()">
-                            <option value="">All Events</option>
-                            <option value="annual function">Annual Function</option>
+                            <option value="">All Categories</option>
+                            <option value="events">Events</option>
                             <option value="classroom">Classroom</option>
-                            <option value="students">Students</option>
-                            <option value="computer lab">Computer Lab</option>
-                            <option value="science lab">Science Lab</option>
-                            <option value="kalakaari">Kalakaari</option>
-                            <option value="sports">Sports</option>
-                            <option value="activities">Activities</option>
                             <option value="facilities">Facilities</option>
-                            <option value="other">Other</option>
+                            <option value="extra curricular activity">Extra Curricular Activity</option>
+                            <option value="sports activity">Sports Activity</option>
+                            <option value="annual function">Annual Function</option>
+                            <option value="competition and tournament">Competition and Tournament</option>
+                            <option value="art and craft">Art and Craft</option>
+                            <option value="students">Students</option>
+                            <option value="other activity">Other Activity</option>
                         </select>
                         
                         <button onclick="refreshGallery()" class="btn btn-secondary btn-small">
@@ -769,16 +769,16 @@
                     <div class="modal-form-group">
                         <label for="editEvent">Event/Category</label>
                         <select id="editEvent" class="modal-form-input" required>
-                            <option value="annual function">Annual Function</option>
+                            <option value="events">Events</option>
                             <option value="classroom">Classroom</option>
-                            <option value="students">Students</option>
-                            <option value="computer lab">Computer Lab</option>
-                            <option value="science lab">Science Lab</option>
-                            <option value="kalakaari">Kalakaari</option>
-                            <option value="sports">Sports</option>
-                            <option value="activities">Activities</option>
                             <option value="facilities">Facilities</option>
-                            <option value="other">Other</option>
+                            <option value="extra curricular activity">Extra Curricular Activity</option>
+                            <option value="sports activity">Sports Activity</option>
+                            <option value="annual function">Annual Function</option>
+                            <option value="competition and tournament">Competition and Tournament</option>
+                            <option value="art and craft">Art and Craft</option>
+                            <option value="students">Students</option>
+                            <option value="other activity">Other Activity</option>
                         </select>
                     </div>
                     
@@ -803,6 +803,8 @@
             </div>
         </div>
     </div>
+
+
 <script>
 // Global variables
 let githubToken = '';
@@ -1602,4 +1604,5 @@ ${galleryData.images.map(image => `
 </style>`;
 }
 </script> </body> </html>
+
 
