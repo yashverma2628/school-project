@@ -270,7 +270,29 @@
       ],
       "experience": "4 years",
       "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
+    },
+    {
+      "name": "Radha Bagwaan",
+      "post": "Physical training instructor",
+      "subjects": [
+        "Yoga",
+        "Karate",
+        "Meditation"
+      ],
+      "experience": "1 years",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
+    },
+    {
+      "name": "Radha Bagwaan",
+      "post": "Physical training instructor",
+      "subjects": [
+        "Yoga",
+        "Karate",
+        "Meditation"
+      ],
+      "experience": "1 years",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T16:54:12.765Z"
+  "lastUpdated": "2025-08-18T16:57:13.828Z"
 }
