@@ -91,7 +91,16 @@
       ],
       "experience": "13 years",
       "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
+    },
+    {
+      "name": "Chetali mukherjee",
+      "post": "Assistant teacher",
+      "subjects": [
+        "Hindi"
+      ],
+      "experience": "13 years",
+      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T11:44:22.316Z"
+  "lastUpdated": "2025-08-18T11:45:55.088Z"
 }
