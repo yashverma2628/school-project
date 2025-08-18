@@ -683,7 +683,7 @@
                                 <option value="annual function">Annual Function</option>
                                 <option value="classroom">Classroom</option>
                                 <option value="students">Students</option>
-                                <option value="computer lab">Computer Lab</option>
+                                <option value="computer lab">computer lab</option>
                                 <option value="science lab">Science Lab</option>
                                 <option value="kalakaari">Kalakaari</option>
                                 <option value="sports">Sports</option>
@@ -803,7 +803,6 @@
             </div>
         </div>
     </div>
-
 <script>
 // Global variables
 let githubToken = '';
@@ -1192,15 +1191,40 @@ async function uploadImageToCloudinary(file) {
     }
 }
 
-// Handle adding new image
+// Handle adding new image - FIXED VERSION
 async function handleAddImage(event) {
     event.preventDefault();
     
-    const formData = new FormData(event.target);
+    // Get form elements directly instead of using FormData
     const imageFile = document.getElementById('imageFile').files[0];
+    const imageTitle = document.getElementById('imageTitle').value.trim();
+    const imageAlt = document.getElementById('imageAlt').value.trim();
+    const imageEvent = document.getElementById('imageEvent').value.trim();
+    const imageDescription = document.getElementById('imageDescription').value.trim();
     
+    // Validation
     if (!imageFile) {
         showStatus('Please select an image file', 'error');
+        return;
+    }
+    
+    if (!imageTitle) {
+        showStatus('Please enter an image title', 'error');
+        return;
+    }
+    
+    if (!imageAlt) {
+        showStatus('Please enter alt text', 'error');
+        return;
+    }
+    
+    if (!imageEvent) {
+        showStatus('Please select a category', 'error');
+        return;
+    }
+    
+    if (!imageDescription) {
+        showStatus('Please enter a description', 'error');
         return;
     }
     
@@ -1218,11 +1242,13 @@ async function handleAddImage(event) {
     
     const newImage = {
         src: imageUrl,
-        alt: formData.get('imageAlt'),
-        title: formData.get('imageTitle'),
-        event: formData.get('imageEvent'),
-        description: formData.get('imageDescription')
+        alt: imageAlt,
+        title: imageTitle,
+        event: imageEvent,
+        description: imageDescription
     };
+    
+    console.log('New image data:', newImage); // Debug log
     
     galleryData.images.push(newImage);
     
@@ -1250,10 +1276,10 @@ async function handleEditImage(event) {
     
     const updatedImage = {
         src: galleryData.images[index].src, // Keep original image URL
-        alt: document.getElementById('editAlt').value,
-        title: document.getElementById('editTitle').value,
-        event: document.getElementById('editEvent').value,
-        description: document.getElementById('editDescription').value
+        alt: document.getElementById('editAlt').value.trim(),
+        title: document.getElementById('editTitle').value.trim(),
+        event: document.getElementById('editEvent').value.trim(),
+        description: document.getElementById('editDescription').value.trim()
     };
     
     galleryData.images[index] = updatedImage;
@@ -1345,7 +1371,7 @@ function renderGalleryItems() {
                 <img src="${image.src}" alt="${image.alt}" class="item-image" 
                      onerror="this.src='https://via.placeholder.com/300x150?text=Image+Not+Found'">
                 <div class="item-content">
-                    <div class="item-title">${image.title}</div>
+                    <div class="item-title">${image.title || 'Untitled'}</div>
                     <div class="item-description">${image.description || 'No description'}</div>
                     <div class="item-event">${image.event || 'Uncategorized'}</div>
                     <div class="item-actions">
@@ -1367,8 +1393,8 @@ function editImage(index) {
     const image = galleryData.images[index];
     
     document.getElementById('editImageIndex').value = index;
-    document.getElementById('editTitle').value = image.title;
-    document.getElementById('editAlt').value = image.alt;
+    document.getElementById('editTitle').value = image.title || '';
+    document.getElementById('editAlt').value = image.alt || '';
     document.getElementById('editEvent').value = image.event || '';
     document.getElementById('editDescription').value = image.description || '';
     document.getElementById('editImagePreview').src = image.src;
@@ -1379,7 +1405,7 @@ function editImage(index) {
 // Delete image
 async function deleteImage(index) {
     const image = galleryData.images[index];
-    if (confirm(`Are you sure you want to delete "${image.title}"?`)) {
+    if (confirm(`Are you sure you want to delete "${image.title || 'this image'}"?`)) {
         const deletedImage = galleryData.images.splice(index, 1)[0];
         
         try {
@@ -1425,7 +1451,7 @@ async function refreshGallery() {
 // Sort gallery
 async function sortGallery(by) {
     if (by === 'title') {
-        galleryData.images.sort((a, b) => a.title.localeCompare(b.title));
+        galleryData.images.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
     } else if (by === 'event') {
         galleryData.images.sort((a, b) => (a.event || '').localeCompare(b.event || ''));
     }
@@ -1574,4 +1600,6 @@ ${galleryData.images.map(image => `
     display: inline-block;
 }
 </style>`;
-}</script> </body> </html>
+}
+</script> </body> </html>
+
