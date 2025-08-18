@@ -30,6 +30,21 @@
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+        .error {
+            text-align: center;
+            color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
         .gallery-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
@@ -59,6 +74,7 @@
             font-weight: bold; 
             margin-bottom: 10px; 
             color: #333;
+            text-transform: uppercase;
         }
         .gallery-description { 
             color: #666; 
@@ -72,11 +88,21 @@
             color: white; 
             border-radius: 20px; 
             font-size: 0.9rem; 
+            text-transform: lowercase;
         }
         .gallery-meta {
             font-size: 0.8rem;
             color: #999;
             margin-top: 10px;
+        }
+        .no-images {
+            text-align: center;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
         }
         @media (max-width: 768px) {
             .gallery-grid { grid-template-columns: 1fr; }
@@ -88,51 +114,94 @@
     <div class="gallery-container">
         <div class="gallery-header">
             <h1>🎓 School Gallery</h1>
-            <p>Capturing memories and moments - Last updated: 6/6/2025</p>
-        </div>
-        <div class="gallery-grid">
-            
-                <div class="gallery-item">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/gallery_1749150123733.jpg?raw=true" alt="School Picnic 2024" class="gallery-image" 
-                         onerror="this.style.display='none'">
-                    <div class="gallery-content">
-                        <h3 class="gallery-title">School Picnic 2024</h3>
-                        <p class="gallery-description">a joyful day of fun and togetherness as our school organized a memorable picnic for all</p>
-                        <span class="gallery-category">activities</span>
-                        <div class="gallery-meta">
-                            6/6/2025
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="gallery-item">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/Snapchat-1439079314.jpg?raw=true" alt="Annual Function 2024" class="gallery-image" 
-                         onerror="this.style.display='none'">
-                    <div class="gallery-content">
-                        <h3 class="gallery-title">Annual Function 2024</h3>
-                        <p class="gallery-description">Our grand annual celebration with cultural performances</p>
-                        <span class="gallery-category">events</span>
-                        <div class="gallery-meta">
-                            
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="gallery-item">
-                    <img src="https://github.com/yashverma2628/school-project/blob/main/IMG-20240314-WA0072.jpg?raw=true" alt="Oath Taking Ceremony 2023" class="gallery-image" 
-                         onerror="this.style.display='none'">
-                    <div class="gallery-content">
-                        <h3 class="gallery-title">Oath Taking Ceremony 2023</h3>
-                        <p class="gallery-description">Athletic competitions and team spirit showcase</p>
-                        <span class="gallery-category">events</span>
-                        <div class="gallery-meta">
-                            
-                        </div>
-                    </div>
-                </div>
-            
+            <p>Capturing memories and moments - Showing images from position 7 onwards</p>
         </div>
         
+        <div id="loading" class="loading">
+            Loading gallery images...
+        </div>
+        
+        <div id="error" class="error" style="display: none;">
+            <h3>Error Loading Gallery</h3>
+            <p>Unable to load gallery.json file. Please make sure the file exists and is properly formatted.</p>
+        </div>
+        
+        <div id="gallery-grid" class="gallery-grid" style="display: none;">
+        </div>
+        
+        <div id="no-images" class="no-images" style="display: none;">
+            <h3>📸 No Additional Images</h3>
+            <p>There are no images to display after the first 6 images in the gallery.</p>
+        </div>
     </div>
+
+    <script>
+        // Function to load and display gallery data
+        async function loadGallery() {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('error');
+            const galleryGridEl = document.getElementById('gallery-grid');
+            const noImagesEl = document.getElementById('no-images');
+
+            try {
+                // Fetch the gallery.json file
+                const response = await fetch('gallery.json');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Check if images array exists and has more than 6 images
+                if (!data.images || !Array.isArray(data.images)) {
+                    throw new Error('Invalid JSON structure: images array not found');
+                }
+                
+                // Get images after the 6th image (index 6 and beyond)
+                const imagesToShow = data.images.slice(6);
+                
+                // Hide loading
+                loadingEl.style.display = 'none';
+                
+                if (imagesToShow.length === 0) {
+                    // Show no images message
+                    noImagesEl.style.display = 'block';
+                } else {
+                    // Show gallery grid
+                    galleryGridEl.style.display = 'grid';
+                    
+                    // Generate gallery items
+                    imagesToShow.forEach((image, index) => {
+                        const galleryItem = document.createElement('div');
+                        galleryItem.className = 'gallery-item';
+                        
+                        galleryItem.innerHTML = `
+                            <img src="${image.src}" alt="${image.alt || 'Gallery image'}" class="gallery-image" 
+                                 onerror="this.style.display='none'">
+                            <div class="gallery-content">
+                                <h3 class="gallery-title">${image.title || image.alt || 'Untitled'}</h3>
+                                ${image.description ? `<p class="gallery-description">${image.description}</p>` : ''}
+                                ${image.event ? `<span class="gallery-category">${image.event}</span>` : ''}
+                                <div class="gallery-meta">
+                                    Image ${index + 7} of ${data.images.length}
+                                </div>
+                            </div>
+                        `;
+                        
+                        galleryGridEl.appendChild(galleryItem);
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error loading gallery:', error);
+                loadingEl.style.display = 'none';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        // Load gallery when page loads
+        document.addEventListener('DOMContentLoaded', loadGallery);
+    </script>
 </body>
 </html>
