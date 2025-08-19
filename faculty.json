@@ -1,12 +1,10 @@
 {
   "faculty": [
     {
-      "name": "Sumana chatterjee ma'am",
+      "name": "Sumana Chatterjee ",
       "post": "Principal & Senior English Teacher",
       "subjects": [
-        "English",
-        "literature",
-        "English grammer"
+        "English"
       ],
       "experience": "18 Years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755516406/fvgzfbu2eieygpuaonwf.jpg"
@@ -318,5 +316,5 @@
       "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-19T05:03:15.584Z"
+  "lastUpdated": "2025-08-19T07:14:32.681Z"
 }
