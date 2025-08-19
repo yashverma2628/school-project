@@ -13,11 +13,12 @@
     },
     {
       "name": "Ranju Sharma ",
-      "post": "vice principal",
+      "post": "Vice Principal",
       "subjects": [
-        "commerce"
+        "commerce",
+        "Business studies"
       ],
-      "experience": "16",
+      "experience": "16  years",
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755516552/uxik005uukkksy75ifsa.jpg"
     },
     {
@@ -317,5 +318,5 @@
       "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
     }
   ],
-  "lastUpdated": "2025-08-18T17:01:58.123Z"
+  "lastUpdated": "2025-08-19T05:03:15.584Z"
 }
