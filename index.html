@@ -383,30 +383,105 @@
 
     </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>Shishu Vidya Pith Eng. Med. Hr. Sec School</h1>
-            <p>Building character, nurturing excellence, creating future leaders</p>
-            <a onclick="scrollToSection('about')" class="btn">Learn More</a>
-        </div>
-    </section>
+  <!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="hero-content">
+        <h1>Shishu Vidya Pith Eng. Med. Hr. Sec School</h1>
+        <p>Building character, nurturing excellence, creating future leaders</p>
+        <a onclick="scrollToSection('about')" class="btn">Learn More</a>
+    </div>
+</section>
 
-    <!-- Principal Section -->
-    <section id="about" class="principal-section">
-        <div class="container">
-            <div class="principal-card fade-in clickable" onclick="redirectToPage('principal.html')">
-                <!-- REPLACE src WITH PRINCIPAL'S PHOTO URL -->
-                <img src="https://github.com/yashverma2628/school-project/blob/main/Screenshot_20250601_134230_Instagram.jpg?raw=true" alt="Principal Photo" class="principal-image">
-                <div class="principal-content">
-                    <h2>Principal's Welcome</h2>
-                    <h3> Sumana chatterjee maa'am </h3>
-                    <p>Welcome to our school website. We are committed to providing quality education that develops students' potential holistically, creating a generation that is smart, skilled, and of good character.</p>
-                    <a class="pbtn">Read More</a>
-                </div>
+<!-- Hindi Medium School Button Section -->
+<section class="hindi-medium-section">
+    <div class="container">
+        <div class="hindi-medium-button-container">
+            <button class="hindi-medium-btn" onclick="window.location.href='hindimedium.html'">
+                यहाँ क्लिक करें शिशु विद्या पीठ हिंदी माध्यम बंगाली कन्या शाला देखने के लिए
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Principal Section -->
+<section id="about" class="principal-section">
+    <div class="container">
+        <div class="principal-card fade-in clickable" onclick="redirectToPage('principal.html')">
+            <!-- REPLACE src WITH PRINCIPAL'S PHOTO URL -->
+            <img src="https://github.com/yashverma2628/school-project/blob/main/Screenshot_20250601_134230_Instagram.jpg?raw=true" alt="Principal Photo" class="principal-image">
+            <div class="principal-content">
+                <h2>Principal's Welcome</h2>
+                <h3> Sumana chatterjee maa'am </h3>
+                <p>Welcome to our school website. We are committed to providing quality education that develops students' potential holistically, creating a generation that is smart, skilled, and of good character.</p>
+                <a class="pbtn">Read More</a>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<style>
+/* Hindi Medium Button Section Styles */
+.hindi-medium-section {
+    padding: 40px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    text-align: center;
+}
+
+.hindi-medium-button-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.hindi-medium-btn {
+    background: linear-gradient(45deg, #ff6b35, #f7931e);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s ease;
+    font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+    min-width: 300px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.hindi-medium-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(255, 107, 53, 0.4);
+    background: linear-gradient(45deg, #ff8c5a, #ffa940);
+}
+
+.hindi-medium-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hindi-medium-btn {
+        font-size: 16px;
+        padding: 12px 25px;
+        min-width: 250px;
+    }
+    
+    .hindi-medium-section {
+        padding: 30px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .hindi-medium-btn {
+        font-size: 14px;
+        padding: 10px 20px;
+        min-width: 200px;
+    }
+}
+</style>
 
     <!-- Features -->
     <section id="facilities" class="features">
