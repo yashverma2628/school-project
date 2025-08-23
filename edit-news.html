@@ -786,582 +786,567 @@
     </div>
 
     <script>
-        // ============================================================================
-        // GLOBAL VARIABLES & INITIALIZATION
-        // ============================================================================
-        
-        let newsData = [];
-        let currentEditIndex = -1;
-        let filteredNews = [];
+      // ============================================================================
+// SCHOOL NEWS MANAGER - JAVASCRIPT
+// ============================================================================
 
-        // Sample data that matches your JSON structure
-        const sampleNewsData = {
-            "news": [
-                {
-                    "id": 1,
-                    "title": "Winter Break Extended",
-                    "category": "urgent",
-                    "date": "6/3/2025",
-                    "isUrgent": true,
-                    "content": [
-                        "Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025.",
-                        "",
-                        "All students and parents are requested to take note of this change. The school administration apologizes for any inconvenience caused and appreciates your understanding."
-                    ],
-                    "tags": ["Important", "Schedule"]
-                },
-                {
-                    "id": 2,
-                    "title": "Emergency Parent-Teacher Meeting",
-                    "category": "urgent",
-                    "date": "6/4/2025",
-                    "isUrgent": true,
-                    "content": [
-                        "An emergency parent-teacher meeting has been scheduled for June 8, 2025, at 3:00 PM in the school auditorium.",
-                        "",
-                        "This meeting is to discuss the recent changes in academic calendar and address parent concerns. Attendance is mandatory for all parents."
-                    ],
-                    "tags": ["Meeting", "Parents", "Important"]
-                },
-                {
-                    "id": 3,
-                    "title": "Annual Sports Day 2025",
-                    "category": "events",
-                    "date": "6/1/2025",
-                    "isUrgent": false,
-                    "content": [
-                        "Our Annual Sports Day will be held on June 20, 2025, at the school grounds. This year's theme is \"Unity in Diversity\" celebrating our multicultural student body.",
-                        "",
-                        "Registration forms are available at the school office. Parents are cordially invited to attend and cheer for their children. Various competitions and cultural programs are planned."
-                    ],
-                    "tags": ["Sports", "Event", "Competition"]
-                }
-            ]
-        };
+// Global variables
+let githubToken = '';
+let newsData = [];
+let currentEditIndex = -1;
+let originalNewsData = [];
 
-        // Initialize with current date
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('newsDate').value = today;
-        });
+// GitHub configuration
+const githubConfig = {
+    owner: 'yashverma2628',
+    repo: 'school-project',
+    branch: 'main',
+    dataFile: 'news.json'
+};
 
-        // ============================================================================
-        // FILE HANDLING FUNCTIONS
-        // ============================================================================
+// ============================================================================
+// INITIALIZATION
+// ============================================================================
 
-        function loadJSONFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            showLoading(true);
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const jsonData = JSON.parse(e.target.result);
-                    
-                    if (jsonData.news && Array.isArray(jsonData.news)) {
-                        newsData = jsonData.news;
-                        showStatus(`✅ Successfully loaded ${newsData.length} news articles!`, 'success');
-                        document.getElementById('mainContent').style.display = 'block';
-                        renderNews();
-                        renderStats();
-                    } else {
-                        throw new Error('Invalid JSON structure. Expected "news" array.');
-                    }
-                } catch (error) {
-                    showStatus('❌ Error parsing JSON file: ' + error.message, 'error');
-                    console.error('JSON parse error:', error);
-                }
-                showLoading(false);
-            };
-            
-            reader.onerror = function() {
-                showStatus('❌ Error reading file', 'error');
-                showLoading(false);
-            };
-            
-            reader.readAsText(file);
-        }
-
-        function loadSampleData() {
-            showLoading(true);
-            
-            setTimeout(() => {
-                newsData = [...sampleNewsData.news];
-                showStatus(`✅ Sample data loaded with ${newsData.length} articles!`, 'success');
-                document.getElementById('mainContent').style.display = 'block';
-                renderNews();
-                renderStats();
-                showLoading(false);
-            }, 500);
-        }
-
-        function exportJSON() {
-            if (newsData.length === 0) {
-                showStatus('❌ No news data to export', 'error');
-                return;
-            }
-
-            const exportData = {
-                news: newsData,
-                exportedAt: new Date().toISOString(),
-                totalArticles: newsData.length
-            };
-
-            const jsonString = JSON.stringify(exportData, null, 2);
-            const blob = new Blob([jsonString], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `school-news-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            showStatus('✅ News data exported successfully!', 'success');
-        }
-
-        // ============================================================================
-        // NEWS MANAGEMENT FUNCTIONS
-        // ============================================================================
-
-        function addNews(event) {
-            event.preventDefault();
-            
-            const title = document.getElementById('newsTitle').value.trim();
-            const category = document.getElementById('newsCategory').value;
-            const content = document.getElementById('newsContent').value.trim();
-            const tags = document.getElementById('newsTags').value.trim();
-            const date = document.getElementById('newsDate').value;
-            const isUrgent = document.getElementById('isUrgent').checked;
-            
-            if (!title || !category || !content) {
-                showStatus('❌ Please fill in all required fields', 'error');
-                return;
-            }
-
-            // Create content array (split by double line breaks for paragraphs)
-            const contentArray = content.split('\n\n').map(p => p.trim()).filter(p => p.length > 0);
-            
-            // Add empty strings between paragraphs to match your JSON structure
-            const formattedContent = [];
-            contentArray.forEach((paragraph, index) => {
-                formattedContent.push(paragraph);
-                if (index < contentArray.length - 1) {
-                    formattedContent.push("");
-                }
-            });
-
-            // Create new news item
-            const newNews = {
-                id: newsData.length > 0 ? Math.max(...newsData.map(n => n.id)) + 1 : 1,
-                title: title,
-                category: category,
-                date: formatDateForJSON(date),
-                isUrgent: isUrgent,
-                content: formattedContent,
-                tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : []
-            };
-
-            newsData.push(newNews);
-            
-            showStatus('✅ News article added successfully!', 'success');
-            
-            // Reset form
-            document.getElementById('newsForm').reset();
-            document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
-            
-            // Update displays
-            renderNews();
-            renderStats();
-        }
-
-        function editNews(index) {
-            if (index < 0 || index >= newsData.length) return;
-            
-            currentEditIndex = index;
-            const news = newsData[index];
-            
-            document.getElementById('editNewsId').value = news.id;
-            document.getElementById('editTitle').value = news.title;
-            document.getElementById('editCategory').value = news.category;
-            document.getElementById('editContent').value = Array.isArray(news.content) ? 
-                news.content.filter(p => p.trim() !== "").join('\n\n') : news.content;
-            document.getElementById('editTags').value = Array.isArray(news.tags) ? news.tags.join(', ') : '';
-            document.getElementById('editDate').value = parseDateFromJSON(news.date);
-            document.getElementById('editIsUrgent').checked = news.isUrgent || false;
-            
-            document.getElementById('editModal').style.display = 'block';
-        }
-
-        function updateNews(event) {
-            event.preventDefault();
-            
-            if (currentEditIndex < 0 || currentEditIndex >= newsData.length) {
-                showStatus('❌ Invalid news item selected', 'error');
-                return;
-            }
-
-            const title = document.getElementById('editTitle').value.trim();
-            const category = document.getElementById('editCategory').value;
-            const content = document.getElementById('editContent').value.trim();
-            const tags = document.getElementById('editTags').value.trim();
-            const date = document.getElementById('editDate').value;
-            const isUrgent = document.getElementById('editIsUrgent').checked;
-            
-            if (!title || !category || !content) {
-                showStatus('❌ Please fill in all required fields', 'error');
-                return;
-            }
-
-            // Format content as array
-            const contentArray = content.split('\n\n').map(p => p.trim()).filter(p => p.length > 0);
-            const formattedContent = [];
-            contentArray.forEach((paragraph, index) => {
-                formattedContent.push(paragraph);
-                if (index < contentArray.length - 1) {
-                    formattedContent.push("");
-                }
-            });
-
-            // Update the news item
-            newsData[currentEditIndex] = {
-                ...newsData[currentEditIndex],
-                title: title,
-                category: category,
-                date: formatDateForJSON(date),
-                isUrgent: isUrgent,
-                content: formattedContent,
-                tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : []
-            };
-            
-            showStatus('✅ News article updated successfully!', 'success');
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('newsDate').value = today;
+    document.getElementById('editDate').value = today;
+    
+    // Add form event listeners
+    document.getElementById('newsForm').addEventListener('submit', handleAddNews);
+    document.getElementById('editForm').addEventListener('submit', handleUpdateNews);
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('editModal');
+        if (event.target === modal) {
             closeEditModal();
+        }
+    });
+});
+
+// ============================================================================
+// GITHUB AUTHENTICATION
+// ============================================================================
+
+async function authenticateGitHub() {
+    const token = document.getElementById('githubToken').value.trim();
+    
+    if (!token) {
+        showStatus('Please enter your GitHub Personal Access Token', 'error');
+        return;
+    }
+
+    showLoading(true);
+    githubToken = token;
+    
+    try {
+        // Test the token by accessing the repository
+        const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}`, {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (response.ok) {
+            showStatus('✅ Successfully connected to GitHub repository!', 'success');
+            document.getElementById('mainContent').style.display = 'block';
+            await loadNewsData();
+        } else {
+            throw new Error('Invalid token or repository access denied. Check your token permissions.');
+        }
+    } catch (error) {
+        showStatus('❌ Authentication failed: ' + error.message, 'error');
+        console.error('GitHub auth error:', error);
+    } finally {
+        showLoading(false);
+    }
+}
+
+// ============================================================================
+// GITHUB DATA MANAGEMENT
+// ============================================================================
+
+async function loadNewsData() {
+    try {
+        showLoading(true);
+        
+        const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.dataFile}`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            const content = atob(data.content);
+            const jsonData = JSON.parse(content);
+            newsData = jsonData.news || [];
+            originalNewsData = JSON.parse(JSON.stringify(newsData)); // Deep copy
+            console.log('Loaded news data:', newsData.length, 'articles');
+            showStatus('✅ News data loaded successfully from GitHub!', 'success');
+        } else if (response.status === 404) {
+            // File doesn't exist, initialize with empty data
+            console.log('News file not found, initializing...');
+            await initializeNewsData();
+        } else {
+            throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+        }
+        
+        renderNews();
+        renderStats();
+        
+    } catch (error) {
+        console.error('Error loading news data:', error);
+        showStatus('Error loading news data: ' + error.message, 'error');
+        // Initialize with empty data on error
+        newsData = [];
+        renderNews();
+        renderStats();
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function initializeNewsData() {
+    // Initialize with sample data if no data exists
+    newsData = [
+        {
+            id: 1,
+            title: "Welcome to School News Manager",
+            category: "announcements",
+            date: new Date().toISOString().split('T')[0],
+            isUrgent: false,
+            content: [
+                "Welcome to the School News Management System! This is your first news article.",
+                "",
+                "You can now add, edit, and manage news articles directly from this interface. All changes will be saved to your GitHub repository automatically."
+            ],
+            tags: ["Welcome", "System"]
+        }
+    ];
+    
+    await saveNewsData();
+    showStatus('✅ Initialized with sample data', 'success');
+}
+
+async function saveNewsData() {
+    try {
+        showLoading(true);
+        
+        // Prepare the JSON content
+        const jsonContent = JSON.stringify({ news: newsData }, null, 2);
+        const encodedContent = btoa(jsonContent);
+        
+        // Check if file exists to get the SHA
+        let sha = null;
+        const checkResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.dataFile}`, {
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+        
+        if (checkResponse.ok) {
+            const fileData = await checkResponse.json();
+            sha = fileData.sha;
+        }
+        
+        // Save to GitHub
+        const saveData = {
+            message: `Update news data - ${new Date().toLocaleString()}`,
+            content: encodedContent,
+            branch: githubConfig.branch
+        };
+        
+        if (sha) {
+            saveData.sha = sha;
+        }
+        
+        const saveResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.dataFile}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${githubToken}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(saveData)
+        });
+        
+        if (saveResponse.ok) {
+            originalNewsData = JSON.parse(JSON.stringify(newsData)); // Update original copy
+            showStatus('✅ News data saved to GitHub successfully!', 'success');
+            return true;
+        } else {
+            const errorData = await saveResponse.json();
+            throw new Error(errorData.message || 'Failed to save to GitHub');
+        }
+        
+    } catch (error) {
+        console.error('Error saving news data:', error);
+        showStatus('❌ Error saving to GitHub: ' + error.message, 'error');
+        return false;
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function syncToGitHub() {
+    await saveNewsData();
+}
+
+// ============================================================================
+// NEWS MANAGEMENT FUNCTIONS
+// ============================================================================
+
+// ============================================================================
+// NEWS MANAGEMENT FUNCTIONS
+// ============================================================================
+
+async function handleAddNews(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById('newsTitle').value.trim();
+    const category = document.getElementById('newsCategory').value;
+    const contentText = document.getElementById('newsContent').value.trim();
+    const tags = document.getElementById('newsTags').value.trim();
+    const date = document.getElementById('newsDate').value || new Date().toISOString().split('T')[0];
+    const isUrgent = document.getElementById('isUrgent').checked;
+    
+    if (!title || !category || !contentText) {
+        showStatus('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    // Process content into paragraphs
+    const content = contentText.split('\n').map(line => line.trim());
+    
+    // Process tags
+    const tagArray = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+    
+    // Generate new ID
+    const newId = newsData.length > 0 ? Math.max(...newsData.map(n => n.id)) + 1 : 1;
+    
+    // Create new news object
+    const newNews = {
+        id: newId,
+        title,
+        category,
+        date,
+        isUrgent,
+        content,
+        tags: tagArray
+    };
+    
+    // Add to array
+    newsData.unshift(newNews); // Add to beginning
+    
+    // Save to GitHub
+    const success = await saveNewsData();
+    if (success) {
+        // Reset form
+        document.getElementById('newsForm').reset();
+        document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
+        
+        // Switch to manage tab and refresh
+        switchTab('manage');
+        renderNews();
+        renderStats();
+        
+        showStatus('✅ News article added successfully!', 'success');
+    }
+}
+
+async function handleUpdateNews(e) {
+    e.preventDefault();
+    
+    const id = parseInt(document.getElementById('editNewsId').value);
+    const title = document.getElementById('editTitle').value.trim();
+    const category = document.getElementById('editCategory').value;
+    const contentText = document.getElementById('editContent').value.trim();
+    const tags = document.getElementById('editTags').value.trim();
+    const date = document.getElementById('editDate').value;
+    const isUrgent = document.getElementById('editIsUrgent').checked;
+    
+    if (!title || !category || !contentText) {
+        showStatus('Please fill in all required fields', 'error');
+        return;
+    }
+    
+    // Find the news item
+    const newsIndex = newsData.findIndex(n => n.id === id);
+    if (newsIndex === -1) {
+        showStatus('News article not found', 'error');
+        return;
+    }
+    
+    // Process content into paragraphs
+    const content = contentText.split('\n').map(line => line.trim());
+    
+    // Process tags
+    const tagArray = tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+    
+    // Update the news object
+    newsData[newsIndex] = {
+        ...newsData[newsIndex],
+        title,
+        category,
+        date,
+        isUrgent,
+        content,
+        tags: tagArray
+    };
+    
+    // Save to GitHub
+    const success = await saveNewsData();
+    if (success) {
+        closeEditModal();
+        renderNews();
+        renderStats();
+        showStatus('✅ News article updated successfully!', 'success');
+    }
+}
+
+async function deleteNews(id) {
+    if (!confirm('Are you sure you want to delete this news article? This action cannot be undone.')) {
+        return;
+    }
+    
+    const initialLength = newsData.length;
+    newsData = newsData.filter(news => news.id !== id);
+    
+    if (newsData.length < initialLength) {
+        const success = await saveNewsData();
+        if (success) {
             renderNews();
             renderStats();
+            showStatus('✅ News article deleted successfully!', 'success');
         }
+    } else {
+        showStatus('News article not found', 'error');
+    }
+}
 
-        function deleteNews(index) {
-            if (index < 0 || index >= newsData.length) return;
-            
-            const news = newsData[index];
-            if (confirm(`Are you sure you want to delete "${news.title}"?`)) {
-                newsData.splice(index, 1);
-                showStatus('✅ News article deleted successfully!', 'success');
-                renderNews();
-                renderStats();
-            }
-        }
+function editNews(id) {
+    const news = newsData.find(n => n.id === id);
+    if (!news) {
+        showStatus('News article not found', 'error');
+        return;
+    }
+    
+    // Populate edit form
+    document.getElementById('editNewsId').value = news.id;
+    document.getElementById('editTitle').value = news.title;
+    document.getElementById('editCategory').value = news.category;
+    document.getElementById('editContent').value = news.content.join('\n');
+    document.getElementById('editTags').value = news.tags ? news.tags.join(', ') : '';
+    document.getElementById('editDate').value = news.date;
+    document.getElementById('editIsUrgent').checked = news.isUrgent;
+    
+    // Show modal
+    document.getElementById('editModal').style.display = 'block';
+}
 
-        // ============================================================================
-        // RENDERING FUNCTIONS
-        // ============================================================================
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+    document.getElementById('editForm').reset();
+}
 
-        function renderNews() {
-            const newsList = document.getElementById('newsList');
-            filteredNews = [...newsData];
-            
-            if (filteredNews.length === 0) {
-                newsList.innerHTML = `
-                    <div class="no-news">
-                        <i class="fas fa-newspaper"></i>
-                        <p>No news articles found</p>
+// ============================================================================
+// UI MANAGEMENT FUNCTIONS
+// ============================================================================
+
+function switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.tab-btn[onclick="switchTab('${tabName}')"]`).classList.add('active');
+    
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(tabName + 'Tab').classList.add('active');
+    
+    // Refresh data if switching to manage or stats tab
+    if (tabName === 'manage') {
+        renderNews();
+    } else if (tabName === 'stats') {
+        renderStats();
+    }
+}
+
+function renderNews() {
+    const newsList = document.getElementById('newsList');
+    const filteredNews = getFilteredNews();
+    
+    if (filteredNews.length === 0) {
+        newsList.innerHTML = `
+            <div class="no-news">
+                <i class="fas fa-newspaper"></i>
+                <p>No news articles found</p>
+            </div>
+        `;
+        return;
+    }
+    
+    newsList.innerHTML = filteredNews.map(news => `
+        <div class="news-item ${news.category} ${news.isUrgent ? 'urgent' : ''}">
+            <div class="news-header">
+                <div>
+                    <div class="news-title">${news.title}</div>
+                    <div class="news-meta">
+                        <span><i class="fas fa-calendar"></i> ${formatDate(news.date)}</span>
+                        <span><i class="fas fa-folder"></i> ${news.category.charAt(0).toUpperCase() + news.category.slice(1)}</span>
+                        ${news.isUrgent ? '<span class="urgent-badge">URGENT</span>' : ''}
                     </div>
-                `;
-                return;
-            }
-
-            // Sort by urgency first, then by date (newest first)
-            filteredNews.sort((a, b) => {
-                if (a.isUrgent && !b.isUrgent) return -1;
-                if (!a.isUrgent && b.isUrgent) return 1;
-                return new Date(parseDateFromJSON(b.date)) - new Date(parseDateFromJSON(a.date));
-            });
-
-            newsList.innerHTML = filteredNews.map((news, index) => {
-                const originalIndex = newsData.findIndex(n => n.id === news.id);
-                const contentText = Array.isArray(news.content) ? 
-                    news.content.filter(p => p.trim() !== "").join(' ') : news.content;
-                const displayContent = contentText.length > 200 ? 
-                    contentText.substring(0, 200) + '...' : contentText;
-
-                return `
-                    <div class="news-item ${news.category} ${news.isUrgent ? 'urgent' : ''}">
-                        <div class="news-header">
-                            <div>
-                                <div class="news-title">${news.title}</div>
-                                <div class="news-meta">
-                                    <span><i class="fas fa-folder"></i> ${capitalizeFirst(news.category)}</span>
-                                    <span><i class="fas fa-calendar"></i> ${news.date}</span>
-                                    ${news.isUrgent ? '<span class="urgent-badge"><i class="fas fa-exclamation"></i> URGENT</span>' : ''}
-                                </div>
-                            </div>
-                            <div class="news-actions">
-                                <button onclick="editNews(${originalIndex})" class="btn btn-primary" style="padding: 8px 12px;">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button onclick="deleteNews(${originalIndex})" class="btn btn-danger" style="padding: 8px 12px;">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="news-content">
-                            ${displayContent}
-                        </div>
-                        
-                        ${news.tags && news.tags.length > 0 ? `
-                            <div class="news-tags">
-                                ${news.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderStats() {
-            const statsGrid = document.getElementById('statsGrid');
-            
-            const total = newsData.length;
-            const urgent = newsData.filter(n => n.isUrgent).length;
-            const academic = newsData.filter(n => n.category === 'academic').length;
-            const events = newsData.filter(n => n.category === 'events').length;
-            const announcements = newsData.filter(n => n.category === 'announcements' || n.category === 'announcement').length;
-            const urgentCategory = newsData.filter(n => n.category === 'urgent').length;
-
-            statsGrid.innerHTML = `
-                <div class="stat-card total">
-                    <i class="fas fa-newspaper"></i>
-                    <span class="stat-number">${total}</span>
-                    <span class="stat-label">Total Articles</span>
                 </div>
-                
-                <div class="stat-card urgent">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <span class="stat-number">${urgent}</span>
-                    <span class="stat-label">Urgent Articles</span>
+                <div class="news-actions">
+                    <button onclick="editNews(${news.id})" class="btn btn-primary" style="padding: 8px 12px; font-size: 14px;">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button onclick="deleteNews(${news.id})" class="btn btn-danger" style="padding: 8px 12px; font-size: 14px;">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
                 </div>
-                
-                <div class="stat-card academic">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span class="stat-number">${academic}</span>
-                    <span class="stat-label">Academic</span>
+            </div>
+            <div class="news-content">
+                ${news.content.map(paragraph => paragraph.trim() === '' ? '<br>' : `<p style="margin: 0 0 10px 0;">${paragraph}</p>`).join('')}
+            </div>
+            ${news.tags && news.tags.length > 0 ? `
+                <div class="news-tags">
+                    ${news.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                 </div>
-                
-                <div class="stat-card events">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span class="stat-number">${events}</span>
-                    <span class="stat-label">Events</span>
-                </div>
-                
-                <div class="stat-card announcements">
-                    <i class="fas fa-bullhorn"></i>
-                    <span class="stat-number">${announcements + urgentCategory}</span>
-                    <span class="stat-label">Announcements</span>
-                </div>
-            `;
-        }
+            ` : ''}
+        </div>
+    `).join('');
+}
 
-        // ============================================================================
-        // SEARCH AND FILTER FUNCTIONS
-        // ============================================================================
+function renderStats() {
+    const statsGrid = document.getElementById('statsGrid');
+    
+    const total = newsData.length;
+    const urgent = newsData.filter(n => n.isUrgent).length;
+    const academic = newsData.filter(n => n.category === 'academic').length;
+    const events = newsData.filter(n => n.category === 'events').length;
+    const announcements = newsData.filter(n => n.category === 'announcements' || n.category === 'announcement').length;
+    
+    statsGrid.innerHTML = `
+        <div class="stat-card total">
+            <i class="fas fa-newspaper"></i>
+            <span class="stat-number">${total}</span>
+            <span class="stat-label">Total Articles</span>
+        </div>
+        <div class="stat-card urgent">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span class="stat-number">${urgent}</span>
+            <span class="stat-label">Urgent News</span>
+        </div>
+        <div class="stat-card academic">
+            <i class="fas fa-graduation-cap"></i>
+            <span class="stat-number">${academic}</span>
+            <span class="stat-label">Academic</span>
+        </div>
+        <div class="stat-card events">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="stat-number">${events}</span>
+            <span class="stat-label">Events</span>
+        </div>
+        <div class="stat-card announcements">
+            <i class="fas fa-bullhorn"></i>
+            <span class="stat-number">${announcements}</span>
+            <span class="stat-label">Announcements</span>
+        </div>
+    `;
+}
 
-        function filterNews() {
-            const categoryFilter = document.getElementById('categoryFilter').value;
-            const searchQuery = document.getElementById('searchBox').value.toLowerCase();
-            
-            filteredNews = newsData.filter(news => {
-                const matchesCategory = !categoryFilter || news.category === categoryFilter;
-                const matchesSearch = !searchQuery || 
-                    news.title.toLowerCase().includes(searchQuery) ||
-                    (Array.isArray(news.content) ? news.content.join(' ') : news.content).toLowerCase().includes(searchQuery) ||
-                    (news.tags && news.tags.some(tag => tag.toLowerCase().includes(searchQuery)));
-                
-                return matchesCategory && matchesSearch;
-            });
-            
-            renderFilteredNews();
-        }
+function getFilteredNews() {
+    let filtered = [...newsData];
+    
+    // Filter by category
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    if (categoryFilter) {
+        filtered = filtered.filter(news => news.category === categoryFilter);
+    }
+    
+    // Filter by search term
+    const searchTerm = document.getElementById('searchBox').value.toLowerCase().trim();
+    if (searchTerm) {
+        filtered = filtered.filter(news => 
+            news.title.toLowerCase().includes(searchTerm) ||
+            news.content.join(' ').toLowerCase().includes(searchTerm) ||
+            (news.tags && news.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
+        );
+    }
+    
+    // Sort by date (newest first) and urgent items first
+    filtered.sort((a, b) => {
+        if (a.isUrgent && !b.isUrgent) return -1;
+        if (!a.isUrgent && b.isUrgent) return 1;
+        return new Date(b.date) - new Date(a.date);
+    });
+    
+    return filtered;
+}
 
-        function searchNews() {
-            filterNews();
-        }
+function filterNews() {
+    renderNews();
+}
 
-        function renderFilteredNews() {
-            const newsList = document.getElementById('newsList');
-            
-            if (filteredNews.length === 0) {
-                newsList.innerHTML = `
-                    <div class="no-news">
-                        <i class="fas fa-search"></i>
-                        <p>No news articles match your search criteria</p>
-                    </div>
-                `;
-                return;
+function searchNews() {
+    renderNews();
+}
+
+async function refreshNews() {
+    await loadNewsData();
+    showStatus('✅ News data refreshed from GitHub!', 'success');
+}
+
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function showStatus(message, type) {
+    const statusEl = document.getElementById('statusMessage');
+    statusEl.textContent = message;
+    statusEl.className = `status-message ${type}`;
+    statusEl.style.display = 'block';
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        statusEl.style.display = 'none';
+    }, 5000);
+}
+
+function showLoading(show) {
+    document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
+}
+
+// ============================================================================
+// EVENT HANDLERS
+// ============================================================================
+
+// Handle Enter key in search box
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBox = document.getElementById('searchBox');
+    if (searchBox) {
+        searchBox.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                searchNews();
             }
-
-            // Sort filtered news
-            filteredNews.sort((a, b) => {
-                if (a.isUrgent && !b.isUrgent) return -1;
-                if (!a.isUrgent && b.isUrgent) return 1;
-                return new Date(parseDateFromJSON(b.date)) - new Date(parseDateFromJSON(a.date));
-            });
-
-            newsList.innerHTML = filteredNews.map((news) => {
-                const originalIndex = newsData.findIndex(n => n.id === news.id);
-                const contentText = Array.isArray(news.content) ? 
-                    news.content.filter(p => p.trim() !== "").join(' ') : news.content;
-                const displayContent = contentText.length > 200 ? 
-                    contentText.substring(0, 200) + '...' : contentText;
-
-                return `
-                    <div class="news-item ${news.category} ${news.isUrgent ? 'urgent' : ''}">
-                        <div class="news-header">
-                            <div>
-                                <div class="news-title">${news.title}</div>
-                                <div class="news-meta">
-                                    <span><i class="fas fa-folder"></i> ${capitalizeFirst(news.category)}</span>
-                                    <span><i class="fas fa-calendar"></i> ${news.date}</span>
-                                    ${news.isUrgent ? '<span class="urgent-badge"><i class="fas fa-exclamation"></i> URGENT</span>' : ''}
-                                </div>
-                            </div>
-                            <div class="news-actions">
-                                <button onclick="editNews(${originalIndex})" class="btn btn-primary" style="padding: 8px 12px;">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button onclick="deleteNews(${originalIndex})" class="btn btn-danger" style="padding: 8px 12px;">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="news-content">
-                            ${displayContent}
-                        </div>
-                        
-                        ${news.tags && news.tags.length > 0 ? `
-                            <div class="news-tags">
-                                ${news.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function refreshNews() {
-            showLoading(true);
-            setTimeout(() => {
-                renderNews();
-                renderStats();
-                showLoading(false);
-                showStatus('✅ News list refreshed!', 'success');
-            }, 500);
-        }
-
-        // ============================================================================
-        // UTILITY FUNCTIONS
-        // ============================================================================
-
-        function formatDateForJSON(dateString) {
-            if (!dateString) return new Date().toLocaleDateString('en-US');
-            
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US');
-        }
-
-        function parseDateFromJSON(dateString) {
-            // Convert from MM/DD/YYYY to YYYY-MM-DD for input field
-            if (!dateString) return new Date().toISOString().split('T')[0];
-            
-            try {
-                const parts = dateString.split('/');
-                if (parts.length === 3) {
-                    const month = parts[0].padStart(2, '0');
-                    const day = parts[1].padStart(2, '0');
-                    const year = parts[2];
-                    return `${year}-${month}-${day}`;
-                }
-            } catch (e) {
-                console.error('Date parsing error:', e);
-            }
-            
-            return new Date().toISOString().split('T')[0];
-        }
-
-        function capitalizeFirst(str) {
-            return str.charAt(0).toUpperCase() + str.slice(1);
-        }
-
-        function showStatus(message, type) {
-            const statusDiv = document.getElementById('statusMessage');
-            statusDiv.textContent = message;
-            statusDiv.className = `status-message ${type}`;
-            statusDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                statusDiv.style.display = 'none';
-            }, 5000);
-        }
-
-        function showLoading(show) {
-            document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
-        }
-
-        // ============================================================================
-        // TAB MANAGEMENT
-        // ============================================================================
-
-        function switchTab(tabName) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            
-            // Refresh data if switching to manage or stats tab
-            if (tabName === 'manage') {
-                renderNews();
-            } else if (tabName === 'stats') {
-                renderStats();
-            }
-        }
-
-        // ============================================================================
-        // MODAL MANAGEMENT
-        // ============================================================================
-
-        function closeEditModal() {
-            document.getElementById('editModal').style.display = 'none';
-            currentEditIndex = -1;
-        }
-
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('editModal');
-            if (event.target === modal) {
-                closeEditModal();
-            }
-        }
-
-        // ============================================================================
-        // EVENT LISTENERS
-        // ============================================================================
-
-        document.getElementById('newsForm').addEventListener('submit', addNews);
-        document.getElementById('editForm').addEventListener('submit', updateNews);
-
-        // Initialize date field
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('newsDate').value = today;
         });
-    </script>
+    }
+});    </script>
 </body>
 </html>
+
