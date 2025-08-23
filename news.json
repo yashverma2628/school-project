@@ -11,20 +11,10 @@
         "",
         "All students and parents are requested to take note of this change. The school administration apologizes for any inconvenience caused and appreciates your understanding."
       ],
-      "tags": ["Important", "Schedule"]
-    },
-    {
-      "id": 2,
-      "title": "Emergency Parent-Teacher Meeting",
-      "category": "urgent",
-      "date": "6/4/2025",
-      "isUrgent": true,
-      "content": [
-        "An emergency parent-teacher meeting has been scheduled for June 8, 2025, at 3:00 PM in the school auditorium.",
-        "",
-        "This meeting is to discuss the recent changes in academic calendar and address parent concerns. Attendance is mandatory for all parents."
-      ],
-      "tags": ["Meeting", "Parents", "Important"]
+      "tags": [
+        "Important",
+        "Schedule"
+      ]
     },
     {
       "id": 3,
@@ -37,7 +27,11 @@
         "",
         "Registration forms are available at the school office. Parents are cordially invited to attend and cheer for their children. Various competitions and cultural programs are planned."
       ],
-      "tags": ["Sports", "Event", "Competition"]
+      "tags": [
+        "Sports",
+        "Event",
+        "Competition"
+      ]
     },
     {
       "id": 4,
@@ -50,7 +44,11 @@
         "",
         "The facility will be open for students from Class 8 onwards starting next week. Special orientation sessions will be conducted for students and teachers."
       ],
-      "tags": ["Science", "Laboratory", "Facility"]
+      "tags": [
+        "Science",
+        "Laboratory",
+        "Facility"
+      ]
     },
     {
       "id": 5,
@@ -63,7 +61,12 @@
         "",
         "Students can now access thousands of digital books and research materials. New library cards will be issued starting next week."
       ],
-      "tags": ["Library", "Digital", "Resources", "Technology"]
+      "tags": [
+        "Library",
+        "Digital",
+        "Resources",
+        "Technology"
+      ]
     },
     {
       "id": 6,
@@ -76,7 +79,11 @@
         "",
         "The updated uniform guidelines have been sent to all parents via email. Please ensure compliance by June 20, 2025."
       ],
-      "tags": ["Uniform", "Policy", "Guidelines"]
+      "tags": [
+        "Uniform",
+        "Policy",
+        "Guidelines"
+      ]
     },
     {
       "id": 7,
@@ -89,7 +96,12 @@
         "",
         "Activities include arts & crafts, sports, swimming, and educational workshops. Limited seats available. Register at the school office or online through our portal."
       ],
-      "tags": ["Summer Camp", "Registration", "Activities", "Students"]
+      "tags": [
+        "Summer Camp",
+        "Registration",
+        "Activities",
+        "Students"
+      ]
     }
   ]
 }
