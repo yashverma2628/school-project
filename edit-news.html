@@ -5,8 +5,564 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School News Editor & Manager</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  
-</head><body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .auth-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-section h2 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #a0aec0, #718096);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content {
+            display: none;
+        }
+
+        .management-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #4a5568;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-pane {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-pane h2 {
+            color: #4a5568;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding-right: 40px;
+            width: 250px;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .action-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .news-item {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #e2e8f0;
+        }
+
+        .news-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .news-item.urgent {
+            border-left-color: #f56565;
+            background: linear-gradient(135deg, #fff5f5, #ffffff);
+        }
+
+        .news-item.academic {
+            border-left-color: #4299e1;
+        }
+
+        .news-item.events {
+            border-left-color: #48bb78;
+        }
+
+        .news-item.announcements {
+            border-left-color: #ed8936;
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .news-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .news-meta {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 10px;
+        }
+
+        .news-content {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .news-tags {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .urgent-badge {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .news-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #c6f6d5;
+            color: #276749;
+            border: 1px solid #9ae6b4;
+        }
+
+        .status-message.error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #feb2b2;
+        }
+
+        .loading-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-indicator div {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: #4a5568;
+        }
+
+        .loading-indicator i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+            color: #667eea;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .modal-title {
+            color: #4a5568;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .close {
+            color: #a0aec0;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #4a5568;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-card.total i { color: #667eea; }
+        .stat-card.urgent i { color: #f56565; }
+        .stat-card.academic i { color: #4299e1; }
+        .stat-card.events i { color: #48bb78; }
+        .stat-card.announcements i { color: #ed8936; }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+            display: block;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .no-news {
+            text-align: center;
+            padding: 50px;
+            color: #a0aec0;
+            font-size: 1.2rem;
+        }
+
+        .no-news i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .category-filter {
+            min-width: 150px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .management-tabs {
+                flex-direction: column;
+            }
+        }
+
+        .file-upload {
+            border: 2px dashed #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-upload label {
+            cursor: pointer;
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
     <div class="container">
         <!-- Header -->
         <div class="header">
@@ -14,16 +570,26 @@
             <p>Create, edit, and manage school news articles</p>
         </div>
 
-        <!-- GitHub Authentication -->
+        <!-- File Upload Section -->
         <div class="auth-section">
-            <h2><i class="fas fa-key"></i> GitHub Authentication</h2>
-            <div class="form-group">
-                <label for="githubToken">GitHub Personal Access Token:</label>
-                <input type="password" id="githubToken" class="form-control" 
-                       placeholder="Enter your GitHub token with Contents & Metadata permissions">
+            <h2><i class="fas fa-upload"></i> Load News Data</h2>
+            <div class="file-upload">
+                <input type="file" id="jsonFile" accept=".json" onchange="loadJSONFile(event)">
+                <label for="jsonFile">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Click here to upload your news.json file
+                </label>
+                <p style="margin-top: 10px; color: #718096; font-size: 0.9rem;">
+                    Upload your existing news.json file to load and manage your school news
+                </p>
             </div>
-            <button onclick="authenticateGitHub()" class="btn btn-primary">
-                <i class="fas fa-sign-in-alt"></i> Connect to GitHub
+            
+            <div style="text-align: center; margin: 15px 0;">
+                <span style="color: #a0aec0;">or</span>
+            </div>
+            
+            <button onclick="loadSampleData()" class="btn btn-secondary">
+                <i class="fas fa-database"></i> Load Sample Data
             </button>
         </div>
 
@@ -32,8 +598,10 @@
 
         <!-- Loading Indicator -->
         <div id="loadingIndicator" class="loading-indicator">
-            <i class="fas fa-spinner"></i>
-            <p>Processing...</p>
+            <div>
+                <i class="fas fa-spinner"></i>
+                <p style="margin-top: 15px;">Processing...</p>
+            </div>
         </div>
 
         <!-- Main Content -->
@@ -77,7 +645,7 @@
                         <div class="form-group">
                             <label for="newsContent">Content *</label>
                             <textarea id="newsContent" class="form-control" required rows="6" 
-                                      placeholder="Enter the news content (you can add multiple paragraphs)"></textarea>
+                                      placeholder="Enter the news content (separate paragraphs with empty lines)"></textarea>
                         </div>
                         
                         <div class="form-row">
@@ -113,7 +681,7 @@
                     <!-- Controls -->
                     <div class="controls">
                         <div class="filter-controls">
-                            <select id="categoryFilter" class="form-control" onchange="filterNews()" style="width: auto;">
+                            <select id="categoryFilter" class="form-control category-filter" onchange="filterNews()">
                                 <option value="">All Categories</option>
                                 <option value="urgent">Urgent</option>
                                 <option value="academic">Academic</option>
@@ -122,7 +690,7 @@
                             </select>
                             
                             <div class="search-box">
-                                <input type="text" id="searchBox" placeholder="Search news..." 
+                                <input type="text" id="searchBox" class="form-control" placeholder="Search news..." 
                                        oninput="searchNews()">
                                 <i class="fas fa-search"></i>
                             </div>
@@ -132,8 +700,8 @@
                             <button onclick="refreshNews()" class="btn btn-secondary">
                                 <i class="fas fa-sync"></i> Refresh
                             </button>
-                            <button onclick="generateNewsHTML()" class="btn btn-success">
-                                <i class="fas fa-download"></i> Export HTML
+                            <button onclick="exportJSON()" class="btn btn-success">
+                                <i class="fas fa-download"></i> Export JSON
                             </button>
                         </div>
                     </div>
@@ -219,1373 +787,581 @@
 
     <script>
         // ============================================================================
-        // GITHUB STORAGE CONFIGURATION
+        // GLOBAL VARIABLES & INITIALIZATION
         // ============================================================================
         
-        // Global variables
-        let githubToken = '';
         let newsData = [];
         let currentEditIndex = -1;
-        
-        // GitHub configuration
-        const githubConfig = {
-            owner: 'yashverma2628',     // ← Replace with your GitHub username
-            repo: 'school-project',     // ← Replace with your repository name
-            branch: 'main',             // ← Replace with your branch name if different
-            dataFile: 'news-data.json', // ← JSON file to store news data
-            htmlFile: 'news.html'       // ← HTML file to update
+        let filteredNews = [];
+
+        // Sample data that matches your JSON structure
+        const sampleNewsData = {
+            "news": [
+                {
+                    "id": 1,
+                    "title": "Winter Break Extended",
+                    "category": "urgent",
+                    "date": "6/3/2025",
+                    "isUrgent": true,
+                    "content": [
+                        "Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025.",
+                        "",
+                        "All students and parents are requested to take note of this change. The school administration apologizes for any inconvenience caused and appreciates your understanding."
+                    ],
+                    "tags": ["Important", "Schedule"]
+                },
+                {
+                    "id": 2,
+                    "title": "Emergency Parent-Teacher Meeting",
+                    "category": "urgent",
+                    "date": "6/4/2025",
+                    "isUrgent": true,
+                    "content": [
+                        "An emergency parent-teacher meeting has been scheduled for June 8, 2025, at 3:00 PM in the school auditorium.",
+                        "",
+                        "This meeting is to discuss the recent changes in academic calendar and address parent concerns. Attendance is mandatory for all parents."
+                    ],
+                    "tags": ["Meeting", "Parents", "Important"]
+                },
+                {
+                    "id": 3,
+                    "title": "Annual Sports Day 2025",
+                    "category": "events",
+                    "date": "6/1/2025",
+                    "isUrgent": false,
+                    "content": [
+                        "Our Annual Sports Day will be held on June 20, 2025, at the school grounds. This year's theme is \"Unity in Diversity\" celebrating our multicultural student body.",
+                        "",
+                        "Registration forms are available at the school office. Parents are cordially invited to attend and cheer for their children. Various competitions and cultural programs are planned."
+                    ],
+                    "tags": ["Sports", "Event", "Competition"]
+                }
+            ]
         };
 
+        // Initialize with current date
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('newsDate').value = today;
+        });
+
         // ============================================================================
-        // GITHUB AUTHENTICATION
+        // FILE HANDLING FUNCTIONS
         // ============================================================================
 
-        function authenticateGitHub() {
-            const token = document.getElementById('githubToken').value.trim();
-            
-            if (!token) {
-                showStatus('Please enter your GitHub Personal Access Token', 'error');
-                return;
-            }
+        function loadJSONFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
             showLoading(true);
-            githubToken = token;
             
-            // Test the token by accessing the repository
-            fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}`, {
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    showStatus('✅ Successfully connected to GitHub repository!', 'success');
-                    document.getElementById('mainContent').style.display = 'block';
-                    loadNewsData();
-                } else {
-                    throw new Error('Invalid token or repository access denied. Check your token permissions.');
-                }
-            })
-            .catch(error => {
-                showStatus('❌ Authentication failed: ' + error.message, 'error');
-                console.error('GitHub auth error:', error);
-            })
-            .finally(() => {
-                showLoading(false);
-            });
-        }
-
-        // ============================================================================
-        // GITHUB DATA MANAGEMENT
-        // ============================================================================
-
-        async function loadNewsData() {
-            try {
-                showLoading(true);
-                
-                // Try to load news data from GitHub JSON file first
-                const response = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.dataFile}`, {
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const content = atob(data.content);
-                    newsData = JSON.parse(content);
-                    console.log('Loaded from JSON:', newsData.length, 'articles');
-                } else {
-                    // JSON file doesn't exist, try to parse existing HTML file
-                    console.log('JSON file not found, trying to parse HTML...');
-                    try {
-                        const htmlResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.htmlFile}`, {
-                            headers: {
-                                'Authorization': `token ${githubToken}`,
-                                'Accept': 'application/vnd.github.v3+json'
-                            }
-                        });
-
-                        if (htmlResponse.ok) {
-                            const htmlData = await htmlResponse.json();
-                            const htmlContent = atob(htmlData.content);
-                            newsData = parseNewsFromHTML(htmlContent);
-                            console.log('Parsed from HTML:', newsData.length, 'articles');
-                            
-                            // Save the parsed data as JSON for future use
-                            if (newsData.length > 0) {
-                                await saveNewsData();
-                            }
-                        } else {
-                            console.log('HTML file not found, initializing with sample data');
-                            await initializeNewsData();
-                        }
-                    } catch (htmlError) {
-                        console.log('Error parsing HTML, initializing with sample data:', htmlError);
-                        await initializeNewsData();
-                    }
-                }
-                
-                // If no news data found, initialize with sample
-                if (!newsData || newsData.length === 0) {
-                    console.log('No news data found, initializing...');
-                    await initializeNewsData();
-                }
-                
-                // Ensure UI is updated
-                setTimeout(() => {
-                    renderNews();
-                    renderStats();
-                }, 100);
-                
-            } catch (error) {
-                console.error('Error loading news data:', error);
-                showStatus('Error loading news data: ' + error.message, 'error');
-                // Initialize with sample data on error
-                await initializeNewsData();
-            } finally {
-                showLoading(false);
-            }
-        }
-
-        function parseNewsFromHTML(htmlContent) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlContent, 'text/html');
-            
-            // Try multiple selectors to find news items
-            let newsItems = doc.querySelectorAll('.news-item');
-            if (newsItems.length === 0) {
-                newsItems = doc.querySelectorAll('article');
-            }
-            if (newsItems.length === 0) {
-                newsItems = doc.querySelectorAll('[class*="news"]');
-            }
-            
-            const parsedNews = [];
-
-            newsItems.forEach((item, index) => {
-                // Try multiple selectors for title
-                let titleElement = item.querySelector('.news-title') || 
-                                  item.querySelector('h1') || 
-                                  item.querySelector('h2') || 
-                                  item.querySelector('h3') ||
-                                  item.querySelector('[class*="title"]');
-                
-                const title = titleElement ? titleElement.textContent.trim() : `News Item ${index + 1}`;
-                
-                // Try multiple selectors for category
-                let categoryElement = item.querySelector('.news-category') || 
-                                     item.querySelector('[class*="category"]');
-                let category = 'announcements';
-                if (categoryElement) {
-                    const categoryText = categoryElement.textContent.trim().toLowerCase();
-                    if (['urgent', 'academic', 'events', 'announcements'].includes(categoryText)) {
-                        category = categoryText;
-                    }
-                }
-                
-                // Try multiple selectors for date
-                let dateElement = item.querySelector('.news-date') || 
-                                 item.querySelector('[class*="date"]') ||
-                                 item.querySelector('time');
-                
-                let formattedDate = new Date().toISOString().split('T')[0];
-                if (dateElement) {
-                    const dateText = dateElement.textContent;
-                    const dateMatch = dateText.match(/(\d{1,2}\/\d{1,2}\/\d{4}|\d{4}-\d{2}-\d{2})/);
-                    if (dateMatch) {
-                        try {
-                            const dateObj = new Date(dateMatch[1]);
-                            if (!isNaN(dateObj.getTime())) {
-                                formattedDate = dateObj.toISOString().split('T')[0];
-                            }
-                        } catch (e) {
-                            console.log('Date parsing error:', e);
-                        }
-                    }
-                }
-                
-                // Check for urgent indicators
-                const isUrgent = item.classList.contains('urgent') || 
-                                item.querySelector('.urgent-badge') !== null ||
-                                item.querySelector('[class*="urgent"]') !== null ||
-                                title.toLowerCase().includes('urgent');
-                
-                // Get content - try multiple approaches
-                let content = '';
-                let contentElement = item.querySelector('.news-content');
-                if (contentElement) {
-                    const paragraphs = contentElement.querySelectorAll('p');
-                    if (paragraphs.length > 0) {
-                        content = Array.from(paragraphs).map(p => p.textContent.trim()).join('\n');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    
+                    if (jsonData.news && Array.isArray(jsonData.news)) {
+                        newsData = jsonData.news;
+                        showStatus(`✅ Successfully loaded ${newsData.length} news articles!`, 'success');
+                        document.getElementById('mainContent').style.display = 'block';
+                        renderNews();
+                        renderStats();
                     } else {
-                        content = contentElement.textContent.trim();
+                        throw new Error('Invalid JSON structure. Expected "news" array.');
                     }
-                } else {
-                    // Fallback: get all text content excluding title, category, date
-                    const clone = item.cloneNode(true);
-                    if (titleElement) {
-                        const titleClone = clone.querySelector(titleElement.tagName + (titleElement.className ? '.' + titleElement.className.split(' ').join('.') : ''));
-                        if (titleClone) titleClone.remove();
-                    }
-                    if (categoryElement) {
-                        const categoryClone = clone.querySelector('[class*="category"]');
-                        if (categoryClone) categoryClone.remove();
-                    }
-                    if (dateElement) {
-                        const dateClone = clone.querySelector('[class*="date"], time');
-                        if (dateClone) dateClone.remove();
-                    }
-                    content = clone.textContent.trim().replace(/\s+/g, ' ');
+                } catch (error) {
+                    showStatus('❌ Error parsing JSON file: ' + error.message, 'error');
+                    console.error('JSON parse error:', error);
                 }
-                
-                // Get tags
-                const tagElements = item.querySelectorAll('.news-tag, [class*="tag"]');
-                const tags = Array.from(tagElements).map(tag => tag.textContent.trim()).filter(tag => tag.length > 0);
-
-                if (title && content) {parsedNews.push({
-                        id: Date.now() + index,
-                        title: title,
-                        content: content,
-                        category: category,
-                        tags: tags,
-                        date: formattedDate,
-                        isUrgent: isUrgent,
-                        createdAt: new Date().toISOString(),
-                        lastModified: new Date().toISOString()
-                    });
-                }
-            });
-
-            console.log('Parsed news items:', parsedNews.length);
-            return parsedNews;
-        }
-
-        async function saveNewsData() {
-            try {
-                showLoading(true);
-                
-                // Save JSON data
-                const jsonContent = JSON.stringify(newsData, null, 2);
-                const base64JsonContent = btoa(jsonContent);
-                
-                // Generate HTML content
-                const htmlContent = generateNewsHTMLContent();
-                const base64HtmlContent = btoa(htmlContent);
-                
-                // Check if files exist to get SHA
-                let jsonSha = null;
-                let htmlSha = null;
-                
-                try {
-                    const jsonCheckResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.dataFile}`, {
-                        headers: {
-                            'Authorization': `token ${githubToken}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-                    
-                    if (jsonCheckResponse.ok) {
-                        const existingJsonFile = await jsonCheckResponse.json();
-                        jsonSha = existingJsonFile.sha;
-                    }
-                } catch (e) {
-                    // File doesn't exist, which is fine
-                }
-
-                try {
-                    const htmlCheckResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.htmlFile}`, {
-                        headers: {
-                            'Authorization': `token ${githubToken}`,
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    });
-                    
-                    if (htmlCheckResponse.ok) {
-                        const existingHtmlFile = await htmlCheckResponse.json();
-                        htmlSha = existingHtmlFile.sha;
-                    }
-                } catch (e) {
-                    // File doesn't exist, which is fine
-                }
-
-                // Upload JSON file
-                const jsonUploadData = {
-                    message: `Update news data - ${new Date().toISOString()}`,
-                    content: base64JsonContent,
-                    branch: githubConfig.branch
-                };
-
-                if (jsonSha) {
-                    jsonUploadData.sha = jsonSha;
-                }
-
-                const jsonResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.dataFile}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(jsonUploadData)
-                });
-
-                if (!jsonResponse.ok) {
-                    throw new Error('Failed to save JSON to GitHub');
-                }
-
-                // Upload HTML file
-                const htmlUploadData = {
-                    message: `Update news HTML - ${new Date().toISOString()}`,
-                    content: base64HtmlContent,
-                    branch: githubConfig.branch
-                };
-
-                if (htmlSha) {
-                    htmlUploadData.sha = htmlSha;
-                }
-
-                const htmlResponse = await fetch(`https://api.github.com/repos/${githubConfig.owner}/${githubConfig.repo}/contents/${githubConfig.htmlFile}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${githubToken}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(htmlUploadData)
-                });
-
-                if (!htmlResponse.ok) {
-                    throw new Error('Failed to save HTML to GitHub');
-                }
-                
-                showStatus('✅ News data and HTML saved to GitHub successfully!', 'success');
-                
-            } catch (error) {
-                showStatus('❌ Failed to save: ' + error.message, 'error');
-                console.error('Save error:', error);
-            } finally {
                 showLoading(false);
-            }
-        }
-
-        function generateNewsHTMLContent() {
-            return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School News</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            min-height: 100vh; 
-            color: #333; 
-        }
-        .news-container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            padding: 20px; 
-        }
-        .news-header { 
-            text-align: center; 
-            color: white; 
-            margin-bottom: 40px; 
-        }
-        .news-header h1 { 
-            font-size: 2.5rem; 
-            margin-bottom: 10px; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3); 
-        }
-        .news-grid { 
-            display: grid; 
-            gap: 20px; 
-        }
-        .news-item { 
-            background: rgba(255,255,255,0.95); 
-            border-radius: 15px; 
-            padding: 25px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            transition: transform 0.3s ease; 
-            border-left: 5px solid #667eea;
-        }
-        .news-item:hover { 
-            transform: translateY(-5px); 
-        }
-        .news-item.urgent { 
-            border-left-color: #dc3545; 
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,230,230,0.95) 100%); 
-        }
-        .news-title { 
-            font-size: 1.4rem; 
-            font-weight: bold; 
-            margin-bottom: 15px; 
-            color: #333; 
-        }
-        .news-meta { 
-            display: flex; 
-            gap: 15px; 
-            margin-bottom: 15px; 
-            flex-wrap: wrap; 
-            align-items: center; 
-        }
-        .news-category { 
-            background: #667eea; 
-            color: white; 
-            padding: 4px 12px; 
-            border-radius: 15px; 
-            font-size: 0.8rem; 
-            text-transform: uppercase; 
-        }
-        .news-date { 
-            color: #666; 
-            font-size: 0.9rem; 
-        }
-        .urgent-badge { 
-            background: #dc3545; 
-            color: white; 
-            padding: 4px 12px; 
-            border-radius: 15px; 
-            font-size: 0.8rem; 
-            font-weight: bold; 
-        }
-        .news-content { 
-            line-height: 1.6; 
-            color: #555; 
-            margin-bottom: 15px; 
-        }
-        .news-content p { 
-            margin-bottom: 15px; 
-        }
-        .news-tags { 
-            margin-top: 15px; 
-            padding-top: 15px; 
-            border-top: 1px solid #e0e0e0; 
-        }
-        .news-tag { 
-            background: #e9ecef; 
-            color: #495057; 
-            padding: 3px 10px; 
-            border-radius: 12px; 
-            font-size: 0.8rem; 
-            margin-right: 8px; 
-            display: inline-block; 
-            margin-bottom: 5px; 
-        }
-    </style>
-</head>
-<body>
-    <div class="news-container">
-        <div class="news-header">
-            <h1><i class="fas fa-newspaper"></i> School News</h1>
-            <p>Stay updated with the latest school announcements and events</p>
-        </div>
-        <div class="news-grid">
-            ${newsData.map(news => `
-                <article class="news-item ${news.isUrgent ? 'urgent' : ''}">
-                    <h2 class="news-title">${news.title}</h2>
-                    <div class="news-meta">
-                        <span class="news-category">${news.category}</span>
-                        <span class="news-date"><i class="fas fa-calendar"></i> ${new Date(news.date).toLocaleDateString()}</span>
-                        ${news.isUrgent ? '<span class="urgent-badge">URGENT</span>' : ''}
-                    </div>
-                    <div class="news-content">
-                        ${news.content.split('\n').map(paragraph => `<p>${paragraph}</p>`).join('')}
-                    </div>
-                    ${news.tags && news.tags.length > 0 ? `
-                        <div class="news-tags">
-                            <strong>Tags:</strong>
-                            ${news.tags.map(tag => `<span class="news-tag">${tag}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                </article>
-            `).join('')}
-        </div>
-    </div>
-</body>
-</html>`;
-        }
-        
-        async function initializeNewsData() {
-            // Initialize with sample news data matching your HTML structure
-            newsData = [
-                {
-                    id: Date.now() + 1,
-                    title: 'Winter Break Extended',
-                    content: 'Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025.\n\nAll students and parents are requested to take note of this change. The school administration apologizes for any inconvenience caused and appreciates your understanding.',
-                    category: 'urgent',
-                    tags: ['Important', 'Schedule'],
-                    date: '2025-06-03',
-                    isUrgent: true,
-                    createdAt: new Date().toISOString()
-                },
-                {
-                    id: Date.now() + 2,
-                    title: 'Annual Sports Day 2025',
-                    content: 'Our Annual Sports Day will be held on June 20, 2025, at the school grounds. This year\'s theme is "Unity in Diversity" celebrating our multicultural student body.\n\nRegistration forms are available at the school office. Parents are cordially invited to attend and cheer for their children. Various competitions and cultural programs are planned.',
-                    category: 'events',
-                    tags: ['Sports', 'Event', 'Competition'],
-                    date: '2025-06-01',
-                    isUrgent: false,
-                    createdAt: new Date().toISOString()
-                },
-                {
-                    id: Date.now() + 3,
-                    title: 'New Science Laboratory Inauguration',
-                    content: 'We are excited to announce the inauguration of our new state-of-the-art science laboratory equipped with modern instruments and safety equipment.\n\nThe facility will be open for students from Class 8 onwards starting next week. Special orientation sessions will be conducted for students and teachers.',
-                    category: 'academic',
-                    tags: ['Science', 'Laboratory', 'Facility'],
-                    date: '2025-05-28',
-                    isUrgent: false,
-                    createdAt: new Date().toISOString()
-                }
-            ];
+            };
             
-            await saveNewsData();
+            reader.onerror = function() {
+                showStatus('❌ Error reading file', 'error');
+                showLoading(false);
+            };
+            
+            reader.readAsText(file);
         }
 
-        // ============================================================================
-        // NEWS MANAGEMENT
-        // ============================================================================
-
-        // Add news form submission
-        document.getElementById('newsForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        function loadSampleData() {
+            showLoading(true);
             
-            const title = document.getElementById('newsTitle').value.trim();
-            const content = document.getElementById('newsContent').value.trim();
-            const category = document.getElementById('newsCategory').value;
-            const tags = document.getElementById('newsTags').value.trim();
-            const date = document.getElementById('newsDate').value || new Date().toISOString().split('T')[0];
-            const isUrgent = document.getElementById('isUrgent').checked;
+            setTimeout(() => {
+                newsData = [...sampleNewsData.news];
+                showStatus(`✅ Sample data loaded with ${newsData.length} articles!`, 'success');
+                document.getElementById('mainContent').style.display = 'block';
+                renderNews();
+                renderStats();
+                showLoading(false);
+            }, 500);
+        }
 
-            if (!title || !content || !category) {
-                showStatus('Please fill in all required fields', 'error');
+        function exportJSON() {
+            if (newsData.length === 0) {
+                showStatus('❌ No news data to export', 'error');
                 return;
             }
 
-            const newArticle = {
-                id: Date.now(),
-                title: title,
-                content: content,
-                category: category,
-                tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
-                date: date,
-                isUrgent: isUrgent,
-                createdAt: new Date().toISOString(),
-                lastModified: new Date().toISOString()
+            const exportData = {
+                news: newsData,
+                exportedAt: new Date().toISOString(),
+                totalArticles: newsData.length
             };
 
-            newsData.unshift(newArticle); // Add to beginning
-            await saveNewsData();
+            const jsonString = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `school-news-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showStatus('✅ News data exported successfully!', 'success');
+        }
+
+        // ============================================================================
+        // NEWS MANAGEMENT FUNCTIONS
+        // ============================================================================
+
+        function addNews(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('newsTitle').value.trim();
+            const category = document.getElementById('newsCategory').value;
+            const content = document.getElementById('newsContent').value.trim();
+            const tags = document.getElementById('newsTags').value.trim();
+            const date = document.getElementById('newsDate').value;
+            const isUrgent = document.getElementById('isUrgent').checked;
+            
+            if (!title || !category || !content) {
+                showStatus('❌ Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Create content array (split by double line breaks for paragraphs)
+            const contentArray = content.split('\n\n').map(p => p.trim()).filter(p => p.length > 0);
+            
+            // Add empty strings between paragraphs to match your JSON structure
+            const formattedContent = [];
+            contentArray.forEach((paragraph, index) => {
+                formattedContent.push(paragraph);
+                if (index < contentArray.length - 1) {
+                    formattedContent.push("");
+                }
+            });
+
+            // Create new news item
+            const newNews = {
+                id: newsData.length > 0 ? Math.max(...newsData.map(n => n.id)) + 1 : 1,
+                title: title,
+                category: category,
+                date: formatDateForJSON(date),
+                isUrgent: isUrgent,
+                content: formattedContent,
+                tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : []
+            };
+
+            newsData.push(newNews);
+            
+            showStatus('✅ News article added successfully!', 'success');
             
             // Reset form
             document.getElementById('newsForm').reset();
+            document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
             
-            // Refresh displays
+            // Update displays
             renderNews();
             renderStats();
+        }
+
+        function editNews(index) {
+            if (index < 0 || index >= newsData.length) return;
             
-            showStatus('✅ News article added successfully!', 'success');
-        });
-
-        // Edit form submission
-        document.getElementById('editForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+            currentEditIndex = index;
+            const news = newsData[index];
             
-            if (currentEditIndex === -1) return;
+            document.getElementById('editNewsId').value = news.id;
+            document.getElementById('editTitle').value = news.title;
+            document.getElementById('editCategory').value = news.category;
+            document.getElementById('editContent').value = Array.isArray(news.content) ? 
+                news.content.filter(p => p.trim() !== "").join('\n\n') : news.content;
+            document.getElementById('editTags').value = Array.isArray(news.tags) ? news.tags.join(', ') : '';
+            document.getElementById('editDate').value = parseDateFromJSON(news.date);
+            document.getElementById('editIsUrgent').checked = news.isUrgent || false;
+            
+            document.getElementById('editModal').style.display = 'block';
+        }
 
-            const title = document.getElementById('editTitle').value.trim();
-            const content = document.getElementById('editContent').value.trim();
-            const category = document.getElementById('editCategory').value;
-            const tags = document.getElementById('editTags').value.trim();
-            const isUrgent = document.getElementById('editIsUrgent').checked;
-
-            if (!title || !content || !category) {
-                showStatus('Please fill in all required fields', 'error');
+        function updateNews(event) {
+            event.preventDefault();
+            
+            if (currentEditIndex < 0 || currentEditIndex >= newsData.length) {
+                showStatus('❌ Invalid news item selected', 'error');
                 return;
             }
 
-            // Update news data
-            newsData[currentEditIndex].title = title;
-            newsData[currentEditIndex].content = content;
-            newsData[currentEditIndex].category = category;
-            newsData[currentEditIndex].tags = tags ? tags.split(',').map(tag => tag.trim()) : [];
-            newsData[currentEditIndex].isUrgent = isUrgent;
-            newsData[currentEditIndex].lastModified = new Date().toISOString();
+            const title = document.getElementById('editTitle').value.trim();
+            const category = document.getElementById('editCategory').value;
+            const content = document.getElementById('editContent').value.trim();
+            const tags = document.getElementById('editTags').value.trim();
+            const date = document.getElementById('editDate').value;
+            const isUrgent = document.getElementById('editIsUrgent').checked;
+            
+            if (!title || !category || !content) {
+                showStatus('❌ Please fill in all required fields', 'error');
+                return;
+            }
 
-            await saveNewsData();
+            // Format content as array
+            const contentArray = content.split('\n\n').map(p => p.trim()).filter(p => p.length > 0);
+            const formattedContent = [];
+            contentArray.forEach((paragraph, index) => {
+                formattedContent.push(paragraph);
+                if (index < contentArray.length - 1) {
+                    formattedContent.push("");
+                }
+            });
+
+            // Update the news item
+            newsData[currentEditIndex] = {
+                ...newsData[currentEditIndex],
+                title: title,
+                category: category,
+                date: formatDateForJSON(date),
+                isUrgent: isUrgent,
+                content: formattedContent,
+                tags: tags ? tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0) : []
+            };
+            
+            showStatus('✅ News article updated successfully!', 'success');
+            closeEditModal();
             renderNews();
             renderStats();
-            closeEditModal();
+        }
 
-            showStatus('✅ News article updated successfully!', 'success');
-        });
-
-        // ============================================================================
-        // UI FUNCTIONS
-        // ============================================================================
-        
-        function switchTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        function deleteNews(index) {
+            if (index < 0 || index >= newsData.length) return;
             
-            // Find the clicked button
-            const clickedBtn = document.querySelector(`[onclick="switchTab('${tab}')"]`);
-            if (clickedBtn) {
-                clickedBtn.classList.add('active');
-            }
-            
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            const targetTab = document.getElementById(tab + 'Tab');
-            if (targetTab) {
-                targetTab.classList.add('active');
-            }
-            
-            // Load specific tab data
-            if (tab === 'manage') {
-                console.log('Switching to manage tab, rendering news...');
-                setTimeout(() => renderNews(), 100);
-            } else if (tab === 'stats') {
+            const news = newsData[index];
+            if (confirm(`Are you sure you want to delete "${news.title}"?`)) {
+                newsData.splice(index, 1);
+                showStatus('✅ News article deleted successfully!', 'success');
+                renderNews();
                 renderStats();
             }
         }
 
+        // ============================================================================
+        // RENDERING FUNCTIONS
+        // ============================================================================
+
         function renderNews() {
-            const container = document.getElementById('newsList');
+            const newsList = document.getElementById('newsList');
+            filteredNews = [...newsData];
             
-            if (!container) {
-                console.error('News list container not found!');
-                return;
-            }
-
-            const categoryFilterElement = document.getElementById('categoryFilter');
-            const searchBoxElement = document.getElementById('searchBox');
-            
-            const categoryFilter = categoryFilterElement ? categoryFilterElement.value : '';
-            const searchTerm = searchBoxElement ? searchBoxElement.value.toLowerCase() : '';
-
-            let filteredNews = [...newsData];
-            
-            if (categoryFilter && categoryFilter !== '') {
-                filteredNews = filteredNews.filter(news => news.category === categoryFilter);
-            }
-            
-            if (searchTerm && searchTerm !== '') {
-                filteredNews = filteredNews.filter(news => 
-                    news.title.toLowerCase().includes(searchTerm) ||
-                    news.content.toLowerCase().includes(searchTerm) ||
-                    (news.tags && news.tags.some(tag => tag.toLowerCase().includes(searchTerm)))
-                );
-            }
-
-            console.log('Total news:', newsData.length);
-            console.log('Filtered news:', filteredNews.length);
-
             if (filteredNews.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 40px; color: #666; background: white; border-radius: 10px; margin: 20px 0;">
-                        <i class="fas fa-newspaper" style="font-size: 3rem; color: #ddd; margin-bottom: 20px;"></i>
-                        <h3>No news articles found</h3>
-                        <p>Try adjusting your filters or add some news articles!</p>
-                        <button onclick="switchTab('add')" style="background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Add News</button>
+                newsList.innerHTML = `
+                    <div class="no-news">
+                        <i class="fas fa-newspaper"></i>
+                        <p>No news articles found</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = filteredNews.map((news, filteredIndex) => {
-                const originalIndex = newsData.findIndex(item => item.id === news.id);
-                
+            // Sort by urgency first, then by date (newest first)
+            filteredNews.sort((a, b) => {
+                if (a.isUrgent && !b.isUrgent) return -1;
+                if (!a.isUrgent && b.isUrgent) return 1;
+                return new Date(parseDateFromJSON(b.date)) - new Date(parseDateFromJSON(a.date));
+            });
+
+            newsList.innerHTML = filteredNews.map((news, index) => {
+                const originalIndex = newsData.findIndex(n => n.id === news.id);
+                const contentText = Array.isArray(news.content) ? 
+                    news.content.filter(p => p.trim() !== "").join(' ') : news.content;
+                const displayContent = contentText.length > 200 ? 
+                    contentText.substring(0, 200) + '...' : contentText;
+
                 return `
-                    <div class="news-item-card ${news.isUrgent ? 'urgent' : ''}" style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-left: 4px solid ${news.isUrgent ? '#dc3545' : '#667eea'};">
-                        <div class="news-item-header" style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
-                            <div class="news-item-title" style="font-size: 1.3rem; font-weight: bold; color: #333; flex: 1;">
-                                ${news.title}
-                                ${news.isUrgent ? '<span class="urgent-indicator" style="background: #dc3545; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: 10px;">URGENT</span>' : ''}
+                    <div class="news-item ${news.category} ${news.isUrgent ? 'urgent' : ''}">
+                        <div class="news-header">
+                            <div>
+                                <div class="news-title">${news.title}</div>
+                                <div class="news-meta">
+                                    <span><i class="fas fa-folder"></i> ${capitalizeFirst(news.category)}</span>
+                                    <span><i class="fas fa-calendar"></i> ${news.date}</span>
+                                    ${news.isUrgent ? '<span class="urgent-badge"><i class="fas fa-exclamation"></i> URGENT</span>' : ''}
+                                </div>
                             </div>
-                            <div class="news-item-date" style="color: #666; font-size: 0.9rem; white-space: nowrap;">
-                                <i class="fas fa-calendar"></i>
-                                ${new Date(news.date).toLocaleDateString()}
+                            <div class="news-actions">
+                                <button onclick="editNews(${originalIndex})" class="btn btn-primary" style="padding: 8px 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteNews(${originalIndex})" class="btn btn-danger" style="padding: 8px 12px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
                             </div>
                         </div>
                         
-                        <div class="news-item-category" style="background: #667eea; color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.8rem; display: inline-block; margin-bottom: 10px; text-transform: uppercase;">
-                            ${news.category}
-                        </div>
-                        
-                        <div class="news-item-content" style="color: #555; line-height: 1.6; margin-bottom: 15px;">
-                            ${news.content.split('\n').slice(0, 3).map(paragraph => `<p style="margin-bottom: 10px;">${paragraph.length > 150 ? paragraph.substring(0, 150) + '...' : paragraph}</p>`).join('')}
-                            ${news.content.split('\n').length > 3 ? '<p style="color: #999; font-style: italic;">...</p>' : ''}
+                        <div class="news-content">
+                            ${displayContent}
                         </div>
                         
                         ${news.tags && news.tags.length > 0 ? `
-                            <div style="margin-bottom: 15px;">
-                                <strong style="color: #667eea;">Tags:</strong> 
-                                ${news.tags.map(tag => `<span style="background: #e9ecef; color: #495057; padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; margin-right: 8px; margin-left: 5px; display: inline-block;">${tag}</span>`).join('')}
+                            <div class="news-tags">
+                                ${news.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
                             </div>
                         ` : ''}
-                        
-                        <div class="news-item-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button onclick="editNews(${originalIndex})" class="btn btn-secondary btn-small" style="background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem;">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button onclick="deleteNews(${originalIndex})" class="btn btn-danger btn-small" style="background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem;">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                            <button onclick="viewFullNews(${originalIndex})" class="btn btn-success btn-small" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.9rem;">
-                                <i class="fas fa-eye"></i> View Full
-                            </button>
-                        </div>
                     </div>
                 `;
             }).join('');
         }
 
         function renderStats() {
-            const container = document.getElementById('statsGrid');
+            const statsGrid = document.getElementById('statsGrid');
             
-            // Calculate statistics
-            const totalNews = newsData.length;
-            const urgentNews = newsData.filter(news => news.isUrgent).length;
-            const categoryCounts = {};
-            const recentNews = newsData.filter(news => {
-                const newsDate = new Date(news.date);
-                const weekAgo = new Date();
-                weekAgo.setDate(weekAgo.getDate() - 7);
-                return newsDate >= weekAgo;
-            }).length;
+            const total = newsData.length;
+            const urgent = newsData.filter(n => n.isUrgent).length;
+            const academic = newsData.filter(n => n.category === 'academic').length;
+            const events = newsData.filter(n => n.category === 'events').length;
+            const announcements = newsData.filter(n => n.category === 'announcements' || n.category === 'announcement').length;
+            const urgentCategory = newsData.filter(n => n.category === 'urgent').length;
 
-            // Count by category
-            newsData.forEach(news => {
-                categoryCounts[news.category] = (categoryCounts[news.category] || 0) + 1;
-            });
-
-            const mostActiveCategory = Object.keys(categoryCounts).reduce((a, b) => 
-                categoryCounts[a] > categoryCounts[b] ? a : b, 'none'
-            );
-
-            container.innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-number">${totalNews}</div>
-                    <div class="stat-label">Total Articles</div>
+            statsGrid.innerHTML = `
+                <div class="stat-card total">
+                    <i class="fas fa-newspaper"></i>
+                    <span class="stat-number">${total}</span>
+                    <span class="stat-label">Total Articles</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">${urgentNews}</div>
-                    <div class="stat-label">Urgent News</div>
+                
+                <div class="stat-card urgent">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span class="stat-number">${urgent}</span>
+                    <span class="stat-label">Urgent Articles</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">${recentNews}</div>
-                    <div class="stat-label">This Week</div>
+                
+                <div class="stat-card academic">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span class="stat-number">${academic}</span>
+                    <span class="stat-label">Academic</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">${mostActiveCategory}</div>
-                    <div class="stat-label">Most Active Category</div>
+                
+                <div class="stat-card events">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="stat-number">${events}</span>
+                    <span class="stat-label">Events</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number">${Object.keys(categoryCounts).length}</div>
-                    <div class="stat-label">Categories Used</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">${newsData.reduce((total, news) => total + (news.tags ? news.tags.length : 0), 0)}</div>
-                    <div class="stat-label">Total Tags</div>
+                
+                <div class="stat-card announcements">
+                    <i class="fas fa-bullhorn"></i>
+                    <span class="stat-number">${announcements + urgentCategory}</span>
+                    <span class="stat-label">Announcements</span>
                 </div>
             `;
         }
 
+        // ============================================================================
+        // SEARCH AND FILTER FUNCTIONS
+        // ============================================================================
+
         function filterNews() {
-            renderNews();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const searchQuery = document.getElementById('searchBox').value.toLowerCase();
+            
+            filteredNews = newsData.filter(news => {
+                const matchesCategory = !categoryFilter || news.category === categoryFilter;
+                const matchesSearch = !searchQuery || 
+                    news.title.toLowerCase().includes(searchQuery) ||
+                    (Array.isArray(news.content) ? news.content.join(' ') : news.content).toLowerCase().includes(searchQuery) ||
+                    (news.tags && news.tags.some(tag => tag.toLowerCase().includes(searchQuery)));
+                
+                return matchesCategory && matchesSearch;
+            });
+            
+            renderFilteredNews();
         }
 
         function searchNews() {
-            renderNews();
+            filterNews();
+        }
+
+        function renderFilteredNews() {
+            const newsList = document.getElementById('newsList');
+            
+            if (filteredNews.length === 0) {
+                newsList.innerHTML = `
+                    <div class="no-news">
+                        <i class="fas fa-search"></i>
+                        <p>No news articles match your search criteria</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort filtered news
+            filteredNews.sort((a, b) => {
+                if (a.isUrgent && !b.isUrgent) return -1;
+                if (!a.isUrgent && b.isUrgent) return 1;
+                return new Date(parseDateFromJSON(b.date)) - new Date(parseDateFromJSON(a.date));
+            });
+
+            newsList.innerHTML = filteredNews.map((news) => {
+                const originalIndex = newsData.findIndex(n => n.id === news.id);
+                const contentText = Array.isArray(news.content) ? 
+                    news.content.filter(p => p.trim() !== "").join(' ') : news.content;
+                const displayContent = contentText.length > 200 ? 
+                    contentText.substring(0, 200) + '...' : contentText;
+
+                return `
+                    <div class="news-item ${news.category} ${news.isUrgent ? 'urgent' : ''}">
+                        <div class="news-header">
+                            <div>
+                                <div class="news-title">${news.title}</div>
+                                <div class="news-meta">
+                                    <span><i class="fas fa-folder"></i> ${capitalizeFirst(news.category)}</span>
+                                    <span><i class="fas fa-calendar"></i> ${news.date}</span>
+                                    ${news.isUrgent ? '<span class="urgent-badge"><i class="fas fa-exclamation"></i> URGENT</span>' : ''}
+                                </div>
+                            </div>
+                            <div class="news-actions">
+                                <button onclick="editNews(${originalIndex})" class="btn btn-primary" style="padding: 8px 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button onclick="deleteNews(${originalIndex})" class="btn btn-danger" style="padding: 8px 12px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="news-content">
+                            ${displayContent}
+                        </div>
+                        
+                        ${news.tags && news.tags.length > 0 ? `
+                            <div class="news-tags">
+                                ${news.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
         }
 
         function refreshNews() {
             showLoading(true);
             setTimeout(() => {
-                loadNewsData();
+                renderNews();
+                renderStats();
                 showLoading(false);
-                showStatus('News refreshed!', 'info');
-            }, 1000);
+                showStatus('✅ News list refreshed!', 'success');
+            }, 500);
         }
 
-        function editNews(index) {
-            currentEditIndex = index;
-            const news = newsData[index];
+        // ============================================================================
+        // UTILITY FUNCTIONS
+        // ============================================================================
 
-            document.getElementById('editTitle').value = news.title;
-            document.getElementById('editContent').value = news.content;
-            document.getElementById('editCategory').value = news.category;
-            document.getElementById('editTags').value = news.tags ? news.tags.join(', ') : '';
-            document.getElementById('editIsUrgent').checked = news.isUrgent;
-
-            document.getElementById('editModal').style.display = 'block';
+        function formatDateForJSON(dateString) {
+            if (!dateString) return new Date().toLocaleDateString('en-US');
+            
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US');
         }
+
+        function parseDateFromJSON(dateString) {
+            // Convert from MM/DD/YYYY to YYYY-MM-DD for input field
+            if (!dateString) return new Date().toISOString().split('T')[0];
+            
+            try {
+                const parts = dateString.split('/');
+                if (parts.length === 3) {
+                    const month = parts[0].padStart(2, '0');
+                    const day = parts[1].padStart(2, '0');
+                    const year = parts[2];
+                    return `${year}-${month}-${day}`;
+                }
+            } catch (e) {
+                console.error('Date parsing error:', e);
+            }
+            
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function capitalizeFirst(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            statusDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingIndicator').style.display = show ? 'flex' : 'none';
+        }
+
+        // ============================================================================
+        // TAB MANAGEMENT
+        // ============================================================================
+
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Refresh data if switching to manage or stats tab
+            if (tabName === 'manage') {
+                renderNews();
+            } else if (tabName === 'stats') {
+                renderStats();
+            }
+        }
+
+        // ============================================================================
+        // MODAL MANAGEMENT
+        // ============================================================================
 
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
             currentEditIndex = -1;
         }
 
-        function deleteNews(index) {
-            if (!confirm('Are you sure you want to delete this news article? This action cannot be undone.')) {
-                return;
-            }
-
-            showLoading(true);
-            
-            setTimeout(async () => {
-                try {
-                    newsData.splice(index, 1);
-                    await saveNewsData();
-                    renderNews();
-                    renderStats();
-
-                    showStatus('✅ News article deleted successfully!', 'success');
-
-                } catch (error) {
-                    showStatus('❌ Delete failed: ' + error.message, 'error');
-                    console.error('Delete error:', error);
-                } finally {
-                    showLoading(false);
-                }
-            }, 500);
-        }
-
-        function viewFullNews(index) {
-            const news = newsData[index];
-            
-            // Create full-screen news viewer
-            const viewer = document.createElement('div');
-            viewer.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.9);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 2000;
-                cursor: pointer;
-                overflow-y: auto;
-            `;
-
-            viewer.innerHTML = `
-                <div style="max-width: 800px; width: 90%; background: white; border-radius: 20px; padding: 40px; margin: 20px; max-height: 90vh; overflow-y: auto;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0; padding-bottom: 15px;">
-                        <h2 style="color: #667eea; margin: 0;">${news.title}</h2>
-                        <span style="font-size: 2rem; cursor: pointer; color: #aaa;" onclick="document.body.removeChild(this.closest('div').parentElement)">&times;</span>
-                    </div>
-                    
-                    <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
-                        <span style="background: #667eea; color: white; padding: 5px 15px; border-radius: 15px; font-size: 0.9rem;">${news.category}</span>
-                        ${news.isUrgent ? '<span style="background: #dc3545; color: white; padding: 5px 15px; border-radius: 15px; font-size: 0.9rem;">URGENT</span>' : ''}
-                        <span style="color: #666; display: flex; align-items: center; gap: 5px;"><i class="fas fa-calendar"></i> ${new Date(news.date).toLocaleDateString()}</span>
-                    </div>
-                    
-                    <div style="line-height: 1.8; color: #333; margin-bottom: 20px;">
-                        ${news.content.split('\n').map(paragraph => `<p style="margin-bottom: 15px;">${paragraph}</p>`).join('')}
-                    </div>
-                    
-                    ${news.tags && news.tags.length > 0 ? `
-                        <div style="border-top: 1px solid #e0e0e0; padding-top: 15px;">
-                            <strong style="color: #667eea;">Tags:</strong>
-                            <div style="margin-top: 10px;">
-                                ${news.tags.map(tag => `<span style="background: #e9ecef; color: #495057; padding: 5px 12px; border-radius: 15px; font-size: 0.9rem; margin-right: 10px; display: inline-block; margin-bottom: 5px;">${tag}</span>`).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-                    
-                    <div style="text-align: center; margin-top: 30px;">
-                        <button onclick="document.body.removeChild(this.closest('div').parentElement)" style="background: #667eea; color: white; border: none; padding: 12px 25px; border-radius: 10px; font-size: 1rem; cursor: pointer;">Close</button>
-                    </div>
-                </div>
-            `;
-
-            viewer.onclick = (e) => {
-                if (e.target === viewer) {
-                    document.body.removeChild(viewer);
-                }
-            };
-            
-            document.body.appendChild(viewer);
-        }
-
-        function generateNewsHTML() {
-            const html = generateNewsHTMLContent();
-
-            // Create and download the HTML file
-            const blob = new Blob([html], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'school-news.html';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-            showStatus('✅ News HTML file generated and downloaded!', 'success');
-        }
-
-        function showStatus(message, type) {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.textContent = message;
-            statusElement.className = `status-message status-${type}`;
-            statusElement.style.display = 'block';
-
-            setTimeout(() => {
-                statusElement.style.display = 'none';
-            }, 5000);
-        }
-
-        function showLoading(show) {
-            document.getElementById('loadingIndicator').style.display = show ? 'block' : 'none';
-        }
-
-        // ============================================================================
-        // INITIALIZATION
-        // ============================================================================
-
-        // Auto-load token if previously saved
-        window.addEventListener('load', function() {
-            // Add event listeners for filters
-            document.getElementById('categoryFilter').addEventListener('change', filterNews);
-            document.getElementById('searchBox').addEventListener('input', searchNews);
-            
-            const savedToken = localStorage.getItem('githubToken');
-            if (savedToken) {
-                document.getElementById('githubToken').value = savedToken;
-                // Auto-authenticate if token exists
-                setTimeout(() => {
-                    authenticateGitHub();
-                }, 500);
-            }
-            
-            // Set default date to today
-            document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
-        });
-
         // Close modal when clicking outside
-        window.addEventListener('click', function(e) {
+        window.onclick = function(event) {
             const modal = document.getElementById('editModal');
-            if (e.target === modal) {
+            if (event.target === modal) {
                 closeEditModal();
             }
-        });
+        }
 
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Escape key to close modal
-            if (e.key === 'Escape') {
-                closeEditModal();
-            }
-            
-            // Ctrl+R to refresh news
-            if (e.ctrlKey && e.key === 'r') {
-                e.preventDefault();
-                refreshNews();
-            }
-        });
+        // ============================================================================
+        // EVENT LISTENERS
+        // ============================================================================
 
-        console.log('📰 School News Manager loaded successfully!');
-        console.log('📝 Configuration needed:');
-        console.log('   - Update githubConfig object with your repository details');
-        console.log('   - Get GitHub Personal Access Token with Contents & Metadata permissions');
-        console.log('   - Repository should be public or token should have appropriate access');
-   
-        // Add this at the end of the script
-        setTimeout(() => {
-            if (newsData.length > 0) {
-                renderNews();
-            }
-        }, 1000);
+        document.getElementById('newsForm').addEventListener('submit', addNews);
+        document.getElementById('editForm').addEventListener('submit', updateNews);
+
+        // Initialize date field
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('newsDate').value = today;
+        });
     </script>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .auth-section {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .auth-section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-        }
-
-          .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5a6fd8;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .btn-success {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #218838;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #c82333;
-        }
-
-        .status-message {
-            display: none;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .status-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .loading-indicator {
-            display: none;
-            text-align: center;
-            padding: 30px;
-            color: white;
-        }
-
-        .loading-indicator i {
-            font-size: 2rem;
-            animation: spin 1s linear infinite;
-            margin-bottom: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .main-content {
-            display: none;
-        }
-
-        .management-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background: rgba(255,255,255,0.8);
-            color: #667eea;
-            border: 2px solid transparent;
-            padding: 12px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-
-        .tab-btn.active,
-        .tab-btn:hover {
-            background: white;
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .tab-pane {
-            background: rgba(255,255,255,0.95);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .tab-pane h2 {
-            color: #667eea;
-            margin-bottom: 25px;
-            font-size: 1.5rem;
-        }
-
-        .news-form {
-            max-width: 800px;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .management-tabs {
-                justify-content: center;
-            }
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-controls {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .action-controls {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .search-box {
-            position: relative;
-        }
-
-        .search-box input {
-            padding-right: 40px;
-            min-width: 200px;
-        }
-
-        .search-box i {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-left: 4px solid #667eea;
-        }
-
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .stat-label {
-            color: #666;
-            font-weight: 500;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            position: relative;
-            background-color: white;
-            margin: 50px auto;
-            padding: 0;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: modalAppear 0.3s ease;
-        }
-
-        @keyframes modalAppear {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 25px 30px;
-            border-bottom: 1px solid #e0e0e0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px 15px 0 0;
-        }
-
-        .modal-title {
-            margin: 0;
-            font-size: 1.3rem;
-        }
-
-        .close {
-            font-size: 2rem;
-            cursor: pointer;
-            opacity: 0.8;
-        }
-
-        .close:hover {
-            opacity: 1;
-        }
-
-        .modal form {
-            padding: 30px;
-        }
-    </style>
 </body>
 </html>
