@@ -236,12 +236,12 @@
     },
     {
       "name": "Sonia Banafer",
-      "post": "lower division teacher",
+      "post": "LDT",
       "subjects": [
         "English"
       ],
       "experience": "3 years",
-      "image": "https://via.placeholder.com/120x120/667eea/white?text=Faculty"
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755929809/ssccruerqsrgrzq0xkrf.jpg"
     },
     {
       "name": "Neha Rajput ",
@@ -316,5 +316,5 @@
       "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755929755/sphhtdtjxhwqkyu7zgod.jpg"
     }
   ],
-  "lastUpdated": "2025-08-23T06:15:56.970Z"
+  "lastUpdated": "2025-08-23T06:16:50.433Z"
 }
