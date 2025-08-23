@@ -1,28 +1,166 @@
 {
   "board_members": [
     {
-      "name": "Sujit Ghosh Sir",
-      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1751523201/vnelng54fwmtzyl6xz6o.jpg",
-      "post": "president",
+      "name": "Sujit Ghosh",
+      "image": "",
+      "post": "President",
       "title": "",
       "experience": "",
-      "expertise": ["Educational Administration", "Policy Making", "Strategic Planning", "Governance", "Public Service"]
+      "expertise": ["Educational Administration", "Policy Making", "Strategic Planning", "Governance", "Public Service"],
+      "mobile": "9300360613"
+    },
+    {
+      "name": "Alok Chakraborty",
+      "image": "",
+      "post": "Vice President",
+      "title": "",
+      "experience": "",
+      "expertise": ["Educational Leadership", "Curriculum Development", "Teacher Training", "Student Welfare", "Academic Excellence"],
+      "mobile": "9754167471"
+    },
+    {
+      "name": "Krishnendu Choudhary",
+      "image": "",
+      "post": "General Secretary",
+      "title": "",
+      "experience": "",
+      "expertise": ["Administrative Management", "Documentation", "Communication", "Record Keeping", "Coordination"],
+      "mobile": "9425412354"
+    },
+    {
+      "name": "Mihir Kumar Das",
+      "image": "",
+      "post": "Joint Secretary (General)",
+      "title": "",
+      "experience": "",
+      "expertise": ["General Administration", "Event Coordination", "Member Relations", "Committee Support", "Documentation"],
+      "mobile": "9826481213"
+    },
+    {
+      "name": "Amalendu Choudhary",
+      "image": "",
+      "post": "Joint Secretary (Festival)",
+      "title": "",
+      "experience": "",
+      "expertise": ["Festival Management", "Event Planning", "Cultural Coordination", "Community Engagement", "Traditional Events"],
+      "mobile": "9407843121"
+    },
+    {
+      "name": "Kalyan Kumar Ghosh",
+      "image": "",
+      "post": "Treasurer",
+      "title": "",
+      "experience": "",
+      "expertise": ["Financial Management", "Audit & Compliance", "Budget Planning", "Risk Assessment", "Tax Planning"],
+      "mobile": "9827016690"
+    },
+    {
+      "name": "Debashish Chatterjee",
+      "image": "",
+      "post": "Assistant Treasurer",
+      "title": "",
+      "experience": "",
+      "expertise": ["Financial Support", "Accounting", "Payment Processing", "Financial Records", "Budget Monitoring"],
+      "mobile": "7477021681"
+    },
+    {
+      "name": "Anup Majumdar",
+      "image": "",
+      "post": "Inventory Incharge",
+      "title": "",
+      "experience": "",
+      "expertise": ["Inventory Management", "Asset Management", "Supply Chain", "Resource Planning", "Equipment Maintenance"],
+      "mobile": "9425324425"
+    },
+    {
+      "name": "Jibon Chakraborty",
+      "image": "",
+      "post": "Cultural Secretary",
+      "title": "",
+      "experience": "",
+      "expertise": ["Cultural Programs", "Arts & Crafts", "Music & Dance", "Cultural Events", "Community Programs"],
+      "mobile": "9424708353"
+    },
+    {
+      "name": "Swapan Bose",
+      "image": "",
+      "post": "Sports Incharge",
+      "title": "",
+      "experience": "",
+      "expertise": ["Sports Management", "Physical Education", "Athletic Programs", "Sports Events", "Health & Fitness"],
+      "mobile": "9826314065"
+    },
+    {
+      "name": "Ashok Gupta",
+      "image": "",
+      "post": "Library Incharge",
+      "title": "",
+      "experience": "",
+      "expertise": ["Library Management", "Information Systems", "Book Collection", "Reading Programs", "Educational Resources"],
+      "mobile": "8871333707"
+    },
+    {
+      "name": "Dilip Bardhan",
+      "image": "",
+      "post": "Executive Member (Library)",
+      "title": "",
+      "experience": "",
+      "expertise": ["Library Operations", "Book Management", "Reading Programs", "Information Resources", "Educational Support"],
+      "mobile": "8989430016"
+    },
+    {
+      "name": "Sanjay Banerjee",
+      "image": "",
+      "post": "Executive Member (Cultural)",
+      "title": "",
+      "experience": "",
+      "expertise": ["Cultural Activities", "Event Management", "Community Programs", "Arts Coordination", "Cultural Heritage"],
+      "mobile": "9981136136"
+    },
+    {
+      "name": "Susanta Majumdar",
+      "image": "",
+      "post": "Executive Member (Mandir)",
+      "title": "",
+      "experience": "",
+      "expertise": ["Temple Management", "Religious Activities", "Spiritual Programs", "Community Worship", "Traditional Practices"],
+      "mobile": "8989753882"
+    },
+    {
+      "name": "Ujjal Dutta",
+      "image": "",
+      "post": "Executive Member (Inventory)",
+      "title": "",
+      "experience": "",
+      "expertise": ["Inventory Support", "Asset Tracking", "Resource Management", "Equipment Care", "Supply Coordination"],
+      "mobile": "9329247064"
+    },
+    {
+      "name": "B N Saha",
+      "image": "",
+      "post": "Executive Member (Sports)",
+      "title": "",
+      "experience": "",
+      "expertise": ["Sports Activities", "Athletic Support", "Sports Equipment", "Physical Training", "Competitive Events"],
+      "mobile": "8823074978"
+    },
+    {
+      "name": "Somen Goswami",
+      "image": "",
+      "post": "School Secretary",
+      "title": "",
+      "experience": "",
+      "expertise": ["School Administration", "Educational Management", "Student Affairs", "Academic Coordination", "School Operations"],
+      "mobile": "9425834620"
     },
     {
       "name": "Dilip Banerjee",
-      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1751522668/it9vqwa0blnorpst2oit.jpg",
-      "post": "Vice president",
+      "image": "",
+      "post": "School Vice President",
       "title": "",
       "experience": "",
-      "expertise": ["Educational Leadership", "Curriculum Development", "Teacher Training", "Student Welfare", "Academic Excellence"]
-    },
-    {
-      "name": "Soumen Goswami",
-      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1751522612/a4prmmq5ibfpi70fwl9b.jpg",
-      "post": "Secretary",
-      "title": "",
-      "experience": "",
-      "expertise": ["Financial Management", "Audit & Compliance", "Budget Planning", "Risk Assessment", "Tax Planning"]
+      "expertise": ["Educational Leadership", "Curriculum Development", "Teacher Training", "Student Welfare", "Academic Excellence"],
+      "mobile": "9425311270"
     }
-   ]
+  ]
 }
