@@ -47,7 +47,7 @@
     },
     {
       "name": "Kalyan Kumar Ghosh",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755933769/qi8ymdef841eal862ze2.jpg",
       "post": "Treasurer",
       "title": "",
       "experience": "",
@@ -56,7 +56,7 @@
     },
     {
       "name": "Debashish Chatterjee",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755933843/vuviaw1vozgu0sgnbpt6.jpg",
       "post": "Assistant Treasurer",
       "title": "",
       "experience": "",
@@ -164,4 +164,5 @@
     }
   ]
 }
+
 
