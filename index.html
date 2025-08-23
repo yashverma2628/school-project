@@ -386,13 +386,13 @@
     }
 }
 
-.news-strip {
+            .urgent-news-banner {
     background: linear-gradient(135deg, #e91e63, #9c27b0, #673ab7, #e91e63);
     background-size: 400% 400%;
-    animation: gradientShift 4s ease infinite;
+    animation: urgentGradientShift 4s ease infinite;
     color: white;
     padding: 15px 0;
-    min-height: 20px;
+    min-height: 50px;
     display: flex;
     align-items: center;
     position: relative;
@@ -401,22 +401,22 @@
     font-size: 16px;
     font-weight: 500;
     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    z-index: 999;
+    z-index: 9999;
     width: 100%;
 }
 
-.news-strip.blink {
-    animation: gradientShift 4s ease infinite, blinkAttention 0.6s ease-in-out 5;
+.urgent-news-banner.urgent-blink {
+    animation: urgentGradientShift 4s ease infinite, urgentBlinkEffect 0.6s ease-in-out 5;
 }
 
-.news-content {
+.urgent-news-wrapper {
     display: flex;
     align-items: center;
     height: 100%;
     width: 100%;
 }
 
-.news-label {
+.urgent-label {
     background: rgba(0,0,0,0.2);
     padding: 4px 12px;
     border-radius: 15px;
@@ -426,29 +426,29 @@
     font-size: 13px;
 }
 
-.news-ticker {
-    animation: scroll-left 35s linear infinite;
+.scrolling-news-text {
+    animation: urgentScrollLeft 35s linear infinite;
     white-space: nowrap;
     display: inline-block;
     padding-left: 20px;
 }
 
-.news-item {
+.urgent-news-single {
     display: inline;
     margin-right: 50px;
 }
 
-.news-title {
+.urgent-title {
     font-weight: bold;
     margin-right: 10px;
 }
 
-.news-description {
+.urgent-description {
     font-weight: normal;
     opacity: 0.9;
 }
 
-@keyframes scroll-left {
+@keyframes urgentScrollLeft {
     0% {
         transform: translateX(100vw);
     }
@@ -457,7 +457,7 @@
     }
 }
 
-@keyframes gradientShift {
+@keyframes urgentGradientShift {
     0% {
         background-position: 0% 50%;
     }
@@ -469,7 +469,7 @@
     }
 }
 
-@keyframes blinkAttention {
+@keyframes urgentBlinkEffect {
     0%, 100% {
         opacity: 1;
     }
@@ -480,22 +480,24 @@
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
-    .news-strip {
+    .urgent-news-banner {
         font-size: 14px;
         padding: 12px 0;
         min-height: 45px;
     }
     
-    .news-label {
+    .urgent-label {
         font-size: 12px;
         padding: 4px 10px;
         margin: 0 10px;
     }
     
-    .news-ticker {
-        animation: scroll-left 30s linear infinite;
+    .scrolling-news-text {
+        animation: urgentScrollLeft 30s linear infinite;
     }
-} </style>
+}
+        
+        </style>
 </head>
 <body>
     <!-- Header -->
@@ -561,10 +563,10 @@
     </div>
 </section>
 
-    <div class="news-strip" id="newsStrip">
-    <div class="news-content">
-        <div class="news-ticker" id="newsTicker">
-             <span class="news-item">
+  <div class="urgent-news-banner" id="urgentNewsBanner">
+    <div class="urgent-news-wrapper">
+    
+        <div class="scrolling-news-text" id="scrollingNewsText">
             <!-- News will be loaded here dynamically -->
         </div>
     </div>
@@ -1768,24 +1770,22 @@ document.addEventListener('DOMContentLoaded', loadUrgentNews);
 </script>
     <!-- Place this JavaScript code RIGHT BEFORE the closing </body> tag -->
 <script>
-console.log('Script is loading...'); // This should show immediately
+console.log('Urgent news script is loading...');
 
-function loadUrgentNews() {
-    console.log('loadUrgentNews function called');
+function loadUrgentNewsData() {
+    console.log('loadUrgentNewsData function called');
     
-    // First, let's test if we can access the elements
-    const newsTicker = document.getElementById('newsTicker');
-    const newsStrip = document.getElementById('newsStrip');
+    const scrollingText = document.getElementById('scrollingNewsText');
+    const newsBanner = document.getElementById('urgentNewsBanner');
     
-    console.log('newsTicker element:', newsTicker);
-    console.log('newsStrip element:', newsStrip);
+    console.log('scrollingNewsText element:', scrollingText);
+    console.log('urgentNewsBanner element:', newsBanner);
     
-    if (!newsTicker) {
-        console.error('newsTicker element not found!');
+    if (!scrollingText) {
+        console.error('scrollingNewsText element not found!');
         return;
     }
     
-    // Try to load the JSON file
     fetch('news.json')
         .then(response => {
             console.log('Fetch response:', response);
@@ -1795,73 +1795,64 @@ function loadUrgentNews() {
             return response.json();
         })
         .then(data => {
-            console.log('News data loaded successfully:', data);
+            console.log('Urgent news data loaded successfully:', data);
             
-            // Filter only urgent news
-            const urgentNews = data.news.filter(news => news.isUrgent === true);
-            console.log('Urgent news found:', urgentNews.length, urgentNews);
+            const urgentNewsItems = data.news.filter(news => news.isUrgent === true);
+            console.log('Urgent news items found:', urgentNewsItems.length, urgentNewsItems);
             
-            if (urgentNews.length > 0) {
-                let newsHTML = '';
+            if (urgentNewsItems.length > 0) {
+                let urgentNewsHTML = '';
                 
-                urgentNews.forEach((news, index) => {
-                    const description = news.content.join(' ').replace(/\s+/g, ' ').trim();
+                urgentNewsItems.forEach((newsItem, index) => {
+                    const newsDescription = newsItem.content.join(' ').replace(/\s+/g, ' ').trim();
                     
-                    newsHTML += `
-                        <span class="news-item">
-                            <span class="news-title">${news.title}</span> - 
-                            <span class="news-description">${description}</span>
+                    urgentNewsHTML += `
+                        <span class="urgent-news-single">
+                            <span class="urgent-title">${newsItem.title}</span> - 
+                            <span class="urgent-description">${newsDescription}</span>
                         </span>
                     `;
                 });
                 
-                console.log('Setting news HTML:', newsHTML);
-                newsTicker.innerHTML = newsHTML;
+                console.log('Setting urgent news HTML:', urgentNewsHTML);
+                scrollingText.innerHTML = urgentNewsHTML;
                 
-                // Make sure the strip is visible
-                if (newsStrip) {
-                    newsStrip.style.display = 'flex';
-                    newsStrip.classList.add('blink');
+                if (newsBanner) {
+                    newsBanner.style.display = 'flex';
+                    newsBanner.classList.add('urgent-blink');
                     
                     setTimeout(() => {
-                        newsStrip.classList.remove('blink');
+                        newsBanner.classList.remove('urgent-blink');
                     }, 3000);
                 }
                 
             } else {
                 console.log('No urgent news found, showing welcome message');
-                newsTicker.innerHTML = '<span class="news-item"><span class="news-title">Welcome</span> - <span class="news-description">Welcome to Shishu Vidya Pith Eng. Med. Hr. Sec School</span></span>';
+                scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">Welcome</span> - <span class="urgent-description">Welcome to Shishu Vidya Pith Eng. Med. Hr. Sec School</span></span>';
             }
         })
         .catch(error => {
-            console.error('Error loading news:', error);
-            console.log('Showing error message in ticker');
-            newsTicker.innerHTML = '<span class="news-item"><span class="news-title">News Loading Error</span> - <span class="news-description">Could not load news. Please check if news.json file exists.</span></span>';
+            console.error('Error loading urgent news:', error);
+            scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">News Loading Error</span> - <span class="urgent-description">Could not load news. Please check if news.json file exists.</span></span>';
         });
 }
 
-// Try multiple ways to ensure the function runs
-console.log('Setting up event listeners...');
-
-// Method 1: DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded - calling loadUrgentNews');
-    loadUrgentNews();
+    console.log('DOM Content Loaded - calling loadUrgentNewsData');
+    loadUrgentNewsData();
 });
 
-// Method 2: Window load (backup)
 window.addEventListener('load', function() {
-    console.log('Window loaded - calling loadUrgentNews as backup');
-    setTimeout(loadUrgentNews, 500);
+    console.log('Window loaded - calling loadUrgentNewsData as backup');
+    setTimeout(loadUrgentNewsData, 500);
 });
 
-// Method 3: Immediate execution with delay (another backup)
 setTimeout(function() {
-    console.log('Timeout method - calling loadUrgentNews');
-    loadUrgentNews();
+    console.log('Timeout method - calling loadUrgentNewsData');
+    loadUrgentNewsData();
 }, 1000);
 
-console.log('Script setup complete');
+console.log('Urgent news script setup complete');
 </script>
 </body>
 </html>
