@@ -2,8 +2,8 @@
   "board_members": [
     {
       "name": "Sujit Ghosh",
-      "image": "",
-      "post": "President",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1751523201/vnelng54fwmtzyl6xz6o.jpg",
+      "post": " Club President & School President ",
       "title": "",
       "experience": "",
       "expertise": ["Educational Administration", "Policy Making", "Strategic Planning", "Governance", "Public Service"],
@@ -11,7 +11,7 @@
     },
     {
       "name": "Alok Chakraborty",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755930969/roddlgvibkr03dsnaf9r.jpg",
       "post": "Vice President",
       "title": "",
       "experience": "",
@@ -20,7 +20,7 @@
     },
     {
       "name": "Krishnendu Choudhary",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755931036/nawicyn8zo92s1f4af1q.jpg",
       "post": "General Secretary",
       "title": "",
       "experience": "",
@@ -29,7 +29,7 @@
     },
     {
       "name": "Mihir Kumar Das",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755931719/obesvxn00mhanxhuogwr.jpg",
       "post": "Joint Secretary (General)",
       "title": "",
       "experience": "",
@@ -38,7 +38,7 @@
     },
     {
       "name": "Amalendu Choudhary",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755931766/zzbfv80qoebc8ap9dpvy.jpg",
       "post": "Joint Secretary (Festival)",
       "title": "",
       "experience": "",
@@ -65,7 +65,7 @@
     },
     {
       "name": "Anup Majumdar",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932027/znzbwgl31sxzv65krq4z.jpg",
       "post": "Inventory Incharge",
       "title": "",
       "experience": "",
@@ -74,7 +74,7 @@
     },
     {
       "name": "Jibon Chakraborty",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932058/oydqs29lulysnerxzrvy.jpg",
       "post": "Cultural Secretary",
       "title": "",
       "experience": "",
@@ -83,7 +83,7 @@
     },
     {
       "name": "Swapan Bose",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932088/ccfoq1qpeobyt6hs9shg.jpg",
       "post": "Sports Incharge",
       "title": "",
       "experience": "",
@@ -92,7 +92,7 @@
     },
     {
       "name": "Ashok Gupta",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932114/s7k57tnu3uo0xxdxrn13.jpg",
       "post": "Library Incharge",
       "title": "",
       "experience": "",
@@ -110,7 +110,7 @@
     },
     {
       "name": "Sanjay Banerjee",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932237/vv6mvrk0bdpfbmsfiaxi.jpg",
       "post": "Executive Member (Cultural)",
       "title": "",
       "experience": "",
@@ -119,7 +119,7 @@
     },
     {
       "name": "Susanta Majumdar",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932263/cmdyzedgbfhd3nectxkj.jpg",
       "post": "Executive Member (Mandir)",
       "title": "",
       "experience": "",
@@ -128,7 +128,7 @@
     },
     {
       "name": "Ujjal Dutta",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932313/hxegyfout1zi4kiwkxpd.jpg",
       "post": "Executive Member (Inventory)",
       "title": "",
       "experience": "",
@@ -146,7 +146,7 @@
     },
     {
       "name": "Somen Goswami",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932370/a8dkmd7dg8knmsvza0vw.jpg",
       "post": "School Secretary",
       "title": "",
       "experience": "",
@@ -155,7 +155,7 @@
     },
     {
       "name": "Dilip Banerjee",
-      "image": "",
+      "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1755932398/fkqgmf4vtqypjttdyxwg.jpg",
       "post": "School Vice President",
       "title": "",
       "experience": "",
@@ -164,3 +164,4 @@
     }
   ]
 }
+
