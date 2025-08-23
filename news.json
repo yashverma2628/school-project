@@ -1,0 +1,95 @@
+{
+  "news": [
+    {
+      "id": 1,
+      "title": "Winter Break Extended",
+      "category": "urgent",
+      "date": "6/3/2025",
+      "isUrgent": true,
+      "content": [
+        "Due to ongoing construction work in the main building, winter break has been extended by one week. Classes will resume on June 15, 2025.",
+        "",
+        "All students and parents are requested to take note of this change. The school administration apologizes for any inconvenience caused and appreciates your understanding."
+      ],
+      "tags": ["Important", "Schedule"]
+    },
+    {
+      "id": 2,
+      "title": "Emergency Parent-Teacher Meeting",
+      "category": "urgent",
+      "date": "6/4/2025",
+      "isUrgent": true,
+      "content": [
+        "An emergency parent-teacher meeting has been scheduled for June 8, 2025, at 3:00 PM in the school auditorium.",
+        "",
+        "This meeting is to discuss the recent changes in academic calendar and address parent concerns. Attendance is mandatory for all parents."
+      ],
+      "tags": ["Meeting", "Parents", "Important"]
+    },
+    {
+      "id": 3,
+      "title": "Annual Sports Day 2025",
+      "category": "events",
+      "date": "6/1/2025",
+      "isUrgent": false,
+      "content": [
+        "Our Annual Sports Day will be held on June 20, 2025, at the school grounds. This year's theme is \"Unity in Diversity\" celebrating our multicultural student body.",
+        "",
+        "Registration forms are available at the school office. Parents are cordially invited to attend and cheer for their children. Various competitions and cultural programs are planned."
+      ],
+      "tags": ["Sports", "Event", "Competition"]
+    },
+    {
+      "id": 4,
+      "title": "New Science Laboratory Inauguration",
+      "category": "academic",
+      "date": "5/28/2025",
+      "isUrgent": false,
+      "content": [
+        "We are excited to announce the inauguration of our new state-of-the-art science laboratory equipped with modern instruments and safety equipment.",
+        "",
+        "The facility will be open for students from Class 8 onwards starting next week. Special orientation sessions will be conducted for students and teachers."
+      ],
+      "tags": ["Science", "Laboratory", "Facility"]
+    },
+    {
+      "id": 5,
+      "title": "Library Digital Upgrade",
+      "category": "academic",
+      "date": "6/2/2025",
+      "isUrgent": false,
+      "content": [
+        "Our school library has been upgraded with new digital resources including e-books, online databases, and computer workstations.",
+        "",
+        "Students can now access thousands of digital books and research materials. New library cards will be issued starting next week."
+      ],
+      "tags": ["Library", "Digital", "Resources", "Technology"]
+    },
+    {
+      "id": 6,
+      "title": "School Uniform Update",
+      "category": "announcement",
+      "date": "5/30/2025",
+      "isUrgent": false,
+      "content": [
+        "Starting from the new academic session, there will be slight modifications to the school uniform policy.",
+        "",
+        "The updated uniform guidelines have been sent to all parents via email. Please ensure compliance by June 20, 2025."
+      ],
+      "tags": ["Uniform", "Policy", "Guidelines"]
+    },
+    {
+      "id": 7,
+      "title": "Summer Camp Registration Open",
+      "category": "events",
+      "date": "5/25/2025",
+      "isUrgent": false,
+      "content": [
+        "Registration for our annual Summer Camp 2025 is now open! The camp will run from July 1-15, 2025.",
+        "",
+        "Activities include arts & crafts, sports, swimming, and educational workshops. Limited seats available. Register at the school office or online through our portal."
+      ],
+      "tags": ["Summer Camp", "Registration", "Activities", "Students"]
+    }
+  ]
+}
