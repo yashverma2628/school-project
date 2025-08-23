@@ -552,15 +552,6 @@
 
     </header>
 
-    <div class="news-strip" id="newsStrip">
-    <div class="news-content">
-        <span class="news-label">📢 URGENT NEWS:</span>
-        <div class="news-ticker" id="newsTicker">
-            <!-- News will be loaded here dynamically -->
-        </div>
-    </div>
-</div>
-
   <!-- Hero Section -->
 <section id="home" class="hero">
     <div class="hero-content">
@@ -575,9 +566,6 @@
         <span class="news-label">📢 URGENT NEWS:</span>
         <div class="news-ticker" id="newsTicker">
              <span class="news-item">
-        <span class="news-title">TEST NEWS TITLE</span> - 
-        <span class="news-description">This is a test news description to check if the ticker is working properly.</span>
-    </span>
             <!-- News will be loaded here dynamically -->
         </div>
     </div>
@@ -1778,6 +1766,103 @@ async function loadUrgentNews() {
 
 // Load news when page loads
 document.addEventListener('DOMContentLoaded', loadUrgentNews);
+</script>
+    <!-- Place this JavaScript code RIGHT BEFORE the closing </body> tag -->
+<script>
+console.log('Script is loading...'); // This should show immediately
+
+function loadUrgentNews() {
+    console.log('loadUrgentNews function called');
+    
+    // First, let's test if we can access the elements
+    const newsTicker = document.getElementById('newsTicker');
+    const newsStrip = document.getElementById('newsStrip');
+    
+    console.log('newsTicker element:', newsTicker);
+    console.log('newsStrip element:', newsStrip);
+    
+    if (!newsTicker) {
+        console.error('newsTicker element not found!');
+        return;
+    }
+    
+    // Try to load the JSON file
+    fetch('news.json')
+        .then(response => {
+            console.log('Fetch response:', response);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('News data loaded successfully:', data);
+            
+            // Filter only urgent news
+            const urgentNews = data.news.filter(news => news.isUrgent === true);
+            console.log('Urgent news found:', urgentNews.length, urgentNews);
+            
+            if (urgentNews.length > 0) {
+                let newsHTML = '';
+                
+                urgentNews.forEach((news, index) => {
+                    const description = news.content.join(' ').replace(/\s+/g, ' ').trim();
+                    
+                    newsHTML += `
+                        <span class="news-item">
+                            <span class="news-title">${news.title}</span> - 
+                            <span class="news-description">${description}</span>
+                        </span>
+                    `;
+                });
+                
+                console.log('Setting news HTML:', newsHTML);
+                newsTicker.innerHTML = newsHTML;
+                
+                // Make sure the strip is visible
+                if (newsStrip) {
+                    newsStrip.style.display = 'flex';
+                    newsStrip.classList.add('blink');
+                    
+                    setTimeout(() => {
+                        newsStrip.classList.remove('blink');
+                    }, 3000);
+                }
+                
+            } else {
+                console.log('No urgent news found, showing welcome message');
+                newsTicker.innerHTML = '<span class="news-item"><span class="news-title">Welcome</span> - <span class="news-description">Welcome to Shishu Vidya Pith Eng. Med. Hr. Sec School</span></span>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading news:', error);
+            console.log('Showing error message in ticker');
+            newsTicker.innerHTML = '<span class="news-item"><span class="news-title">News Loading Error</span> - <span class="news-description">Could not load news. Please check if news.json file exists.</span></span>';
+        });
+}
+
+// Try multiple ways to ensure the function runs
+console.log('Setting up event listeners...');
+
+// Method 1: DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - calling loadUrgentNews');
+    loadUrgentNews();
+});
+
+// Method 2: Window load (backup)
+window.addEventListener('load', function() {
+    console.log('Window loaded - calling loadUrgentNews as backup');
+    setTimeout(loadUrgentNews, 500);
+});
+
+// Method 3: Immediate execution with delay (another backup)
+setTimeout(function() {
+    console.log('Timeout method - calling loadUrgentNews');
+    loadUrgentNews();
+}, 1000);
+
+console.log('Script setup complete');
 </script>
 </body>
 </html>
