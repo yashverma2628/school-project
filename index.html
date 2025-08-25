@@ -1786,172 +1786,117 @@ function loadUrgentNewsData() {
         return;
     }
     
-    // Show initial loading message immediately
+    // Start with loading message immediately - it will scroll right to left
     scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">Loading Latest News...</span></span>';
     
-    // Show the banner immediately
+    // Show the banner and start scrolling immediately
     if (newsBanner) {
         newsBanner.style.display = 'flex';
     }
     
-    fetch('news.json')
-        .then(response => {
-            console.log('Fetch response:', response);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Urgent news data loaded successfully:', data);
-            
-            const urgentNewsItems = data.news.filter(news => news.isUrgent === true);
-            console.log('Urgent news items found:', urgentNewsItems.length, urgentNewsItems);
-            
-            if (urgentNewsItems.length > 0) {
-                let urgentNewsHTML = '';
+    // After 5 seconds, add the actual news content with a large gap
+    setTimeout(() => {
+        console.log('Adding news content after 5 seconds...');
+        
+        fetch('news.json')
+            .then(response => {
+                console.log('Fetch response:', response);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Urgent news data loaded successfully:', data);
                 
-                urgentNewsItems.forEach((newsItem, index) => {
-                    const newsDescription = newsItem.content.join(' ').replace(/\s+/g, ' ').trim();
-                    
-                    urgentNewsHTML += `
+                const urgentNewsItems = data.news.filter(news => news.isUrgent === true);
+                console.log('Urgent news items found:', urgentNewsItems.length, urgentNewsItems);
+                
+                let newsContentHTML = '';
+                
+                if (urgentNewsItems.length > 0) {
+                    urgentNewsItems.forEach((newsItem, index) => {
+                        const newsDescription = newsItem.content.join(' ').replace(/\s+/g, ' ').trim();
+                        
+                        newsContentHTML += `
+                            <span class="urgent-news-single">
+                                <span class="urgent-title">${newsItem.title}</span> - 
+                                <span class="urgent-description">${newsDescription}</span>
+                            </span>
+                        `;
+                        
+                        // Add separator between news items
+                        if (index < urgentNewsItems.length - 1) {
+                            newsContentHTML += '<span class="news-separator"> • • • </span>';
+                        }
+                    });
+                } else {
+                    // No urgent news, show welcome message
+                    newsContentHTML = `
                         <span class="urgent-news-single">
-                            <span class="urgent-title">${newsItem.title}</span> - 
-                            <span class="urgent-description">${newsDescription}</span>
+                            <span class="urgent-title">Welcome</span> - 
+                            <span class="urgent-description">Welcome to Shishu Vidya Pith Eng. Med. Hr. Sec School</span>
                         </span>
                     `;
-                    
-                    // Add spacing between news items for smooth scrolling
-                    if (index < urgentNewsItems.length - 1) {
-                        urgentNewsHTML += '<span class="news-separator"> • • • </span>';
-                    }
-                });
+                }
                 
-                console.log('News prepared, will start sliding in after 10 seconds...');
+                // Create the complete scrolling content with large gap
+                const completeContent = `
+                    <span class="urgent-news-single">
+                        <span class="urgent-title">Loading Latest News...</span>
+                    </span>
+                    <span class="large-gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    ${newsContentHTML}
+                `;
                 
-                // 10 SECOND DELAY BEFORE NEWS STARTS SLIDING IN
-                setTimeout(() => {
-                    console.log('Starting news slide-in animation now!');
-                    
-                    // Create a new element that will slide in from the right
-                    const newContent = document.createElement('div');
-                    newContent.innerHTML = urgentNewsHTML;
-                    newContent.style.position = 'absolute';
-                    newContent.style.top = '0';
-                    newContent.style.left = '100%'; // Start from right side (outside screen)
-                    newContent.style.whiteSpace = 'nowrap';
-                    newContent.style.transition = 'left 2s ease-in-out'; // Smooth slide transition
-                    newContent.className = 'sliding-news-content';
-                    
-                    // Position the container relatively to allow absolute positioning
-                    scrollingText.style.position = 'relative';
-                    scrollingText.style.overflow = 'hidden';
-                    
-                    // Add the new content to the container
-                    scrollingText.appendChild(newContent);
-                    
-                    // Trigger the slide-in animation after a brief moment
+                // Update the scrolling text with complete content
+                scrollingText.innerHTML = completeContent;
+                
+                console.log('News content added to scrolling text');
+                
+                // Add blinking effect
+                if (newsBanner) {
+                    newsBanner.classList.add('urgent-blink');
                     setTimeout(() => {
-                        newContent.style.left = '0%'; // Slide to normal position
-                        
-                        // After slide-in completes, replace the content and start normal scrolling
-                        setTimeout(() => {
-                            scrollingText.innerHTML = urgentNewsHTML;
-                            scrollingText.style.position = ''; // Reset position
-                            scrollingText.style.overflow = ''; // Reset overflow
-                            
-                            // Start the continuous scrolling animation
-                            if (newsBanner) {
-                                newsBanner.classList.add('urgent-blink');
-                                setTimeout(() => {
-                                    newsBanner.classList.remove('urgent-blink');
-                                }, 3000);
-                            }
-                            
-                            console.log('News slide-in complete, normal scrolling started');
-                        }, 2000); // Wait for slide-in transition to complete
-                    }, 100);
-                    
-                }, 10000); // 10 second delay (10000 milliseconds)
+                        newsBanner.classList.remove('urgent-blink');
+                    }, 3000);
+                }
                 
-            } else {
-                console.log('No urgent news found, will show welcome message after 10 seconds');
+            })
+            .catch(error => {
+                console.error('Error loading urgent news:', error);
                 
-                setTimeout(() => {
-                    const welcomeHTML = '<span class="urgent-news-single"><span class="urgent-title">Welcome</span> - <span class="urgent-description">Welcome to Shishu Vidya Pith Eng. Med. Hr. Sec School</span></span>';
-                    
-                    // Create sliding welcome message
-                    const newContent = document.createElement('div');
-                    newContent.innerHTML = welcomeHTML;
-                    newContent.style.position = 'absolute';
-                    newContent.style.top = '0';
-                    newContent.style.left = '100%';
-                    newContent.style.whiteSpace = 'nowrap';
-                    newContent.style.transition = 'left 2s ease-in-out';
-                    
-                    scrollingText.style.position = 'relative';
-                    scrollingText.style.overflow = 'hidden';
-                    scrollingText.appendChild(newContent);
-                    
-                    setTimeout(() => {
-                        newContent.style.left = '0%';
-                        
-                        setTimeout(() => {
-                            scrollingText.innerHTML = welcomeHTML;
-                            scrollingText.style.position = '';
-                            scrollingText.style.overflow = '';
-                            console.log('Welcome message slide-in complete');
-                        }, 2000);
-                    }, 100);
-                    
-                }, 10000); // 10 second delay
-            }
-        })
-        .catch(error => {
-            console.error('Error loading urgent news:', error);
+                // Show error message with gap
+                const errorContent = `
+                    <span class="urgent-news-single">
+                        <span class="urgent-title">Loading Latest News...</span>
+                    </span>
+                    <span class="large-gap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <span class="urgent-news-single">
+                        <span class="urgent-title">News Loading Error</span> - 
+                        <span class="urgent-description">Could not load news. Please check if news.json file exists.</span>
+                    </span>
+                `;
+                
+                scrollingText.innerHTML = errorContent;
+            });
             
-            setTimeout(() => {
-                const errorHTML = '<span class="urgent-news-single"><span class="urgent-title">News Loading Error</span> - <span class="urgent-description">Could not load news. Please check if news.json file exists.</span></span>';
-                
-                // Create sliding error message
-                const newContent = document.createElement('div');
-                newContent.innerHTML = errorHTML;
-                newContent.style.position = 'absolute';
-                newContent.style.top = '0';
-                newContent.style.left = '100%';
-                newContent.style.whiteSpace = 'nowrap';
-                newContent.style.transition = 'left 2s ease-in-out';
-                
-                scrollingText.style.position = 'relative';
-                scrollingText.style.overflow = 'hidden';
-                scrollingText.appendChild(newContent);
-                
-                setTimeout(() => {
-                    newContent.style.left = '0%';
-                    
-                    setTimeout(() => {
-                        scrollingText.innerHTML = errorHTML;
-                        scrollingText.style.position = '';
-                        scrollingText.style.overflow = '';
-                        console.log('Error message slide-in complete');
-                    }, 2000);
-                }, 100);
-                
-            }, 10000); // 10 second delay
-        });
+    }, 5000); // 5 second delay before adding news content
 }
 
-// Event listeners remain the same
+// Event listeners - suitable for both desktop and mobile
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Content Loaded - calling loadUrgentNewsData');
     loadUrgentNewsData();
 });
 
+// Additional mobile-friendly event listener
 window.addEventListener('load', function() {
     console.log('Window loaded - calling loadUrgentNewsData as backup');
     setTimeout(loadUrgentNewsData, 500);
 });
 
+// Fallback for slower connections (mobile-friendly)
 setTimeout(function() {
     console.log('Timeout method - calling loadUrgentNewsData');
     loadUrgentNewsData();
