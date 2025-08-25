@@ -1768,7 +1768,7 @@ async function loadUrgentNews() {
 // Load news when page loads
 document.addEventListener('DOMContentLoaded', loadUrgentNews);
 </script>
-    <!-- Place this JavaScript code RIGHT BEFORE the closing </body> tag -->
+ 
 <script>
 console.log('Urgent news script is loading...');
 
@@ -1778,13 +1778,16 @@ function loadUrgentNewsData() {
     const scrollingText = document.getElementById('scrollingNewsText');
     const newsBanner = document.getElementById('urgentNewsBanner');
     
-    console.log('scrollingNewsText element:', scrollingText);
+    console.log('scrollingText element:', scrollingText);
     console.log('urgentNewsBanner element:', newsBanner);
     
     if (!scrollingText) {
         console.error('scrollingNewsText element not found!');
         return;
     }
+    
+    // Show initial loading message
+    scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">Loading Latest News...</span></span>';
     
     fetch('news.json')
         .then(response => {
@@ -1814,29 +1817,51 @@ function loadUrgentNewsData() {
                     `;
                 });
                 
-                console.log('Setting urgent news HTML:', urgentNewsHTML);
-                scrollingText.innerHTML = urgentNewsHTML;
+                console.log('News prepared, showing after 5 second delay...');
                 
-                if (newsBanner) {
-                    newsBanner.style.display = 'flex';
-                    newsBanner.classList.add('urgent-blink');
+                // 5 SECOND DELAY BEFORE SHOWING NEWS
+                setTimeout(() => {
+                    console.log('Setting urgent news HTML:', urgentNewsHTML);
+                    scrollingText.innerHTML = urgentNewsHTML;
                     
-                    setTimeout(() => {
-                        newsBanner.classList.remove('urgent-blink');
-                    }, 3000);
-                }
+                    if (newsBanner) {
+                        newsBanner.style.display = 'flex';
+                        newsBanner.classList.add('urgent-blink');
+                        
+                        setTimeout(() => {
+                            newsBanner.classList.remove('urgent-blink');
+                        }, 3000);
+                    }
+                }, 5000); // 5 second delay (5000 milliseconds)
                 
             } else {
-                console.log('No urgent news found, showing welcome message');
-                scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">Welcome</span> - <span class="urgent-description">Welcome to Shishu Vidya Pith Eng. Med. Hr. Sec School</span></span>';
+                console.log('No urgent news found, showing welcome message after delay');
+                
+                // Also apply 5 second delay for welcome message
+                setTimeout(() => {
+                    scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">Welcome</span> - <span class="urgent-description">Welcome to Shishu Vidya Pith Eng. Med. Hr. Sec School</span></span>';
+                    
+                    if (newsBanner) {
+                        newsBanner.style.display = 'flex';
+                    }
+                }, 5000); // 5 second delay
             }
         })
         .catch(error => {
             console.error('Error loading urgent news:', error);
-            scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">News Loading Error</span> - <span class="urgent-description">Could not load news. Please check if news.json file exists.</span></span>';
+            
+            // Show error message after delay too
+            setTimeout(() => {
+                scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">News Loading Error</span> - <span class="urgent-description">Could not load news. Please check if news.json file exists.</span></span>';
+                
+                if (newsBanner) {
+                    newsBanner.style.display = 'flex';
+                }
+            }, 5000); // 5 second delay
         });
 }
 
+// Event listeners remain the same
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM Content Loaded - calling loadUrgentNewsData');
     loadUrgentNewsData();
