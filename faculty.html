@@ -7,40 +7,28 @@
     <link rel="stylesheet" href="schoolstyle.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Segoe+UI:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Main page styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
+        /* Additional styles specific to faculty page */
         .page-header {
             text-align: center;
             margin-bottom: 40px;
-            color: white;
+            color:#8ebbff;
             padding: 40px 0;
-            background: rgba(255, 255, 255, 0.1);
+            background: #2c5aa0;
             border-radius: 15px;
             backdrop-filter: blur(10px);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            margin-top: 10%;
+            margin-top: 120px;
         }
 
         .page-header h1 {
             font-size: 3rem;
             margin: 0 0 10px 0;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+            color: #ffffff;
         }
 
         .page-header p {
@@ -63,6 +51,14 @@
             border-radius: 15px;
             text-align: center;
             backdrop-filter: blur(5px);
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         .stat-number {
@@ -86,29 +82,29 @@
         .faculty-card {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition-smooth);
             overflow: hidden;
             position: relative;
             animation: fadeInUp 0.6s ease forwards;
             opacity: 0;
             transform: translateY(30px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .faculty-card.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .faculty-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            box-shadow: var(--shadow-strong);
+            border-color: var(--primary-color);
         }
 
         .card-header {
-            background: linear-gradient(135deg, #926bf6,  #a06beb);
+            background: var(--gradient-primary);
             color: white;
             padding: 20px;
             text-align: center;
@@ -141,7 +137,8 @@
             margin-bottom: 15px;
             position: relative;
             z-index: 1;
-            transition: transform 0.3s ease;
+            transition: var(--transition-smooth);
+            background: #f0f0f0;
         }
 
         .teacher-image:hover {
@@ -206,13 +203,13 @@
         }
 
         .subject-tag {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--gradient-primary);
             color: white;
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 500;
-            transition: transform 0.2s ease;
+            transition: var(--transition-smooth);
         }
 
         .subject-tag:hover {
@@ -230,6 +227,7 @@
             display: inline-block;
             position: relative;
             overflow: hidden;
+            transition: var(--transition-smooth);
         }
 
         .experience-badge::before {
@@ -274,7 +272,7 @@
         }
 
         .error {
-            background: linear-gradient(135deg, #ff6b6b, #ff5252);
+            background: var(--gradient-secondary);
             color: white;
             padding: 20px;
             border-radius: 15px;
@@ -293,7 +291,7 @@
             margin-top: 15px;
             font-size: 1rem;
             font-weight: bold;
-            transition: all 0.3s ease;
+            transition: var(--transition-smooth);
         }
 
         .retry-btn:hover {
@@ -317,15 +315,18 @@
             padding: 10px 20px;
             border-radius: 25px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: var(--transition-smooth);
             backdrop-filter: blur(5px);
+            font-weight: 500;
         }
 
         .filter-btn:hover,
         .filter-btn.active {
             background: white;
-            color: #667eea;
+            color: var(--primary-color);
             border-color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
         }
 
         .no-results {
@@ -338,10 +339,45 @@
             backdrop-filter: blur(10px);
         }
 
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition-smooth);
+            z-index: 1000;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-strong);
+        }
+
+        /* Mobile responsiveness */
         @media (max-width: 768px) {
             .faculty-grid {
                 grid-template-columns: 1fr;
                 gap: 20px;
+            }
+            
+            .page-header {
+                margin-top: 100px;
             }
             
             .page-header h1 {
@@ -373,6 +409,40 @@
                 font-size: 0.9rem;
             }
         }
+
+        @media (max-width: 480px) {
+            .page-header {
+                margin-top: 90px;
+                padding: 30px 10px;
+            }
+
+            .faculty-stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .stat-item {
+                min-width: 120px;
+            }
+
+            .teacher-image {
+                width: 100px;
+                height: 100px;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+
+            .teacher-name {
+                font-size: 1.3rem;
+            }
+
+            .teacher-post {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -380,52 +450,49 @@
     <header class="header">
         <nav class="nav container">
             <div class="logo">
-                <!-- REPLACE src WITH YOUR SCHOOL LOGO IMAGE URL -->
                 <img src="https://res.cloudinary.com/dprxaeuwi/image/upload/v1752743031/exnulijckrfv5nurx10o.png" alt="School Logo">
                 <span>Shishu Vidya Pith</span>
             </div>
             
-<div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-</div>
-
+            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </div>
 
             <ul class="nav-menu">
                 <li><a onclick="scrollToSection('home')">Home</a></li>
                 <li><a onclick="scrollToSection('about')">About</a></li>
-                <li><a onclick="redirectToPage('loginpage.html')">login</a></li>
-                <li><a onclick="redirectToPage('faculty.html')">faculty</a></li>
-                <li><a onclick="redirectToPage('news.html')">news</a></li>
-               <li><a onclick="redirectToPage('commiteework.html')" class="active">commitee</a></li>
-                 <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
+                <li><a onclick="redirectToPage('loginpage.html')">Login</a></li>
+                <li><a onclick="redirectToPage('faculty.html')" class="active">Faculty</a></li>
+                <li><a onclick="redirectToPage('news.html')">News</a></li>
+                <li><a onclick="redirectToPage('commiteework.html')">Committee</a></li>
+                <li><a onclick="redirectToPage('gallery.html')">Gallery</a></li>
                 <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
             </ul>
         </nav>
         
-<div class="mobile-menu-overlay" id="mobileMenuOverlay">
-    <div class="mobile-menu-content">
-        <div class="mobile-menu-header">
-            <span class="mobile-menu-title">Menu</span>
-            <div class="mobile-menu-close" onclick="toggleMobileMenu()">
-              <span>&times;</span>
+        <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+            <div class="mobile-menu-content">
+                <div class="mobile-menu-header">
+                    <span class="mobile-menu-title">Menu</span>
+                    <div class="mobile-menu-close" onclick="toggleMobileMenu()">
+                        <span>&times;</span>
+                    </div>
+                </div>
+                <ul class="mobile-nav-menu">
+                    <li><a onclick="closeMobileMenuAndNavigate('home')">Home</a></li>
+                    <li><a onclick="closeMobileMenuAndNavigate('about')">About</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('loginpage.html')">Login</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('news.html')">News</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('faculty.html')">Faculty</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('commiteework.html')">Committee</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('gallery.html')">Gallery</a></li>
+                    <li><a onclick="closeMobileMenuAndRedirect('contact.html')">Contact</a></li>
+                </ul>
             </div>
         </div>
-        <ul class="mobile-nav-menu">
-            <li><a onclick="closeMobileMenuAndNavigate('home')">Home</a></li>
-            <li><a onclick="closeMobileMenuAndNavigate('about')">About</a></li>
-            <li><a onclick="closeMobileMenuAndRedirect('loginpage.html')">Login</a></li>
-            <li><a onclick="closeMobileMenuAndRedirect('news.html')">News</a></li>
-            <li><a onclick="closeMobileMenuAndRedirect('faculty.html')">faculty</a></li>
-            <li><a onclick="closeMobileMenuAndRedirect('clubs.html')">commitee</a></li>
-            <li><a onclick="closeMobileMenuAndRedirect('gallery.html?category=facilities')">Facilities</a></li>
-            <li><a onclick="closeMobileMenuAndRedirect('gallery.html')">Gallery</a></li>
-            <li><a onclick="closeMobileMenuAndRedirect('contact.html')">Contact</a></li>
-        </ul>
-    </div>
-</div>
-
+    </header>
 
     <div class="container">
         <div class="page-header">
@@ -471,6 +538,11 @@
         </div>
     </div>
 
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <script>
         // Global variables
         let allFacultyData = [];
@@ -506,6 +578,20 @@
                     "post": "Computer Science Teacher",
                     "subjects": ["Programming", "Web Development", "Data Science"],
                     "experience": "10 Years"
+                },
+                {
+                    "name": "Mrs. Kavita Mishra",
+                    "image": "https://via.placeholder.com/120x120/E91E63/white?text=KM",
+                    "post": "Hindi Teacher",
+                    "subjects": ["Hindi Literature", "Hindi Grammar", "Sanskrit"],
+                    "experience": "14 Years"
+                },
+                {
+                    "name": "Mr. Deepak Gupta",
+                    "image": "https://via.placeholder.com/120x120/795548/white?text=DG",
+                    "post": "Physical Education Teacher",
+                    "subjects": ["Physical Education", "Sports", "Yoga"],
+                    "experience": "8 Years"
                 }
             ]
         };
@@ -513,17 +599,23 @@
         // Mobile menu functions
         function toggleMobileMenu() {
             const overlay = document.getElementById('mobileMenuOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
             overlay.classList.toggle('active');
+            toggle.classList.toggle('active');
         }
 
         function closeMobileMenuAndNavigate(section) {
             toggleMobileMenu();
-            scrollToSection(section);
+            setTimeout(() => {
+                scrollToSection(section);
+            }, 400);
         }
 
         function closeMobileMenuAndRedirect(page) {
             toggleMobileMenu();
-            redirectToPage(page);
+            setTimeout(() => {
+                redirectToPage(page);
+            }, 400);
         }
 
         function scrollToSection(section) {
@@ -533,6 +625,24 @@
         function redirectToPage(page) {
             window.location.href = page;
         }
+
+        // Back to top functionality
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show/hide back to top button
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
 
         // Faculty data loading and display functions
         async function loadFacultyData() {
@@ -602,56 +712,77 @@
                 }, 0) / totalFaculty
             );
 
-            document.getElementById('totalFaculty').textContent = totalFaculty;
-            document.getElementById('avgExperience').textContent = avgExperience + ' Yrs';
-            document.getElementById('totalSubjects').textContent = totalSubjects;
+            // Animate the numbers
+            animateNumber('totalFaculty', totalFaculty);
+            animateNumber('avgExperience', avgExperience, ' Yrs');
+            animateNumber('totalSubjects', totalSubjects);
+        }
+
+        function animateNumber(elementId, finalValue, suffix = '') {
+            const element = document.getElementById(elementId);
+            let current = 0;
+            const increment = finalValue / 20;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= finalValue) {
+                    current = finalValue;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current) + suffix;
+            }, 50);
         }
 
         function createDepartmentFilters() {
             const departments = new Set();
             allFacultyData.forEach(teacher => {
                 if (teacher.post) {
-                    if (teacher.post.toLowerCase().includes('Mathematics') || teacher.post.toLowerCase().includes('Maths') || teacher.post.toLowerCase().includes('maths') || teacher.post.toLowerCase().includes('mathematics')) {
+                    const post = teacher.post.toLowerCase();
+                    if (post.includes('mathematics') || post.includes('maths')) {
                         departments.add('Mathematics');
-                    } else if (teacher.post.toLowerCase().includes('Science') || teacher.post.toLowerCase().includes('Physics') || teacher.post.toLowerCase().includes('Chemistry') || teacher.post.toLowerCase().includes('Biology') || teacher.post.toLowerCase().includes('physics') || teacher.post.toLowerCase().includes('chemistry') || teacher.post.toLowerCase().includes('biology')) {
+                    } else if (post.includes('science') || post.includes('physics') || post.includes('chemistry') || post.includes('biology')) {
                         departments.add('Science');
-                    } else if (teacher.post.toLowerCase().includes('English') || teacher.post.toLowerCase().includes('literature') || teacher.post.toLowerCase().includes('english')) {
+                    } else if (post.includes('english') || post.includes('literature')) {
                         departments.add('English');
-                    } else if (teacher.post.toLowerCase().includes('Hindi') || teacher.post.toLowerCase().includes('hindi') || teacher.post.toLowerCase().includes('Hindi ') || teacher.post.toLowerCase().includes('hindi ')) {
+                    } else if (post.includes('hindi')) {
                         departments.add('Hindi');
-                    } else if (teacher.post.toLowerCase().includes('Computer Application') || teacher.post.toLowerCase().includes('IP')) {
+                    } else if (post.includes('computer') || post.includes('ip')) {
                         departments.add('Computer');
-                          } else if (teacher.post.toLowerCase().includes('commerce') || teacher.post.toLowerCase().includes('Accounts') || teacher.post.toLowerCase().includes('Economics')) {
+                    } else if (post.includes('commerce') || post.includes('accounts') || post.includes('economics')) {
                         departments.add('Commerce');
-                         
-                    } else if (teacher.post.toLowerCase().includes('physical') || teacher.post.toLowerCase().includes('sports') || teacher.post.toLowerCase().includes('Yoga') || teacher.post.toLowerCase().includes('Karate') || teacher.post.toLowerCase().includes('Meditation')) {
+                    } else if (post.includes('physical') || post.includes('sports') || post.includes('yoga') || post.includes('karate')) {
                         departments.add('Physical Education');
-                    } else if (teacher.post.toLowerCase().includes('ART') || teacher.post.toLowerCase().includes('CRAFT')) {
+                    } else if (post.includes('art') || post.includes('craft')) {
                         departments.add('Arts');
-                    } else if (teacher.post.toLowerCase().includes('social studies') || teacher.post.toLowerCase().includes('history') || teacher.post.toLowerCase().includes('geography') || teacher.post.toLowerCase().includes('SST') || teacher.post.toLowerCase().includes('EVS')) {
+                    } else if (post.includes('social') || post.includes('history') || post.includes('geography') || post.includes('sst') || post.includes('evs')) {
                         departments.add('Social Studies');
                     }
                 }
             });
 
             const filterContainer = document.getElementById('departmentFilter');
-            departments.forEach(dept => {
+            Array.from(departments).sort().forEach(dept => {
                 const btn = document.createElement('button');
                 btn.className = 'filter-btn';
                 btn.textContent = dept;
-                btn.onclick = () => filterByDepartment(dept.toLowerCase());
+                btn.onclick = (e) => filterByDepartment(dept.toLowerCase(), e.target);
                 filterContainer.appendChild(btn);
             });
         }
 
-        function filterByDepartment(department) {
+        function filterByDepartment(department, buttonElement) {
             currentFilter = department;
             
             // Update active button
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            } else {
+                // For "All Faculty" button
+                document.querySelector('.filter-btn').classList.add('active');
+            }
 
             // Filter and display faculty
             let filteredData = allFacultyData;
@@ -682,17 +813,21 @@
             facultyArray.forEach((teacher, index) => {
                 const card = createFacultyCard(teacher, index);
                 grid.appendChild(card);
+                
+                // Animate card appearance
+                setTimeout(() => {
+                    card.classList.add('show');
+                }, index * 100);
             });
         }
 
         function createFacultyCard(teacher, index) {
             const card = document.createElement('div');
             card.className = 'faculty-card';
-            card.style.animationDelay = `${index * 0.1}s`;
 
             // Ensure all required fields have default values
             const name = teacher.name || 'Unknown Teacher';
-            const image = teacher.image || `https://via.placeholder.com/120x120/666/white?text=${name.charAt(0)}`;
+            const image = teacher.image || `https://via.placeholder.com/120x120/667eea/white?text=${name.charAt(0)}`;
             const post = teacher.post || 'Teacher';
             const subjects = Array.isArray(teacher.subjects) ? teacher.subjects : ['General'];
             const experience = teacher.experience || 'Not specified';
@@ -704,7 +839,7 @@
             card.innerHTML = `
                 <div class="card-header">
                     <img src="${image}" alt="${name}" class="teacher-image" 
-                         onerror="this.src='https://via.placeholder.com/120x120/666/white?text=${name.charAt(0)}'">
+                         onerror="this.src='https://via.placeholder.com/120x120/667eea/white?text=${name.charAt(0)}'">
                     <h3 class="teacher-name">${name}</h3>
                     <p class="teacher-post">${post}</p>
                 </div>
@@ -731,16 +866,77 @@
             return card;
         }
 
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobileMenuOverlay');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (mobileMenu.classList.contains('active') && 
+                !mobileMenu.contains(event.target) && 
+                !toggle.contains(event.target)) {
+                toggleMobileMenu();
+            }
+        });
+
         // Load faculty data when page loads
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Page loaded, starting faculty data load...');
             loadFacultyData();
         });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Add smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading animation to faculty cards
+        function showFacultyCards() {
+            const cards = document.querySelectorAll('.faculty-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // Initialize AOS (Animate On Scroll) alternative
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            // Observe all faculty cards
+            document.querySelectorAll('.faculty-card').forEach(card => {
+                observer.observe(card);
+            });
+        }
     </script>
 </body>
 </html>
-
-
-
-
-
