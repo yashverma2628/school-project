@@ -1819,45 +1819,77 @@ function loadUrgentNewsData() {
                 
                 console.log('News prepared, showing after 5 second delay...');
                 
-                // 5 SECOND DELAY BEFORE SHOWING NEWS
+                // 5 SECOND DELAY BEFORE SHOWING NEWS CONTENT
                 setTimeout(() => {
                     console.log('Setting urgent news HTML:', urgentNewsHTML);
                     scrollingText.innerHTML = urgentNewsHTML;
                     
                     if (newsBanner) {
                         newsBanner.style.display = 'flex';
+                        // Initially pause the animation
+                        newsBanner.style.animationPlayState = 'paused';
+                        scrollingText.style.animationPlayState = 'paused';
+                        
                         newsBanner.classList.add('urgent-blink');
                         
                         setTimeout(() => {
                             newsBanner.classList.remove('urgent-blink');
                         }, 3000);
+                        
+                        // Start the scrolling animation after additional 5 seconds
+                        console.log('Starting scrolling animation after 5 more seconds...');
+                        setTimeout(() => {
+                            console.log('Activating scrolling animation now!');
+                            newsBanner.style.animationPlayState = 'running';
+                            scrollingText.style.animationPlayState = 'running';
+                        }, 5000); // Additional 5 second delay for animation start
                     }
-                }, 5000); // 5 second delay (5000 milliseconds)
+                }, 5000); // Initial 5 second delay (5000 milliseconds)
                 
             } else {
                 console.log('No urgent news found, showing welcome message after delay');
                 
-                // Also apply 5 second delay for welcome message
+                // Also apply delays for welcome message
                 setTimeout(() => {
                     scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">Welcome</span> - <span class="urgent-description">Welcome to Shishu Vidya Pith Eng. Med. Hr. Sec School</span></span>';
                     
                     if (newsBanner) {
                         newsBanner.style.display = 'flex';
+                        // Initially pause the animation
+                        newsBanner.style.animationPlayState = 'paused';
+                        scrollingText.style.animationPlayState = 'paused';
+                        
+                        // Start the scrolling animation after additional 5 seconds
+                        setTimeout(() => {
+                            console.log('Activating welcome message scrolling animation!');
+                            newsBanner.style.animationPlayState = 'running';
+                            scrollingText.style.animationPlayState = 'running';
+                        }, 5000); // Additional 5 second delay for animation start
                     }
-                }, 5000); // 5 second delay
+                }, 5000); // Initial 5 second delay
             }
         })
         .catch(error => {
             console.error('Error loading urgent news:', error);
             
-            // Show error message after delay too
+            // Show error message after delays too
             setTimeout(() => {
                 scrollingText.innerHTML = '<span class="urgent-news-single"><span class="urgent-title">News Loading Error</span> - <span class="urgent-description">Could not load news. Please check if news.json file exists.</span></span>';
                 
                 if (newsBanner) {
                     newsBanner.style.display = 'flex';
+                    // Initially pause the animation
+                    newsBanner.style.animationPlayState = 'paused';
+                    scrollingText.style.animationPlayState = 'paused';
+                    
+                    // Start the scrolling animation after additional 5 seconds
+                    setTimeout(() => {
+                        console.log('Activating error message scrolling animation!');
+                        newsBanner.style.animationPlayState = 'running';
+                        scrollingText.style.animationPlayState = 'running';
+                    }, 5000); // Additional 5 second delay for animation start
                 }
-            }, 5000); // 5 second delay
+            }, 5000); // Initial 5 second delay
         });
 }
 
