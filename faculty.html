@@ -380,49 +380,52 @@
     <header class="header">
         <nav class="nav container">
             <div class="logo">
-                <img src="https://github.com/yashverma2628/school-project/blob/main/Picsart_25-06-04_10-53-12-323.png?raw=true" alt="School Logo">
+                <!-- REPLACE src WITH YOUR SCHOOL LOGO IMAGE URL -->
+                <img src="https://res.cloudinary.com/dprxaeuwi/image/upload/v1752743031/exnulijckrfv5nurx10o.png" alt="School Logo">
                 <span>Shishu Vidya Pith</span>
             </div>
             
-            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </div>
+<div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+</div>
+
 
             <ul class="nav-menu">
                 <li><a onclick="scrollToSection('home')">Home</a></li>
                 <li><a onclick="scrollToSection('about')">About</a></li>
-                <li><a onclick="redirectToPage('faculty.html')" class="active">Faculty</a></li>
-                <li><a onclick="redirectToPage('loginpage.html')">Login</a></li>
-                <li><a onclick="redirectToPage('news.html')">News</a></li>
-                <li><a onclick="redirectToPage('gallery.html?category=facilities')">Facilities</a></li>
-                <li><a onclick="redirectToPage('gallery.html')">Gallery</a></li>
+                <li><a onclick="redirectToPage('loginpage.html')">login</a></li>
+                <li><a onclick="redirectToPage('faculty.html')">faculty</a></li>
+                <li><a onclick="redirectToPage('news.html')">news</a></li>
+               <li><a onclick="redirectToPage('commiteework.html')" class="active">commitee</a></li>
+                 <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
                 <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
             </ul>
         </nav>
         
-        <div class="mobile-menu-overlay" id="mobileMenuOverlay">
-            <div class="mobile-menu-content">
-                <div class="mobile-menu-header">
-                    <span class="mobile-menu-title">Menu</span>
-                    <div class="mobile-menu-close" onclick="toggleMobileMenu()">
-                      <span>&times;</span>
-                    </div>
-                </div>
-                <ul class="mobile-nav-menu">
-                    <li><a onclick="closeMobileMenuAndNavigate('home')">Home</a></li>
-                    <li><a onclick="closeMobileMenuAndNavigate('about')">About</a></li>
-                    <li><a onclick="closeMobileMenuAndRedirect('faculty.html')">Faculty</a></li>
-                    <li><a onclick="closeMobileMenuAndRedirect('loginpage.html')">Login</a></li>
-                    <li><a onclick="closeMobileMenuAndRedirect('news.html')">News</a></li>
-                    <li><a onclick="closeMobileMenuAndRedirect('gallery.html?category=facilities')">Facilities</a></li>
-                    <li><a onclick="closeMobileMenuAndRedirect('gallery.html')">Gallery</a></li>
-                    <li><a onclick="closeMobileMenuAndRedirect('contact.html')">Contact</a></li>
-                </ul>
+<div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <div class="mobile-menu-content">
+        <div class="mobile-menu-header">
+            <span class="mobile-menu-title">Menu</span>
+            <div class="mobile-menu-close" onclick="toggleMobileMenu()">
+              <span>&times;</span>
             </div>
         </div>
-    </header>
+        <ul class="mobile-nav-menu">
+            <li><a onclick="closeMobileMenuAndNavigate('home')">Home</a></li>
+            <li><a onclick="closeMobileMenuAndNavigate('about')">About</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('loginpage.html')">Login</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('news.html')">News</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('faculty.html')">faculty</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('clubs.html')">commitee</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('gallery.html?category=facilities')">Facilities</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('gallery.html')">Gallery</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('contact.html')">Contact</a></li>
+        </ul>
+    </div>
+</div>
+
 
     <div class="container">
         <div class="page-header">
@@ -736,6 +739,7 @@
     </script>
 </body>
 </html>
+
 
 
 
