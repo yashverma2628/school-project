@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>School Gallery</title>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link rel="stylesheet" href="schoolstyle.css">  
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -14,7 +19,8 @@
         .gallery-container { 
             max-width: 1200px; 
             margin: 0 auto; 
-            padding: 20px; 
+            padding: 20px;
+            padding-top: 100px; 
         }
         .gallery-header { 
             text-align: center; 
@@ -110,11 +116,68 @@
         }
     </style>
 </head>
+
 <body>
+
+      <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="logo">
+                <!-- REPLACE src WITH YOUR SCHOOL LOGO IMAGE URL -->
+                <img src="https://res.cloudinary.com/dprxaeuwi/image/upload/v1752743031/exnulijckrfv5nurx10o.png" alt="School Logo">
+                <span>Shishu Vidya Pith</span>
+            </div>
+            
+<div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+</div>
+
+
+            <ul class="nav-menu">
+                <li><a onclick="scrollToSection('home')">Home</a></li>
+                <li><a onclick="scrollToSection('about')">About</a></li>
+                <li><a onclick="redirectToPage('loginpage.html')">login</a></li>
+                <li><a onclick="redirectToPage('faculty.html')">faculty</a></li>
+                <li><a onclick="redirectToPage('news.html')">news</a></li>
+               <li><a onclick="redirectToPage('commiteework.html')" class="active">commitee</a></li>
+                 <li><a onclick="redirectToPage('gallery.html')">gallery</a></li>
+                <li><a onclick="redirectToPage('contact.html')">Contact</a></li>
+            </ul>
+        </nav>
+        
+<div class="mobile-menu-overlay" id="mobileMenuOverlay">
+    <div class="mobile-menu-content">
+        <div class="mobile-menu-header">
+            <span class="mobile-menu-title">Menu</span>
+            <div class="mobile-menu-close" onclick="toggleMobileMenu()">
+              <span>&times;</span>
+            </div>
+        </div>
+        <ul class="mobile-nav-menu">
+            <li><a onclick="closeMobileMenuAndNavigate('home')">Home</a></li>
+            <li><a onclick="closeMobileMenuAndNavigate('about')">About</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('loginpage.html')">Login</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('news.html')">News</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('faculty.html')">faculty</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('clubs.html')">commitee</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('gallery.html?category=facilities')">Facilities</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('gallery.html')">Gallery</a></li>
+            <li><a onclick="closeMobileMenuAndRedirect('contact.html')">Contact</a></li>
+        </ul>
+    </div>
+</div>
+
+
+
+    </header>
+
+
     <div class="gallery-container">
         <div class="gallery-header">
             <h1>🎓 School Gallery</h1>
-            <p>Capturing memories and moments - Showing images from position 7 onwards</p>
+            <p>Capturing memories and moments </p>
         </div>
         
         <div id="loading" class="loading">
@@ -202,6 +265,60 @@
 
         // Load gallery when page loads
         document.addEventListener('DOMContentLoaded', loadGallery);
+
+
+        // Function to toggle mobile menu
+function toggleMobileMenu() {
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const hamburger = document.querySelector('.mobile-menu-toggle');
+    
+    if (overlay.classList.contains('active')) {
+        overlay.classList.remove('active');
+        hamburger.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    } else {
+        overlay.classList.add('active');
+        hamburger.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+// Function to close mobile menu and navigate to section
+function closeMobileMenuAndNavigate(sectionId) {
+    toggleMobileMenu();
+    setTimeout(() => {
+        scrollToSection(sectionId);
+    }, 300);
+}
+
+// Function to close mobile menu and redirect to page
+function closeMobileMenuAndRedirect(pageName) {
+    toggleMobileMenu();
+    setTimeout(() => {
+        redirectToPage(pageName);
+    }, 300);
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const menuContent = document.querySelector('.mobile-menu-content');
+    
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            toggleMobileMenu();
+        }
+    });
+    
+    // Close menu on window resize if screen becomes larger
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768 && overlay.classList.contains('active')) {
+            toggleMobileMenu();
+        }
+    });
+});
+
+
     </script>
 </body>
 </html>
