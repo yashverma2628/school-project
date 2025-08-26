@@ -609,21 +609,21 @@
         <!-- Header -->
         <div class="manager-header">
             <h1><i class="fas fa-images"></i> School Gallery Manager</h1>
-            <p>Manage your school's photo gallery - Images stored on Cloudinary & GitHub</p>
+            <p>Manage your school's photo gallery</p>
         </div>
 
         <!-- GitHub Token Section -->
         <div id="authSection" class="github-section">
-            <h2><i class="fas fa-key"></i> GitHub Authentication</h2>
+            <h2><i class="fas fa-key"></i> Server Authentication</h2>
             <div class="token-input-group">
-                <input type="password" id="githubToken" class="token-input" placeholder="Enter your GitHub Personal Access Token">
+                <input type="password" id="githubToken" class="token-input" placeholder="Enter your Master Key">
                 <button onclick="authenticateGitHub()" class="btn btn-primary">
-                    <i class="fas fa-link"></i> Connect to GitHub
+                    <i class="fas fa-link"></i> Connect to Server
                 </button>
             </div>
             <p style="color: rgba(255, 255, 255, 0.8); font-size: 14px; margin-top: 10px;">
-                💡 Your token is stored locally and used to manage gallery.json in your GitHub repository.
-                <br><strong>Required permissions:</strong> Contents (read/write) and Metadata (read)
+                
+                <br><strong>don't try to enter wrong password!!!</strong>
             </p>
         </div>
 
@@ -1604,5 +1604,6 @@ ${galleryData.images.map(image => `
 </style>`;
 }
 </script> </body> </html>
+
 
 
