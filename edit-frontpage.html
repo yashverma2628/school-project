@@ -584,31 +584,30 @@
     <div id="authSection" class="auth-section">
         <div class="auth-header">
             <h1><i class="fas fa-graduation-cap"></i> Student Editor</h1>
-            <p>Connect to GitHub to manage your school's student showcase</p>
+            <p>Connect to server to manage your school's student showcase</p>
         </div>
         
         <div class="auth-form">
             <div class="form-group">
                 <label for="githubToken">
-                    <i class="fab fa-github"></i> GitHub Personal Access Token
+                    <i class="fab fa-github"></i>Enter Master Key
                 </label>
                 <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required>
                 <small style="color: #666; margin-top: 5px; display: block;">
                     <i class="fas fa-info-circle"></i> 
-                    Need a token? Go to GitHub Settings → Developer Settings → Personal Access Tokens → Generate new token
-                    <br>Required permissions: Contents, Metadata
+                   
                 </small>
             </div>
             
             <button onclick="authenticateGitHub()" class="btn btn-primary">
-                <i class="fas fa-key"></i> Connect to GitHub
+                <i class="fas fa-key"></i> Connect to Server
             </button>
         </div>
         
         <div id="statusMessage" class="status-message" style="display: none;"></div>
         <div id="loadingIndicator" class="loading-indicator">
             <div class="loading-spinner"></div>
-            <p>Connecting to GitHub...</p>
+            <p>Connecting to Server...</p>
         </div>
     </div>
 
@@ -1593,5 +1592,6 @@ function generateStudentHTMLExport() {
     </script> 
         </body> 
         </html>
+
 
 
