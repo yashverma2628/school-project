@@ -544,399 +544,489 @@
     </button>
 
     <script>
-        // Global variables
-        let allFacultyData = [];
-        let currentFilter = 'all';
+     // Global variables
+let allFacultyData = [];
+let currentFilter = 'all';
 
-        // Sample faculty data as fallback
-        const sampleFacultyData = {
-            "faculty": [
-                {
-                    "name": "Dr. Priya Sharma",
-                    "image": "https://via.placeholder.com/120x120/4CAF50/white?text=PS",
-                    "post": "Principal & Senior Mathematics Teacher",
-                    "subjects": ["Advanced Mathematics", "Calculus", "Statistics", "Algebra"],
-                    "experience": "18 Years"
-                },
-                {
-                    "name": "Mr. Rajesh Kumar",
-                    "image": "https://via.placeholder.com/120x120/2196F3/white?text=RK",
-                    "post": "Head of Science Department",
-                    "subjects": ["Physics", "Chemistry", "Environmental Science"],
-                    "experience": "15 Years"
-                },
-                {
-                    "name": "Ms. Sunita Verma",
-                    "image": "https://via.placeholder.com/120x120/FF9800/white?text=SV",
-                    "post": "English Literature Teacher",
-                    "subjects": ["English Literature", "Creative Writing", "Grammar"],
-                    "experience": "12 Years"
-                },
-                {
-                    "name": "Mr. Amit Singh",
-                    "image": "https://via.placeholder.com/120x120/9C27B0/white?text=AS",
-                    "post": "Computer Science Teacher",
-                    "subjects": ["Programming", "Web Development", "Data Science"],
-                    "experience": "10 Years"
-                },
-                {
-                    "name": "Mrs. Kavita Mishra",
-                    "image": "https://via.placeholder.com/120x120/E91E63/white?text=KM",
-                    "post": "Hindi Teacher",
-                    "subjects": ["Hindi Literature", "Hindi Grammar", "Sanskrit"],
-                    "experience": "14 Years"
-                },
-                {
-                    "name": "Mr. Deepak Gupta",
-                    "image": "https://via.placeholder.com/120x120/795548/white?text=DG",
-                    "post": "Physical Education Teacher",
-                    "subjects": ["Physical Education", "Sports", "Yoga"],
-                    "experience": "8 Years"
-                }
-            ]
-        };
+// Default image URL for missing/broken images
+const DEFAULT_IMAGE_URL = 'https://res.cloudinary.com/dprxaeuwi/image/upload/v1756392838/gxwr6dansepghtpcvdft.jpg';
 
-        // Mobile menu functions
-        function toggleMobileMenu() {
-            const overlay = document.getElementById('mobileMenuOverlay');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            overlay.classList.toggle('active');
-            toggle.classList.toggle('active');
+// Cache for processed image URLs to avoid repeated checks
+const imageCache = new Map();
+
+// Sample faculty data as fallback
+const sampleFacultyData = {
+    "faculty": [
+        {
+            "name": "Dr. Priya Sharma",
+            "image": "https://via.placeholder.com/120x120/4CAF50/white?text=PS",
+            "post": "Principal & Senior Mathematics Teacher",
+            "subjects": ["Advanced Mathematics", "Calculus", "Statistics", "Algebra"],
+            "experience": "18 Years"
+        },
+        {
+            "name": "Mr. Rajesh Kumar",
+            "image": "https://via.placeholder.com/120x120/2196F3/white?text=RK",
+            "post": "Head of Science Department",
+            "subjects": ["Physics", "Chemistry", "Environmental Science"],
+            "experience": "15 Years"
+        },
+        {
+            "name": "Ms. Sunita Verma",
+            "image": "https://via.placeholder.com/120x120/FF9800/white?text=SV",
+            "post": "English Literature Teacher",
+            "subjects": ["English Literature", "Creative Writing", "Grammar"],
+            "experience": "12 Years"
+        },
+        {
+            "name": "Mr. Amit Singh",
+            "image": "https://via.placeholder.com/120x120/9C27B0/white?text=AS",
+            "post": "Computer Science Teacher",
+            "subjects": ["Programming", "Web Development", "Data Science"],
+            "experience": "10 Years"
+        },
+        {
+            "name": "Mrs. Kavita Mishra",
+            "image": "https://via.placeholder.com/120x120/E91E63/white?text=KM",
+            "post": "Hindi Teacher",
+            "subjects": ["Hindi Literature", "Hindi Grammar", "Sanskrit"],
+            "experience": "14 Years"
+        },
+        {
+            "name": "Mr. Deepak Gupta",
+            "image": "https://via.placeholder.com/120x120/795548/white?text=DG",
+            "post": "Physical Education Teacher",
+            "subjects": ["Physical Education", "Sports", "Yoga"],
+            "experience": "8 Years"
         }
+    ]
+};
 
-        function closeMobileMenuAndNavigate(section) {
-            toggleMobileMenu();
-            setTimeout(() => {
-                scrollToSection(section);
-            }, 400);
+// Utility function to validate and process image URL
+function processImageUrl(imageUrl, teacherName) {
+    // Check cache first
+    if (imageCache.has(imageUrl)) {
+        return imageCache.get(imageUrl);
+    }
+
+    // If no image URL provided or empty, use default
+    if (!imageUrl || imageUrl.trim() === '') {
+        imageCache.set(imageUrl, DEFAULT_IMAGE_URL);
+        return DEFAULT_IMAGE_URL;
+    }
+
+    // Validate URL format
+    try {
+        new URL(imageUrl);
+        // Cache the valid URL
+        imageCache.set(imageUrl, imageUrl);
+        return imageUrl;
+    } catch (error) {
+        console.warn(`Invalid image URL for ${teacherName}: ${imageUrl}. Using default image.`);
+        imageCache.set(imageUrl, DEFAULT_IMAGE_URL);
+        return DEFAULT_IMAGE_URL;
+    }
+}
+
+// Optimized image error handler - prevents repeated loading attempts
+function handleImageError(imgElement, teacherName) {
+    // Prevent infinite loop by checking if already using default
+    if (imgElement.src === DEFAULT_IMAGE_URL) {
+        console.warn(`Default image also failed to load for ${teacherName}`);
+        return;
+    }
+
+    console.warn(`Image failed to load for ${teacherName}, switching to default`);
+    
+    // Remove the error handler to prevent repeated calls
+    imgElement.onerror = null;
+    
+    // Set to default image
+    imgElement.src = DEFAULT_IMAGE_URL;
+    
+    // Update cache to prevent future attempts with the failed URL
+    const originalSrc = imgElement.dataset.originalSrc;
+    if (originalSrc) {
+        imageCache.set(originalSrc, DEFAULT_IMAGE_URL);
+    }
+}
+
+// Mobile menu functions
+function toggleMobileMenu() {
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    if (overlay && toggle) {
+        overlay.classList.toggle('active');
+        toggle.classList.toggle('active');
+    }
+}
+
+function closeMobileMenuAndNavigate(section) {
+    toggleMobileMenu();
+    setTimeout(() => {
+        scrollToSection(section);
+    }, 400);
+}
+
+function closeMobileMenuAndRedirect(page) {
+    toggleMobileMenu();
+    setTimeout(() => {
+        redirectToPage(page);
+    }, 400);
+}
+
+function scrollToSection(section) {
+    window.location.href = `index.html#${section}`;
+}
+
+function redirectToPage(page) {
+    window.location.href = page;
+}
+
+// Back to top functionality
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+// Show/hide back to top button
+window.addEventListener('scroll', function() {
+    const backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+        if (window.scrollY > 300) {
+            backToTop.classList.add('show');
+        } else {
+            backToTop.classList.remove('show');
         }
+    }
+});
 
-        function closeMobileMenuAndRedirect(page) {
-            toggleMobileMenu();
-            setTimeout(() => {
-                redirectToPage(page);
-            }, 400);
+// Faculty data loading and display functions
+async function loadFacultyData() {
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
+    const gridEl = document.getElementById('facultyGrid');
+    const noResultsEl = document.getElementById('noResults');
+
+    // Show loading, hide others
+    if (loadingEl) loadingEl.style.display = 'block';
+    if (errorEl) errorEl.style.display = 'none';
+    if (gridEl) gridEl.innerHTML = '';
+    if (noResultsEl) noResultsEl.style.display = 'none';
+
+    try {
+        console.log('Attempting to load faculty.json...');
+        
+        const response = await fetch('./faculty.json');
+        
+        if (!response.ok) {
+            throw new Error(`Failed to load faculty.json (Status: ${response.status})`);
         }
-
-        function scrollToSection(section) {
-            window.location.href = `index.html#${section}`;
+        
+        const data = await response.json();
+        console.log('Faculty data loaded successfully:', data);
+        
+        if (!data.faculty || !Array.isArray(data.faculty)) {
+            throw new Error('Invalid JSON format: "faculty" array not found');
         }
-
-        function redirectToPage(page) {
-            window.location.href = page;
-        }
-
-        // Back to top functionality
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        // Show/hide back to top button
-        window.addEventListener('scroll', function() {
-            const backToTop = document.getElementById('backToTop');
-            if (window.scrollY > 300) {
-                backToTop.classList.add('show');
-            } else {
-                backToTop.classList.remove('show');
-            }
-        });
-
-        // Faculty data loading and display functions
-        async function loadFacultyData() {
-            const loadingEl = document.getElementById('loading');
-            const errorEl = document.getElementById('error');
-            const gridEl = document.getElementById('facultyGrid');
-            const noResultsEl = document.getElementById('noResults');
-
-            // Show loading, hide others
-            loadingEl.style.display = 'block';
-            errorEl.style.display = 'none';
-            gridEl.innerHTML = '';
-            noResultsEl.style.display = 'none';
-
-            try {
-                console.log('Attempting to load faculty.json...');
-                
-                const response = await fetch('./faculty.json');
-                
-                if (!response.ok) {
-                    throw new Error(`Failed to load faculty.json (Status: ${response.status})`);
-                }
-                
-                const data = await response.json();
-                console.log('Faculty data loaded successfully:', data);
-                
-                if (!data.faculty || !Array.isArray(data.faculty)) {
-                    throw new Error('Invalid JSON format: "faculty" array not found');
-                }
-                
-                allFacultyData = data.faculty;
-                updateStats();
-                createDepartmentFilters();
-                displayFaculty(allFacultyData);
-                loadingEl.style.display = 'none';
-                
-            } catch (error) {
-                console.error('Error loading faculty data:', error);
-                
-                loadingEl.style.display = 'none';
-                errorEl.style.display = 'block';
-                document.getElementById('errorMessage').innerHTML = `
+        
+        allFacultyData = data.faculty;
+        updateStats();
+        createDepartmentFilters();
+        displayFaculty(allFacultyData);
+        if (loadingEl) loadingEl.style.display = 'none';
+        
+    } catch (error) {
+        console.error('Error loading faculty data:', error);
+        
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (errorEl) {
+            errorEl.style.display = 'block';
+            const errorMessageEl = document.getElementById('errorMessage');
+            if (errorMessageEl) {
+                errorMessageEl.innerHTML = `
                     <strong><i class="fas fa-exclamation-triangle"></i> Unable to load faculty.json file</strong><br>
                     Error: ${error.message}<br><br>
                     <em>Using sample data instead. Please ensure faculty.json is in the same directory as this HTML file.</em>
                 `;
-                
-                // Use sample data as fallback
-                setTimeout(() => {
-                    console.log('Loading sample data...');
-                    allFacultyData = sampleFacultyData.faculty;
-                    updateStats();
-                    createDepartmentFilters();
-                    displayFaculty(allFacultyData);
-                    errorEl.style.display = 'none';
-                }, 2000);
             }
         }
+        
+        // Use sample data as fallback
+        setTimeout(() => {
+            console.log('Loading sample data...');
+            allFacultyData = sampleFacultyData.faculty;
+            updateStats();
+            createDepartmentFilters();
+            displayFaculty(allFacultyData);
+            if (errorEl) errorEl.style.display = 'none';
+        }, 2000);
+    }
+}
 
-        function updateStats() {
-            const totalFaculty = allFacultyData.length;
-            const totalSubjects = new Set(allFacultyData.flatMap(teacher => teacher.subjects || [])).size;
-            const avgExperience = Math.round(
-                allFacultyData.reduce((sum, teacher) => {
-                    const exp = parseInt(teacher.experience) || 0;
-                    return sum + exp;
-                }, 0) / totalFaculty
-            );
+function updateStats() {
+    const totalFaculty = allFacultyData.length;
+    const totalSubjects = new Set(allFacultyData.flatMap(teacher => teacher.subjects || [])).size;
+    const avgExperience = Math.round(
+        allFacultyData.reduce((sum, teacher) => {
+            const exp = parseInt(teacher.experience) || 0;
+            return sum + exp;
+        }, 0) / totalFaculty
+    );
 
-            // Animate the numbers
-            animateNumber('totalFaculty', totalFaculty);
-            animateNumber('avgExperience', avgExperience, ' Yrs');
-            animateNumber('totalSubjects', totalSubjects);
+    // Animate the numbers
+    animateNumber('totalFaculty', totalFaculty);
+    animateNumber('avgExperience', avgExperience, ' Yrs');
+    animateNumber('totalSubjects', totalSubjects);
+}
+
+function animateNumber(elementId, finalValue, suffix = '') {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    let current = 0;
+    const increment = finalValue / 20;
+    const timer = setInterval(() => {
+        current += increment;
+        if (current >= finalValue) {
+            current = finalValue;
+            clearInterval(timer);
         }
+        element.textContent = Math.floor(current) + suffix;
+    }, 50);
+}
 
-        function animateNumber(elementId, finalValue, suffix = '') {
-            const element = document.getElementById(elementId);
-            let current = 0;
-            const increment = finalValue / 20;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= finalValue) {
-                    current = finalValue;
-                    clearInterval(timer);
-                }
-                element.textContent = Math.floor(current) + suffix;
-            }, 50);
-        }
-
-        function createDepartmentFilters() {
-            const departments = new Set();
-            allFacultyData.forEach(teacher => {
-                if (teacher.post) {
-                    const post = teacher.post.toLowerCase();
-                    if (post.includes('mathematics') || post.includes('maths')) {
-                        departments.add('Mathematics');
-                    } else if (post.includes('science') || post.includes('physics') || post.includes('chemistry') || post.includes('biology')) {
-                        departments.add('Science');
-                    } else if (post.includes('english') || post.includes('literature')) {
-                        departments.add('English');
-                    } else if (post.includes('hindi')) {
-                        departments.add('Hindi');
-                    } else if (post.includes('computer') || post.includes('ip')) {
-                        departments.add('Computer');
-                    } else if (post.includes('commerce') || post.includes('accounts') || post.includes('economics')) {
-                        departments.add('Commerce');
-                    } else if (post.includes('physical') || post.includes('sports') || post.includes('yoga') || post.includes('karate')) {
-                        departments.add('Physical Education');
-                    } else if (post.includes('art') || post.includes('craft')) {
-                        departments.add('Arts');
-                    } else if (post.includes('social') || post.includes('history') || post.includes('geography') || post.includes('sst') || post.includes('evs')) {
-                        departments.add('Social Studies');
-                    }
-                }
-            });
-
-            const filterContainer = document.getElementById('departmentFilter');
-            Array.from(departments).sort().forEach(dept => {
-                const btn = document.createElement('button');
-                btn.className = 'filter-btn';
-                btn.textContent = dept;
-                btn.onclick = (e) => filterByDepartment(dept.toLowerCase(), e.target);
-                filterContainer.appendChild(btn);
-            });
-        }
-
-        function filterByDepartment(department, buttonElement) {
-            currentFilter = department;
-            
-            // Update active button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            if (buttonElement) {
-                buttonElement.classList.add('active');
-            } else {
-                // For "All Faculty" button
-                document.querySelector('.filter-btn').classList.add('active');
+function createDepartmentFilters() {
+    const departments = new Set();
+    allFacultyData.forEach(teacher => {
+        if (teacher.post) {
+            const post = teacher.post.toLowerCase();
+            if (post.includes('mathematics') || post.includes('maths')) {
+                departments.add('Mathematics');
+            } else if (post.includes('science') || post.includes('physics') || post.includes('chemistry') || post.includes('biology')) {
+                departments.add('Science');
+            } else if (post.includes('english') || post.includes('literature')) {
+                departments.add('English');
+            } else if (post.includes('hindi')) {
+                departments.add('Hindi');
+            } else if (post.includes('computer') || post.includes('ip')) {
+                departments.add('Computer');
+            } else if (post.includes('commerce') || post.includes('accounts') || post.includes('economics')) {
+                departments.add('Commerce');
+            } else if (post.includes('physical') || post.includes('sports') || post.includes('yoga') || post.includes('karate')) {
+                departments.add('Physical Education');
+            } else if (post.includes('art') || post.includes('craft')) {
+                departments.add('Arts');
+            } else if (post.includes('social') || post.includes('history') || post.includes('geography') || post.includes('sst') || post.includes('evs')) {
+                departments.add('Social Studies');
             }
-
-            // Filter and display faculty
-            let filteredData = allFacultyData;
-            if (department !== 'all') {
-                filteredData = allFacultyData.filter(teacher => 
-                    teacher.post.toLowerCase().includes(department) ||
-                    (teacher.subjects && teacher.subjects.some(subject => 
-                        subject.toLowerCase().includes(department)
-                    ))
-                );
-            }
-
-            displayFaculty(filteredData);
         }
+    });
 
-        function displayFaculty(facultyArray) {
-            const grid = document.getElementById('facultyGrid');
-            const noResults = document.getElementById('noResults');
-            
-            grid.innerHTML = '';
-            noResults.style.display = 'none';
+    const filterContainer = document.getElementById('departmentFilter');
+    if (filterContainer) {
+        Array.from(departments).sort().forEach(dept => {
+            const btn = document.createElement('button');
+            btn.className = 'filter-btn';
+            btn.textContent = dept;
+            btn.onclick = (e) => filterByDepartment(dept.toLowerCase(), e.target);
+            filterContainer.appendChild(btn);
+        });
+    }
+}
 
-            if (!facultyArray || facultyArray.length === 0) {
-                noResults.style.display = 'block';
-                return;
-            }
+function filterByDepartment(department, buttonElement) {
+    currentFilter = department;
+    
+    // Update active button
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    if (buttonElement) {
+        buttonElement.classList.add('active');
+    } else {
+        // For "All Faculty" button
+        const firstBtn = document.querySelector('.filter-btn');
+        if (firstBtn) firstBtn.classList.add('active');
+    }
 
-            facultyArray.forEach((teacher, index) => {
-                const card = createFacultyCard(teacher, index);
-                grid.appendChild(card);
-                
-                // Animate card appearance
-                setTimeout(() => {
-                    card.classList.add('show');
-                }, index * 100);
-            });
-        }
+    // Filter and display faculty
+    let filteredData = allFacultyData;
+    if (department !== 'all') {
+        filteredData = allFacultyData.filter(teacher => 
+            teacher.post.toLowerCase().includes(department) ||
+            (teacher.subjects && teacher.subjects.some(subject => 
+                subject.toLowerCase().includes(department)
+            ))
+        );
+    }
 
-        function createFacultyCard(teacher, index) {
-            const card = document.createElement('div');
-            card.className = 'faculty-card';
+    displayFaculty(filteredData);
+}
 
-            // Ensure all required fields have default values
-            const name = teacher.name || 'Unknown Teacher';
-            const image = teacher.image || `https://via.placeholder.com/120x120/667eea/white?text=${name.charAt(0)}`;
-            const post = teacher.post || 'Teacher';
-            const subjects = Array.isArray(teacher.subjects) ? teacher.subjects : ['General'];
-            const experience = teacher.experience || 'Not specified';
+function displayFaculty(facultyArray) {
+    const grid = document.getElementById('facultyGrid');
+    const noResults = document.getElementById('noResults');
+    
+    if (!grid) return;
 
-            const subjectTags = subjects.map(subject => 
-                `<span class="subject-tag">${subject}</span>`
-            ).join('');
+    grid.innerHTML = '';
+    if (noResults) noResults.style.display = 'none';
 
-            card.innerHTML = `
-                <div class="card-header">
-                    <img src="${image}" alt="${name}" class="teacher-image" 
-                         onerror="this.src='https://via.placeholder.com/120x120/667eea/white?text=${name.charAt(0)}'">
-                    <h3 class="teacher-name">${name}</h3>
-                    <p class="teacher-post">${post}</p>
+    if (!facultyArray || facultyArray.length === 0) {
+        if (noResults) noResults.style.display = 'block';
+        return;
+    }
+
+    // Use DocumentFragment for better performance
+    const fragment = document.createDocumentFragment();
+
+    facultyArray.forEach((teacher, index) => {
+        const card = createFacultyCard(teacher, index);
+        fragment.appendChild(card);
+    });
+
+    grid.appendChild(fragment);
+
+    // Animate card appearance
+    const cards = grid.querySelectorAll('.faculty-card');
+    cards.forEach((card, index) => {
+        setTimeout(() => {
+            card.classList.add('show');
+        }, index * 100);
+    });
+}
+
+function createFacultyCard(teacher, index) {
+    const card = document.createElement('div');
+    card.className = 'faculty-card';
+
+    // Ensure all required fields have default values
+    const name = teacher.name || 'Unknown Teacher';
+    const post = teacher.post || 'Teacher';
+    const subjects = Array.isArray(teacher.subjects) ? teacher.subjects : ['General'];
+    const experience = teacher.experience || 'Not specified';
+
+    // Process image URL with caching and validation
+    const processedImageUrl = processImageUrl(teacher.image, name);
+
+    const subjectTags = subjects.map(subject => 
+        `<span class="subject-tag">${subject}</span>`
+    ).join('');
+
+    card.innerHTML = `
+        <div class="card-header">
+            <img src="${processedImageUrl}" 
+                 alt="${name}" 
+                 class="teacher-image" 
+                 data-original-src="${teacher.image || ''}"
+                 loading="lazy">
+            <h3 class="teacher-name">${name}</h3>
+            <p class="teacher-post">${post}</p>
+        </div>
+        <div class="card-body">
+            <div class="info-section">
+                <div class="info-label">
+                    <i class="fas fa-book"></i> Subjects
                 </div>
-                <div class="card-body">
-                    <div class="info-section">
-                        <div class="info-label">
-                            <i class="fas fa-book"></i> Subjects
-                        </div>
-                        <div class="subjects-list">
-                            ${subjectTags}
-                        </div>
-                    </div>
-                    <div class="info-section">
-                        <div class="info-label">
-                            <i class="fas fa-clock"></i> Experience
-                        </div>
-                        <div class="info-content">
-                            <span class="experience-badge">${experience}</span>
-                        </div>
-                    </div>
+                <div class="subjects-list">
+                    ${subjectTags}
                 </div>
-            `;
+            </div>
+            <div class="info-section">
+                <div class="info-label">
+                    <i class="fas fa-clock"></i> Experience
+                </div>
+                <div class="info-content">
+                    <span class="experience-badge">${experience}</span>
+                </div>
+            </div>
+        </div>
+    `;
 
-            return card;
+    // Add optimized error handler to the image
+    const img = card.querySelector('.teacher-image');
+    if (img && processedImageUrl !== DEFAULT_IMAGE_URL) {
+        img.onerror = () => handleImageError(img, name);
+    }
+
+    return card;
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const mobileMenu = document.getElementById('mobileMenuOverlay');
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    
+    if (mobileMenu && toggle && mobileMenu.classList.contains('active') && 
+        !mobileMenu.contains(event.target) && 
+        !toggle.contains(event.target)) {
+        toggleMobileMenu();
+    }
+});
+
+// Load faculty data when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, starting faculty data load...');
+    loadFacultyData();
+});
+
+// Header scroll effect
+window.addEventListener('scroll', function() {
+    const header = document.querySelector('.header');
+    if (header) {
+        if (window.scrollY > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
         }
+    }
+});
 
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            const mobileMenu = document.getElementById('mobileMenuOverlay');
-            const toggle = document.querySelector('.mobile-menu-toggle');
-            
-            if (mobileMenu.classList.contains('active') && 
-                !mobileMenu.contains(event.target) && 
-                !toggle.contains(event.target)) {
-                toggleMobileMenu();
-            }
-        });
-
-        // Load faculty data when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Page loaded, starting faculty data load...');
-            loadFacultyData();
-        });
-
-        // Header scroll effect
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Add smooth scrolling for internal links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add loading animation to faculty cards
-        function showFacultyCards() {
-            const cards = document.querySelectorAll('.faculty-card');
-            cards.forEach((card, index) => {
-                setTimeout(() => {
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
-        }
-
-        // Initialize AOS (Animate On Scroll) alternative
-        function initScrollAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate');
-                    }
+// Add smooth scrolling for internal links (moved to DOMContentLoaded)
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
+            }
+        });
+    });
+});
 
-            // Observe all faculty cards
-            document.querySelectorAll('.faculty-card').forEach(card => {
-                observer.observe(card);
-            });
-        }
+// Initialize scroll animations with Intersection Observer
+function initScrollAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    // Observe all faculty cards
+    document.querySelectorAll('.faculty-card').forEach(card => {
+        observer.observe(card);
+    });
+}
+
+// Clean up function to clear caches if needed
+function clearImageCache() {
+    imageCache.clear();
+    console.log('Image cache cleared');
+}
     </script>
 </body>
 </html>
+
