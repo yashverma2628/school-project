@@ -1,0 +1,172 @@
+{
+    "faculty": [
+        {
+            "name": "Neena Pramanick",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756400665/jhchbil4c1ozoj0x0yzu.jpg",
+            "post": "Principal",
+            "subjects": ["Chemistry"],
+            "experience": "32 years"
+        },
+        {
+            "name": "Shipra Sen",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756400744/lsaoanhlyfxtpv1dfpwh.jpg",
+            "post": "Vice Principal",
+            "subjects": ["Mathematics"],
+            "experience": "32 years"
+        },
+        {
+            "name": "Shilpi Banerjee",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756400774/f3ahdx1zasawfxsv28rf.jpg",
+            "post": "Assistant Teacher",
+            "subjects": ["Science"],
+            "experience": "37 years"
+        },
+        {
+            "name": "Neetu Mandal",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756400812/dylex66ismmanptrqqut.jpg",
+            "post": "Lecturer",
+            "subjects": ["Biology"],
+            "experience": "22 years"
+        },
+        {
+            "name": "Kusum Kushwaha",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756400869/vdh2ppzlpedopgeyvbdo.jpg",
+            "post": "Lecturer",
+            "subjects": ["Physics"],
+            "experience": "17 years"
+        },
+        {
+            "name": "Anil Tiwari",
+            "image": "",
+            "post": "Lecturer",
+            "subjects": ["Economics", "Mathematics"],
+            "experience": "29 years"
+        },
+        {
+            "name": "Mohit Mishra",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756400956/qjbvbos9cwujvmru9g00.jpg",
+            "post": "UDT",
+            "subjects": ["Sanskrit", "Social Science"],
+            "experience": "29 years"
+        },
+        {
+            "name": "Archna Choudhary",
+            "image": "",
+            "post": "Lecturer",
+            "subjects": ["Accounts", "Business Studies"],
+            "experience": "16 years"
+        },
+        {
+            "name": "Indra Dubey",
+            "image": "",
+            "post": "Lecturer",
+            "subjects": ["English"],
+            "experience": "15 years"
+        },
+        {
+            "name": "Mamta Lethi",
+            "image": "",
+            "post": "Lecturer",
+            "subjects": ["Political Science"],
+            "experience": "31 years"
+        },
+        {
+            "name": "Subarna Banerjee",
+            "image": "",
+            "post": "LDT",
+            "subjects": ["Mathematics"],
+            "experience": "28 years"
+        },
+        {
+            "name": "Sandhya Sharma",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401041/p0oehh4xphgouisafjch.jpg",
+            "post": "PTI",
+            "subjects": ["Hindi", "Social Science"],
+            "experience": "28 years"
+        },
+        {
+            "name": "Leena Saxena",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401067/n3ikxw01ymofbir49gzs.jpg",
+            "post": "LDT",
+            "subjects": ["Hindi"],
+            "experience": "17 years"
+        },
+        {
+            "name": "Vibha Verma",
+            "image": "",
+            "post": "LDT",
+            "subjects": [],
+            "experience": ""
+        },
+        {
+            "name": "Anju Thakur",
+            "image": "",
+            "post": "LDT",
+            "subjects": [],
+            "experience": ""
+        },
+        {
+            "name": "Reeta Puri",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401330/ebx0hb8gmot8zolxgg8s.jpg",
+            "post": "LDT",
+            "subjects": ["Hindi"],
+            "experience": "16 years"
+        },
+        {
+            "name": "Kanchan Thakur",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401397/dlfiogdutglrr718hpqo.jpg",
+            "post": "LDT",
+            "subjects": ["Hindi"],
+            "experience": "15 years"
+        },
+        {
+            "name": "Munmun som",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401543/wjolljci9oaoi7icsyux.jpg",
+            "post": "LDT",
+            "subjects": ["All Primary"],
+            "experience": "13 years"
+        },
+        {
+            "name": "Preeti Yadav",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401451/bgh3dm4nwrctxh1efldx.jpg",
+            "post": "LDT",
+            "subjects": ["All Primary"],
+            "experience": "12 years"
+        },
+        {
+            "name": "Nandini Malviya",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401581/eqqvu3oycceglyzigi9x.jpg",
+            "post": "LDT",
+            "subjects": ["All Primary"],
+            "experience": "11 years"
+        },
+        {
+            "name": "Rekha Sharma",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401634/c3fonx1uie8wcq56hztc.jpg",
+            "post": "LDT",
+            "subjects": ["All Primary"],
+            "experience": "16 years"
+        },
+        {
+            "name": "Vandana Singh",
+            "image": "https://res.cloudinary.com/dprxaeuwi/image/upload/v1756401679/ntm3fyuyavwhk0mwoyyy.jpg",
+            "post": "LDT",
+            "subjects": ["All Primary"],
+            "experience": "3 years"
+        },
+        {
+            "name": "Reena Jha",
+            "image": "",
+            "post": "LDC",
+            "subjects": [],
+            "experience": "13 years"
+        },
+        {
+            "name": "Sandhya Dwivedi",
+            "image": "",
+            "post": "UDC",
+            "subjects": [],
+            "experience": "28 years"
+        }
+    ]
+}
