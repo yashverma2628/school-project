@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage -->
+  <url>
+    <loc>https://www.shishuvidyapith.in/</loc>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Main Pages -->
+  <url>
+    <loc>https://www.shishuvidyapith.in/about.html</loc>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://www.shishuvidyapith.in/news.html</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.shishuvidyapith.in/faculty.html</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.shishuvidyapith.in/gallery.html</loc>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.shishuvidyapith.in/contact.html</loc>
+    <priority>0.8</priority>
+  </url>
+</urlset>
