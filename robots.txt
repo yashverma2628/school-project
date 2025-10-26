@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.shishuvidyapith.in/sitemap.xml
+
+# robots.txt for Shishu Vidya Pith English Medium Higher Secondary School
+# This file tells search engines they can crawl all public pages.
+# Last updated: 2025-10-26
